@@ -1,0 +1,354 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-sans);}
+.phone{width:300px;margin:0 auto;background:#080810;border-radius:36px;overflow:hidden;border:6px solid #1a1a2e;}
+.sb{display:flex;justify-content:space-between;padding:10px 18px 0;}
+.sb span{font-size:11px;color:rgba(255,255,255,0.3);}
+.step{display:none;}.step.active{display:block;}
+
+/* INTRO */
+.bd-intro{padding:16px;}
+.bd-fmt{display:flex;align-items:center;gap:6px;margin-bottom:12px;}
+.bd-pip{width:7px;height:7px;border-radius:50%;background:#EF9F27;}
+.bd-lbl{font-size:11px;color:rgba(239,159,39,0.7);font-weight:500;letter-spacing:0.05em;}
+.bd-xp{margin-left:auto;font-size:11px;color:#B3F70B;background:rgba(179,247,11,0.1);padding:3px 8px;border-radius:8px;}
+.bd-title{font-size:18px;font-weight:500;color:#fff;line-height:1.3;margin-bottom:7px;}
+.bd-sub{font-size:13px;color:rgba(255,255,255,0.35);line-height:1.55;margin-bottom:16px;}
+.bd-steps-preview{display:flex;gap:0;margin-bottom:18px;border-radius:10px;overflow:hidden;border:0.5px solid rgba(255,255,255,0.07);}
+.bd-step-prev{flex:1;padding:10px 8px;text-align:center;background:rgba(255,255,255,0.03);}
+.bd-step-prev:not(:last-child){border-right:0.5px solid rgba(255,255,255,0.07);}
+.bdsp-num{font-size:16px;font-weight:500;color:rgba(239,159,39,0.5);margin-bottom:3px;}
+.bdsp-lbl{font-size:10px;color:rgba(255,255,255,0.25);line-height:1.3;}
+.bd-result-preview{background:rgba(239,159,39,0.06);border:0.5px solid rgba(239,159,39,0.18);border-radius:10px;padding:10px 12px;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.bdrp-icon{width:32px;height:32px;border-radius:8px;background:rgba(239,159,39,0.1);border:0.5px solid rgba(239,159,39,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.bdrp-txt{flex:1;}
+.bdrp-title{font-size:12px;font-weight:500;color:rgba(239,159,39,0.8);}
+.bdrp-sub{font-size:10px;color:rgba(255,255,255,0.25);margin-top:2px;}
+.bd-start{width:100%;background:#EF9F27;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:500;color:#0a0800;cursor:pointer;}
+
+/* STEP HEADER */
+.step-header{padding:12px 16px 0;display:flex;justify-content:space-between;align-items:center;}
+.sh-left{display:flex;align-items:center;gap:8px;}
+.sh-steps{display:flex;gap:4px;}
+.sh-dot{width:20px;height:4px;border-radius:2px;background:rgba(255,255,255,0.1);}
+.sh-dot.done{background:#EF9F27;}
+.sh-dot.active{background:rgba(239,159,39,0.5);}
+.sh-label{font-size:11px;color:rgba(255,255,255,0.3);}
+.sh-xp{font-size:11px;color:#B3F70B;background:rgba(179,247,11,0.1);padding:3px 8px;border-radius:8px;}
+.step-progress{height:2px;background:rgba(255,255,255,0.06);margin:10px 16px 0;}
+.step-prog-fill{height:2px;border-radius:1px;background:#EF9F27;}
+
+/* STEP 1 : 3 mots */
+.s1-body{padding:14px 16px;}
+.s1-q{font-size:16px;font-weight:500;color:#fff;line-height:1.35;margin-bottom:6px;}
+.s1-sub{font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:16px;line-height:1.5;}
+.word-slots{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.word-slot{display:flex;align-items:center;gap:10px;}
+.ws-num{font-size:13px;font-weight:500;color:rgba(239,159,39,0.4);width:16px;flex-shrink:0;}
+.ws-input{flex:1;background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 12px;font-size:14px;color:#fff;outline:none;}
+.ws-input:focus{border-color:rgba(239,159,39,0.4);background:rgba(239,159,39,0.05);}
+.ws-input::placeholder{color:rgba(255,255,255,0.2);}
+.word-suggestions{margin-bottom:16px;}
+.ws-lbl{font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:0.07em;margin-bottom:7px;}
+.ws-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.ws-tag{padding:5px 10px;border-radius:20px;font-size:11px;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);cursor:pointer;transition:all 0.12s;}
+.ws-tag:hover{background:rgba(239,159,39,0.08);border-color:rgba(239,159,39,0.3);color:rgba(239,159,39,0.8);}
+.s1-next{width:100%;background:#EF9F27;border:none;border-radius:11px;padding:11px;font-size:14px;font-weight:500;color:#0a0800;cursor:pointer;}
+
+/* STEP 2 : pourquoi */
+.s2-body{padding:14px 16px;}
+.s2-words-recap{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.s2-word{background:rgba(239,159,39,0.1);border:0.5px solid rgba(239,159,39,0.25);border-radius:8px;padding:4px 10px;font-size:12px;color:rgba(239,159,39,0.8);font-weight:500;}
+.s2-q{font-size:15px;font-weight:500;color:#fff;line-height:1.35;margin-bottom:6px;}
+.s2-sub{font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:12px;line-height:1.5;}
+.s2-textarea{width:100%;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px;font-size:13px;color:#fff;outline:none;resize:none;line-height:1.6;min-height:90px;}
+.s2-textarea:focus{border-color:rgba(239,159,39,0.4);background:rgba(239,159,39,0.04);}
+.s2-textarea::placeholder{color:rgba(255,255,255,0.18);}
+.s2-char{font-size:10px;color:rgba(255,255,255,0.2);text-align:right;margin-top:4px;margin-bottom:14px;}
+.s2-next{width:100%;background:#EF9F27;border:none;border-radius:11px;padding:11px;font-size:14px;font-weight:500;color:#0a0800;cursor:pointer;}
+
+/* STEP 3 : projection */
+.s3-body{padding:14px 16px;}
+.s3-q{font-size:15px;font-weight:500;color:#fff;line-height:1.35;margin-bottom:6px;}
+.s3-sub{font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:14px;line-height:1.5;}
+.s3-options{display:flex;flex-direction:column;gap:7px;margin-bottom:14px;}
+.s3-opt{background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.09);border-radius:11px;padding:11px 13px;cursor:pointer;transition:all 0.12s;}
+.s3-opt:hover{background:rgba(239,159,39,0.06);border-color:rgba(239,159,39,0.2);}
+.s3-opt.sel{background:rgba(239,159,39,0.1);border-color:rgba(239,159,39,0.4);}
+.s3-opt-title{font-size:13px;font-weight:500;color:rgba(255,255,255,0.7);}
+.s3-opt.sel .s3-opt-title{color:#fff;}
+.s3-opt-sub{font-size:11px;color:rgba(255,255,255,0.25);margin-top:2px;line-height:1.4;}
+.s3-next{width:100%;background:#EF9F27;border:none;border-radius:11px;padding:11px;font-size:14px;font-weight:500;color:#0a0800;cursor:pointer;}
+
+/* CARTE RESULTAT */
+.result-card-screen{padding:14px 16px;}
+.rc-lbl{font-size:10px;color:rgba(239,159,39,0.5);letter-spacing:0.08em;margin-bottom:10px;text-align:center;}
+.projet-card{border-radius:16px;overflow:hidden;border:0.5px solid rgba(239,159,39,0.25);margin-bottom:14px;}
+.pc-header{background:#1a0e00;padding:14px 16px 12px;}
+.pc-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(239,159,39,0.12);border-radius:6px;padding:3px 8px;margin-bottom:8px;}
+.pc-tag-lbl{font-size:9px;color:rgba(239,159,39,0.7);font-weight:600;letter-spacing:0.05em;}
+.pc-words{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+.pc-word{background:rgba(239,159,39,0.15);border:0.5px solid rgba(239,159,39,0.3);border-radius:6px;padding:4px 9px;font-size:12px;color:rgba(239,159,39,0.9);font-weight:500;}
+.pc-why{font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;font-style:italic;}
+.pc-body{background:#120c00;padding:12px 16px;}
+.pc-horizon{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.pc-h-lbl{font-size:10px;color:rgba(255,255,255,0.25);}
+.pc-h-val{font-size:12px;color:rgba(239,159,39,0.7);font-weight:500;}
+.pc-skills{display:flex;gap:5px;flex-wrap:wrap;}
+.pc-skill{background:rgba(255,255,255,0.04);border-radius:5px;padding:3px 7px;font-size:10px;color:rgba(255,255,255,0.35);}
+.rc-profile{background:rgba(255,255,255,0.03);border-radius:10px;padding:10px 12px;margin-bottom:12px;}
+.rc-p-lbl{font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:0.07em;margin-bottom:7px;}
+.rc-dim{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.rc-dname{font-size:12px;color:rgba(255,255,255,0.4);flex:1;}
+.rc-bar{width:80px;height:3px;background:rgba(255,255,255,0.05);border-radius:2px;}
+.rc-fill{height:3px;border-radius:2px;background:#EF9F27;}
+.rc-delta{font-size:11px;color:#B3F70B;}
+.rc-xp-row{display:flex;justify-content:center;align-items:baseline;gap:6px;margin-bottom:14px;}
+.rc-xp-val{font-size:28px;font-weight:500;color:#B3F70B;}
+.rc-xp-lbl{font-size:12px;color:rgba(255,255,255,0.3);}
+.rc-btns{display:flex;flex-direction:column;gap:8px;}
+.rc-btn-m{background:#EF9F27;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#0a0800;cursor:pointer;width:100%;}
+.rc-btn-s{background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px;font-size:13px;color:rgba(255,255,255,0.4);cursor:pointer;width:100%;}
+</style>
+
+<h2 class="sr-only">Prototype interactif du format BUILD — construction en 3 étapes d'une carte projet permanente</h2>
+
+<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:16px;">
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+
+  <!-- INTRO -->
+  <div class="step active" id="bd_intro">
+    <div class="bd-intro">
+      <div class="bd-fmt"><div class="bd-pip"></div><span class="bd-lbl">BUILD · 7mn</span><span class="bd-xp">+40 XP</span></div>
+      <div class="bd-title">Construis ta carte Projet en 5 minutes.</div>
+      <div class="bd-sub">3 étapes courtes. Le résultat s'intègre en permanence dans ton profil ACT SKILLS. C'est ton oeuvre, pas juste une réponse.</div>
+      <div class="bd-steps-preview">
+        <div class="bd-step-prev"><div class="bdsp-num">1</div><div class="bdsp-lbl">3 mots qui définissent ta vie pro</div></div>
+        <div class="bd-step-prev"><div class="bdsp-num">2</div><div class="bdsp-lbl">Pourquoi ces mots te parlent</div></div>
+        <div class="bd-step-prev"><div class="bdsp-num">3</div><div class="bdsp-lbl">Ton horizon de temps</div></div>
+      </div>
+      <div class="bd-result-preview">
+        <div class="bdrp-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="12" rx="2" stroke="#EF9F27" stroke-width="1.2"/><path d="M4 6h8M4 9h5" stroke="#EF9F27" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="bdrp-txt">
+          <div class="bdrp-title">Carte "Mon projet" permanente</div>
+          <div class="bdrp-sub">Visible dans ton profil recruteur</div>
+        </div>
+      </div>
+      <button class="bd-start" onclick="go('bd_s1')">Construire ma carte</button>
+    </div>
+  </div>
+
+  <!-- STEP 1 : 3 mots -->
+  <div class="step" id="bd_s1">
+    <div class="step-header">
+      <div class="sh-left">
+        <div class="sh-steps">
+          <div class="sh-dot active"></div>
+          <div class="sh-dot"></div>
+          <div class="sh-dot"></div>
+        </div>
+        <span class="sh-label">Étape 1 / 3</span>
+      </div>
+      <span class="sh-xp">+40 XP</span>
+    </div>
+    <div class="step-progress"><div class="step-prog-fill" style="width:10%"></div></div>
+    <div class="s1-body">
+      <div class="s1-q">Choisis 3 mots qui décrivent ce que tu veux faire dans ta vie pro.</div>
+      <div class="s1-sub">Pas d'obligation de cohérence. Ce qui te traverse en premier.</div>
+      <div class="word-slots">
+        <div class="word-slot">
+          <span class="ws-num">1</span>
+          <input class="ws-input" id="w1" placeholder="Créer" maxlength="20">
+        </div>
+        <div class="word-slot">
+          <span class="ws-num">2</span>
+          <input class="ws-input" id="w2" placeholder="Construire" maxlength="20">
+        </div>
+        <div class="word-slot">
+          <span class="ws-num">3</span>
+          <input class="ws-input" id="w3" placeholder="Impacter" maxlength="20">
+        </div>
+      </div>
+      <div class="word-suggestions">
+        <div class="ws-lbl">SUGGESTIONS</div>
+        <div class="ws-tags">
+          <div class="ws-tag" onclick="fillWord(this)">Créer</div>
+          <div class="ws-tag" onclick="fillWord(this)">Innover</div>
+          <div class="ws-tag" onclick="fillWord(this)">Diriger</div>
+          <div class="ws-tag" onclick="fillWord(this)">Transmettre</div>
+          <div class="ws-tag" onclick="fillWord(this)">Protéger</div>
+          <div class="ws-tag" onclick="fillWord(this)">Construire</div>
+          <div class="ws-tag" onclick="fillWord(this)">Réparer</div>
+          <div class="ws-tag" onclick="fillWord(this)">Concevoir</div>
+          <div class="ws-tag" onclick="fillWord(this)">Convaincre</div>
+          <div class="ws-tag" onclick="fillWord(this)">Impacter</div>
+        </div>
+      </div>
+      <button class="s1-next" onclick="go('bd_s2')">Étape suivante</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 : pourquoi -->
+  <div class="step" id="bd_s2">
+    <div class="step-header">
+      <div class="sh-left">
+        <div class="sh-steps">
+          <div class="sh-dot done"></div>
+          <div class="sh-dot active"></div>
+          <div class="sh-dot"></div>
+        </div>
+        <span class="sh-label">Étape 2 / 3</span>
+      </div>
+      <span class="sh-xp">+40 XP</span>
+    </div>
+    <div class="step-progress"><div class="step-prog-fill" style="width:45%"></div></div>
+    <div class="s2-body">
+      <div class="s2-words-recap" id="wordsRecap">
+        <div class="s2-word" id="recap1">Créer</div>
+        <div class="s2-word" id="recap2">Construire</div>
+        <div class="s2-word" id="recap3">Impacter</div>
+      </div>
+      <div class="s2-q">Pourquoi ces 3 mots te correspondent ?</div>
+      <div class="s2-sub">Une phrase ou deux. Pas de bonne réponse. C'est juste toi.</div>
+      <textarea class="s2-textarea" id="whyText" placeholder="J'ai toujours eu besoin de voir le résultat concret de ce que je fais. Les projets qui changent quelque chose, c'est ce qui me donne de l'énergie..." maxlength="200" oninput="updateChar()"></textarea>
+      <div class="s2-char" id="charCount">0 / 200</div>
+      <button class="s2-next" onclick="go('bd_s3')">Étape suivante</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 : horizon -->
+  <div class="step" id="bd_s3">
+    <div class="step-header">
+      <div class="sh-left">
+        <div class="sh-steps">
+          <div class="sh-dot done"></div>
+          <div class="sh-dot done"></div>
+          <div class="sh-dot active"></div>
+        </div>
+        <span class="sh-label">Étape 3 / 3</span>
+      </div>
+      <span class="sh-xp">+40 XP</span>
+    </div>
+    <div class="step-progress"><div class="step-prog-fill" style="width:78%"></div></div>
+    <div class="s3-body">
+      <div class="s3-q">Dans combien de temps tu veux que ça devienne réalité ?</div>
+      <div class="s3-sub">C'est juste pour calibrer ton profil. Aucune réponse n'est meilleure qu'une autre.</div>
+      <div class="s3-options">
+        <div class="s3-opt" onclick="selS3(this)">
+          <div class="s3-opt-title">Dans 1 à 2 ans</div>
+          <div class="s3-opt-sub">Je veux y être vite, je suis prêt à foncer</div>
+        </div>
+        <div class="s3-opt" onclick="selS3(this)">
+          <div class="s3-opt-title">Dans 3 à 5 ans</div>
+          <div class="s3-opt-sub">Je veux construire les bases avant de me lancer</div>
+        </div>
+        <div class="s3-opt" onclick="selS3(this)">
+          <div class="s3-opt-title">Je ne sais pas encore</div>
+          <div class="s3-opt-sub">J'explore, j'ai besoin de temps pour décider</div>
+        </div>
+        <div class="s3-opt" onclick="selS3(this)">
+          <div class="s3-opt-title">C'est déjà en cours</div>
+          <div class="s3-opt-sub">Je suis déjà sur ce chemin, je veux aller plus loin</div>
+        </div>
+      </div>
+      <button class="s3-next" id="s3Next" style="opacity:0.4;pointer-events:none;" onclick="go('bd_result')">Générer ma carte</button>
+    </div>
+  </div>
+
+  <!-- RESULT CARD -->
+  <div class="step" id="bd_result">
+    <div class="result-card-screen">
+      <div class="rc-lbl">TA CARTE PROJET EST PRÊTE</div>
+      <div class="projet-card">
+        <div class="pc-header">
+          <div class="pc-tag"><span class="pc-tag-lbl">MON PROJET</span></div>
+          <div class="pc-words" id="pcWords">
+            <div class="pc-word">Créer</div>
+            <div class="pc-word">Construire</div>
+            <div class="pc-word">Impacter</div>
+          </div>
+          <div class="pc-why" id="pcWhy">"J'ai toujours eu besoin de voir le résultat concret de ce que je fais."</div>
+        </div>
+        <div class="pc-body">
+          <div class="pc-horizon">
+            <span class="pc-h-lbl">Horizon</span>
+            <span class="pc-h-val" id="pcHorizon">3 à 5 ans</span>
+          </div>
+          <div class="pc-skills">
+            <div class="pc-skill">Initiative</div>
+            <div class="pc-skill">Vision long terme</div>
+            <div class="pc-skill">Orientation résultat</div>
+          </div>
+        </div>
+      </div>
+      <div class="rc-profile">
+        <div class="rc-p-lbl">SIGNAL GÉNÉRÉ</div>
+        <div class="rc-dim"><span class="rc-dname">Mon projet</span><div class="rc-bar"><div class="rc-fill" style="width:80%"></div></div><span class="rc-delta">+10</span></div>
+        <div class="rc-dim"><span class="rc-dname">Mes envies</span><div class="rc-bar"><div class="rc-fill" style="width:60%"></div></div><span class="rc-delta">+7</span></div>
+        <div class="rc-dim"><span class="rc-dname">Mes forces</span><div class="rc-bar"><div class="rc-fill" style="width:45%"></div></div><span class="rc-delta">+5</span></div>
+      </div>
+      <div class="rc-xp-row"><span class="rc-xp-val">+40 XP</span><span class="rc-xp-lbl">gagnés</span></div>
+      <div class="rc-btns">
+        <button class="rc-btn-m" onclick="go('bd_intro')">Voir dans mon profil</button>
+        <button class="rc-btn-s">Retour au feed</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  if(id==='bd_s2'){syncWords();}
+  if(id==='bd_result'){buildCard();}
+}
+
+var wordSlot=0;
+function fillWord(el){
+  var inputs=[document.getElementById('w1'),document.getElementById('w2'),document.getElementById('w3')];
+  for(var i=0;i<inputs.length;i++){
+    if(!inputs[i].value){inputs[i].value=el.textContent;return;}
+  }
+}
+
+function syncWords(){
+  var w1=document.getElementById('w1').value||'Créer';
+  var w2=document.getElementById('w2').value||'Construire';
+  var w3=document.getElementById('w3').value||'Impacter';
+  document.getElementById('recap1').textContent=w1;
+  document.getElementById('recap2').textContent=w2;
+  document.getElementById('recap3').textContent=w3;
+}
+
+function updateChar(){
+  var txt=document.getElementById('whyText').value;
+  document.getElementById('charCount').textContent=txt.length+' / 200';
+}
+
+var s3Selected='3 à 5 ans';
+function selS3(el){
+  document.querySelectorAll('.s3-opt').forEach(function(o){o.classList.remove('sel');});
+  el.classList.add('sel');
+  s3Selected=el.querySelector('.s3-opt-title').textContent;
+  var btn=document.getElementById('s3Next');
+  btn.style.opacity='1';
+  btn.style.pointerEvents='auto';
+}
+
+function buildCard(){
+  var w1=document.getElementById('w1').value||'Créer';
+  var w2=document.getElementById('w2').value||'Construire';
+  var w3=document.getElementById('w3').value||'Impacter';
+  var why=document.getElementById('whyText').value||"J'ai toujours eu besoin de voir le résultat concret de ce que je fais.";
+  var pcW=document.getElementById('pcWords');
+  pcW.innerHTML='<div class="pc-word">'+w1+'</div><div class="pc-word">'+w2+'</div><div class="pc-word">'+w3+'</div>';
+  document.getElementById('pcWhy').textContent='"'+why.substring(0,80)+(why.length>80?'...':'')+'"';
+  document.getElementById('pcHorizon').textContent=s3Selected;
+}
+</script>

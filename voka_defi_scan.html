@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VOKA — SCAN</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --purple:#7500B8;--green:#B3F70B;--orange:#FF5321;--blue:#378ADD;--teal:#1D9E75;
+  --bg:#080810;--bg2:#0f0f1e;
+  --w:#fff;--w6:rgba(255,255,255,0.6);--w4:rgba(255,255,255,0.4);
+  --w2:rgba(255,255,255,0.12);--w1:rgba(255,255,255,0.06);
+}
+body{background:#111;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px;}
+.phone{width:390px;min-height:844px;background:var(--bg);border-radius:48px;overflow:hidden;border:7px solid #1e1e2e;position:relative;display:flex;flex-direction:column;}
+.sb{display:flex;justify-content:space-between;padding:12px 22px 0;font-size:12px;color:var(--w4);flex-shrink:0;}
+.step{display:none;flex-direction:column;flex:1;}
+.step.active{display:flex;}
+
+/* ── TABS ── */
+.view-tabs{display:flex;gap:5px;padding:10px 16px 0;flex-shrink:0;}
+.vt{flex:1;padding:7px 4px;border-radius:9px;font-size:10px;font-weight:500;text-align:center;cursor:pointer;border:0.5px solid var(--w2);color:var(--w4);background:var(--w1);transition:all 0.15s;}
+.vt.on{color:#fff;border-color:transparent;}
+
+/* ══════ VUE VISITEUR ══════ */
+
+/* Écran caméra */
+.camera-screen{flex:1;position:relative;overflow:hidden;background:#000;}
+.cam-feed{width:100%;height:100%;object-fit:cover;display:block;background:linear-gradient(135deg,#0a0510 0%,#05100a 50%,#100510 100%);}
+.cam-overlay{position:absolute;inset:0;display:flex;flex-direction:column;}
+.cam-top{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;}
+.cam-close{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;}
+.cam-hint{font-size:12px;color:rgba(255,255,255,0.7);background:rgba(0,0,0,0.5);padding:5px 12px;border-radius:10px;}
+.cam-torch{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;}
+
+/* Cadre de scan */
+.scan-frame-wrap{flex:1;display:flex;align-items:center;justify-content:center;}
+.scan-frame{width:220px;height:220px;position:relative;}
+.sf-corner{position:absolute;width:28px;height:28px;}
+.sf-tl{top:0;left:0;border-top:3px solid var(--green);border-left:3px solid var(--green);border-radius:4px 0 0 0;}
+.sf-tr{top:0;right:0;border-top:3px solid var(--green);border-right:3px solid var(--green);border-radius:0 4px 0 0;}
+.sf-bl{bottom:0;left:0;border-bottom:3px solid var(--green);border-left:3px solid var(--green);border-radius:0 0 0 4px;}
+.sf-br{bottom:0;right:0;border-bottom:3px solid var(--green);border-right:3px solid var(--green);border-radius:0 0 4px 0;}
+.scan-line{position:absolute;left:4px;right:4px;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent);animation:scanAnim 2s linear infinite;}
+@keyframes scanAnim{0%{top:4px;opacity:1;}90%{opacity:1;}100%{top:212px;opacity:0;}}
+.scan-inner-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.sih-txt{font-size:11px;color:rgba(255,255,255,0.4);text-align:center;line-height:1.5;}
+
+/* Détection en cours */
+.detect-ring{width:220px;height:220px;position:relative;display:none;}
+.dr-circle{width:100%;height:100%;border-radius:50%;border:3px solid rgba(179,247,11,0.3);animation:ringPulse 1s ease-in-out infinite;}
+@keyframes ringPulse{0%,100%{transform:scale(1);border-color:rgba(179,247,11,0.3);}50%{transform:scale(1.04);border-color:rgba(179,247,11,0.8);}}
+.dr-inner{position:absolute;inset:16px;border-radius:50%;background:rgba(179,247,11,0.06);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;}
+.dr-icon{font-size:28px;}
+.dr-lbl{font-size:11px;color:rgba(255,255,255,0.7);font-weight:500;}
+
+.cam-bottom{padding:16px 20px 24px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.cam-targets{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.cam-target{font-size:10px;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);border:0.5px solid rgba(255,255,255,0.12);}
+.cam-target.active{background:rgba(179,247,11,0.12);color:#d4fb6b;border-color:rgba(179,247,11,0.3);}
+.cam-scan-btn{background:var(--green);border:none;border-radius:14px;padding:12px 32px;font-size:14px;font-weight:500;color:#0a1200;cursor:pointer;}
+
+/* Simulation objet détecté */
+.detected-badge{position:absolute;bottom:140px;left:50%;transform:translateX(-50%);background:rgba(8,8,16,0.9);border:0.5px solid rgba(179,247,11,0.4);border-radius:12px;padding:10px 16px;display:none;align-items:center;gap:8px;white-space:nowrap;}
+.db-icon{font-size:16px;}
+.db-txt{font-size:12px;color:var(--w);font-weight:500;}
+.db-tag{font-size:10px;color:#d4fb6b;background:rgba(179,247,11,0.1);padding:2px 6px;border-radius:4px;}
+
+/* ── ÉCRAN AR OVERLAY ── */
+.ar-screen{flex:1;position:relative;overflow:hidden;}
+.ar-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0a0510 0%,#05100a 50%,#100510 100%);}
+
+/* Objet détecté simulé */
+.ar-detected-obj{position:absolute;top:140px;left:50%;transform:translateX(-50%);width:140px;height:100px;border-radius:12px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(179,247,11,0.5);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;}
+.ado-icon{font-size:32px;}
+.ado-lbl{font-size:10px;color:rgba(255,255,255,0.5);}
+.ar-scan-pulse{position:absolute;top:140px;left:50%;transform:translateX(-50%);width:140px;height:100px;border-radius:12px;border:1.5px solid rgba(179,247,11,0.6);animation:arPulse 1.5s ease-out infinite;}
+@keyframes arPulse{0%{transform:translateX(-50%) scale(1);opacity:0.8;}100%{transform:translateX(-50%) scale(1.15);opacity:0;}}
+
+/* Carte défi AR flottante */
+.ar-defi-card{position:absolute;top:260px;left:16px;right:16px;background:rgba(8,8,16,0.92);border-radius:16px;padding:14px;border:0.5px solid rgba(179,247,11,0.25);backdrop-filter:blur(8px);}
+.adc-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(179,247,11,0.1);border-radius:6px;padding:3px 9px;margin-bottom:8px;}
+.adc-tag-dot{width:5px;height:5px;border-radius:50%;background:var(--green);}
+.adc-tag-txt{font-size:9px;color:#d4fb6b;font-weight:600;letter-spacing:0.07em;}
+.adc-q{font-size:15px;font-weight:500;color:var(--w);line-height:1.32;margin-bottom:12px;}
+.adc-opts{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.adc-opt{background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.12s;}
+.adc-opt:hover{background:rgba(179,247,11,0.06);}
+.adc-opt.chosen{background:rgba(179,247,11,0.1);border-color:rgba(179,247,11,0.3);}
+.adc-opt.correct{background:rgba(179,247,11,0.1);border-color:rgba(179,247,11,0.3);}
+.adc-opt.wrong{background:rgba(255,83,33,0.08);border-color:rgba(255,83,33,0.25);}
+.adc-opt-l{width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,0.08);font-size:10px;font-weight:500;color:rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.adc-opt.chosen .adc-opt-l{background:rgba(179,247,11,0.15);color:#d4fb6b;}
+.adc-opt.correct .adc-opt-l{background:rgba(179,247,11,0.15);color:#d4fb6b;}
+.adc-opt.wrong .adc-opt-l{background:rgba(255,83,33,0.15);color:#ff8060;}
+.adc-opt-txt{font-size:12px;color:rgba(255,255,255,0.7);}
+.adc-opt.chosen .adc-opt-txt,.adc-opt.correct .adc-opt-txt{color:var(--w);}
+.adc-social{display:flex;align-items:center;gap:7px;}
+.ads-bar{flex:1;height:3px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;}
+.ads-fill{height:3px;border-radius:2px;background:var(--green);transition:width 0.5s ease;}
+.ads-txt{font-size:10px;color:rgba(255,255,255,0.5);}
+
+/* Infos AR flottantes autour de l'objet */
+.ar-info-bubble{position:absolute;background:rgba(8,8,16,0.88);border:0.5px solid var(--w2);border-radius:10px;padding:6px 10px;font-size:11px;color:var(--w6);white-space:nowrap;}
+.ar-connector{position:absolute;width:1px;background:rgba(179,247,11,0.4);}
+
+/* Top bar AR */
+.ar-top{position:absolute;top:0;left:0;right:0;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(8,8,16,0.8) 0%,transparent 100%);}
+.art-back{width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;}
+.art-badge{display:flex;align-items:center;gap:5px;background:rgba(179,247,11,0.12);border:0.5px solid rgba(179,247,11,0.25);border-radius:20px;padding:4px 10px;}
+.art-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.art-txt{font-size:10px;color:#d4fb6b;font-weight:500;}
+.art-xp{font-size:11px;color:var(--green);background:rgba(179,247,11,0.1);padding:4px 9px;border-radius:8px;font-weight:500;}
+
+/* ── FIN ── */
+.end-wrap{flex:1;display:flex;flex-direction:column;padding:22px 20px;}
+.end-ar-badge{width:64px;height:64px;border-radius:16px;background:rgba(179,247,11,0.1);border:1px solid rgba(179,247,11,0.25);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:12px;}
+.end-title{font-size:22px;font-weight:500;color:var(--w);margin-bottom:5px;}
+.end-sub{font-size:13px;color:var(--w6);line-height:1.6;margin-bottom:20px;}
+.end-score-card{background:var(--bg2);border-radius:14px;padding:14px;border:0.5px solid var(--w2);margin-bottom:14px;}
+.esc-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.esc-lbl{font-size:11px;color:rgba(255,255,255,0.6);}
+.esc-val{font-size:13px;font-weight:500;color:var(--w);}
+.esc-bar-row{display:flex;flex-direction:column;gap:6px;}
+.esc-dim{display:flex;align-items:center;gap:8px;}
+.esc-dim-lbl{font-size:11px;color:rgba(255,255,255,0.6);width:100px;flex-shrink:0;}
+.esc-dim-bar{flex:1;height:4px;background:var(--w1);border-radius:2px;overflow:hidden;}
+.esc-dim-fill{height:4px;border-radius:2px;transition:width 0.8s ease;}
+.esc-dim-delta{font-size:11px;font-weight:500;color:var(--green);width:28px;text-align:right;flex-shrink:0;}
+.end-scans{display:flex;gap:8px;margin-bottom:16px;}
+.es-item{flex:1;background:var(--bg2);border-radius:10px;padding:10px 8px;text-align:center;border:0.5px solid var(--w2);}
+.esi-val{font-size:20px;font-weight:500;color:var(--w);}
+.esi-lbl{font-size:10px;color:rgba(255,255,255,0.6);margin-top:2px;}
+.end-xp{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.exv{font-size:36px;font-weight:300;color:var(--green);}
+.exl{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5;}
+.end-btns{display:flex;flex-direction:column;gap:7px;margin-top:auto;}
+.btn-m{border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;cursor:pointer;background:var(--green);color:#0a1200;}
+.btn-s{background:var(--w1);border:0.5px solid var(--w2);border-radius:13px;padding:11px;font-size:13px;color:var(--w6);cursor:pointer;}
+
+/* ══════ VUE CRÉATEUR STAND ══════ */
+.creator-wrap{padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:12px;}
+.cw-hdr{display:flex;justify-content:space-between;align-items:center;}
+.cw-title{font-size:15px;font-weight:500;color:var(--w);}
+.cw-badge{display:flex;align-items:center;gap:5px;background:rgba(117,0,184,0.12);border:0.5px solid rgba(179,147,230,0.25);border-radius:8px;padding:4px 10px;}
+.cw-badge-txt{font-size:10px;color:#c98ff0;font-weight:500;}
+.trigger-card{background:var(--bg2);border-radius:12px;padding:12px 14px;border:0.5px solid var(--w2);}
+.tc-lbl{font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.07em;margin-bottom:8px;font-weight:500;}
+.tc-triggers{display:flex;flex-direction:column;gap:7px;}
+.tc-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;cursor:pointer;border:0.5px solid var(--w2);background:var(--w1);transition:all 0.15s;}
+.tc-item.active{background:rgba(117,0,184,0.1);border-color:rgba(179,147,230,0.3);}
+.tc-icon{font-size:18px;flex-shrink:0;}
+.tc-info{flex:1;}
+.tc-name{font-size:12px;font-weight:500;color:var(--w);}
+.tc-desc{font-size:11px;color:rgba(255,255,255,0.6);}
+.tc-check{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--w2);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.tc-item.active .tc-check{background:var(--purple);border-color:var(--purple);}
+.defi-config{background:var(--bg2);border-radius:12px;padding:12px 14px;border:0.5px solid var(--w2);}
+.dc-lbl{font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.07em;margin-bottom:8px;font-weight:500;}
+.dc-preview{background:rgba(117,0,184,0.08);border:0.5px solid rgba(179,147,230,0.15);border-radius:9px;padding:10px 12px;margin-bottom:8px;}
+.dc-q{font-size:13px;font-weight:500;color:var(--w);margin-bottom:6px;}
+.dc-opts-mini{display:flex;flex-direction:column;gap:4px;}
+.dc-opt-mini{font-size:11px;color:rgba(255,255,255,0.6);padding:4px 8px;background:var(--w1);border-radius:6px;}
+.dc-opt-mini.correct{color:#d4fb6b;background:rgba(179,247,11,0.08);}
+.stats-card{background:var(--bg2);border-radius:12px;padding:12px 14px;border:0.5px solid var(--w2);}
+.stats-row{display:flex;gap:8px;}
+.stat-item{flex:1;background:var(--w1);border-radius:8px;padding:9px;text-align:center;}
+.si-val{font-size:20px;font-weight:500;color:var(--w);}
+.si-val.green{color:#d4fb6b;}
+.si-lbl{font-size:10px;color:rgba(255,255,255,0.6);margin-top:2px;}
+.publish-btn{background:var(--purple);border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+
+<div class="view-tabs">
+  <div class="vt on" style="background:var(--green);border-color:var(--green);color:#0a1200;" onclick="switchView(this,'visiteur')">📷 Visiteur</div>
+  <div class="vt" onclick="switchView(this,'createur')">⚙️ Créateur</div>
+</div>
+
+<!-- ══════ VISITEUR ══════ -->
+<div class="step active" id="v-visiteur">
+
+  <!-- ÉCRAN CAMÉRA -->
+  <div id="sc-camera" class="camera-screen">
+    <div class="cam-feed"></div>
+    <div class="cam-overlay">
+      <div class="cam-top">
+        <button class="cam-close" onclick="goScreen('sc-camera')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <span class="cam-hint">Pointe vers une affiche ou un logo</span>
+        <button class="cam-torch">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v2M7 11v2M1 7h2M11 7h2M3 3l1.5 1.5M9.5 9.5L11 11M3 11l1.5-1.5M9.5 4.5L11 3" stroke="white" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <div class="scan-frame-wrap" id="frameWrap">
+        <div class="scan-frame" id="scanFrame">
+          <div class="sf-corner sf-tl"></div>
+          <div class="sf-corner sf-tr"></div>
+          <div class="sf-corner sf-bl"></div>
+          <div class="sf-corner sf-br"></div>
+          <div class="scan-line"></div>
+          <div class="scan-inner-hint"><span class="sih-txt">Cadrez l'objet<br>ou l'affiche</span></div>
+        </div>
+        <div class="detect-ring" id="detectRing">
+          <div class="dr-circle"></div>
+          <div class="dr-inner">
+            <div class="dr-icon">⚡</div>
+            <div class="dr-lbl">ENGIE détecté</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detected-badge" id="detectedBadge">
+        <div class="db-icon">⚡</div>
+        <div class="db-txt">Logo ENGIE reconnu</div>
+        <div class="db-tag">1 défi disponible</div>
+      </div>
+
+      <div class="cam-bottom">
+        <div class="cam-targets">
+          <div class="cam-target active">Logos d'entreprise</div>
+          <div class="cam-target">Affiches forum</div>
+          <div class="cam-target">QR codes</div>
+          <div class="cam-target">Objets métier</div>
+        </div>
+        <button class="cam-scan-btn" onclick="startScan()">Scanner maintenant</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÉCRAN AR -->
+  <div id="sc-ar" style="display:none;flex:1;flex-direction:column;position:relative;">
+    <div class="ar-screen">
+      <div class="ar-bg"></div>
+
+      <!-- Objet détecté -->
+      <div class="ar-scan-pulse"></div>
+      <div class="ar-detected-obj">
+        <div class="ado-icon">⚡</div>
+        <div class="ado-lbl">ENGIE</div>
+      </div>
+
+      <!-- Bulles info AR -->
+      <div class="ar-info-bubble" style="top:110px;left:24px;">⚡ Énergie · 300 000 emplois</div>
+      <div class="ar-info-bubble" style="top:150px;right:16px;font-size:10px;">1 défi disponible →</div>
+      <div class="ar-info-bubble" style="top:255px;left:30px;font-size:10px;">147 scans aujourd'hui</div>
+
+      <!-- Top bar -->
+      <div class="ar-top">
+        <button class="art-back" onclick="goScreen('sc-camera')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <div class="art-badge"><div class="art-dot"></div><span class="art-txt">AR ACTIF · ENGIE</span></div>
+        <div class="art-xp">+8 XP</div>
+      </div>
+
+      <!-- Carte défi AR -->
+      <div class="ar-defi-card">
+        <div class="adc-tag"><div class="adc-tag-dot"></div><span class="adc-tag-txt">SCAN · MES ENVIES</span></div>
+        <div class="adc-q" id="arQTxt">ENGIE recrute 15 000 personnes par an. Quel profil cherchent-ils en priorité ?</div>
+        <div class="adc-opts" id="arOpts"></div>
+        <div class="adc-social" id="arSocial" style="display:none;">
+          <div class="ads-bar"><div class="ads-fill" id="arSocialFill"></div></div>
+          <span class="ads-txt" id="arSocialTxt"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÉCRAN FIN -->
+  <div id="sc-fin" style="display:none;flex:1;flex-direction:column;">
+    <div class="end-wrap">
+      <div class="end-ar-badge">📷</div>
+      <div class="end-title">Défi SCAN complété.</div>
+      <div class="end-sub">Tu as répondu au défi ENGIE déclenché par le logo. Ton profil est mis à jour.</div>
+      <div class="end-score-card">
+        <div class="esc-row">
+          <span class="esc-lbl">Objet scanné</span>
+          <span class="esc-val">Logo ENGIE</span>
+        </div>
+        <div class="esc-row" style="margin-bottom:8px;">
+          <span class="esc-lbl">Contexte</span>
+          <span class="esc-val">Forum Choose Your Future</span>
+        </div>
+        <div class="esc-bar-row" id="endDims"></div>
+      </div>
+      <div class="end-scans">
+        <div class="es-item"><div class="esi-val">3</div><div class="esi-lbl">Scans ce forum</div></div>
+        <div class="es-item"><div class="esi-val green">+8</div><div class="esi-lbl">XP gagnés</div></div>
+        <div class="es-item"><div class="esi-val">7</div><div class="esi-lbl">Défis SCAN dispo</div></div>
+      </div>
+      <div class="end-xp">
+        <span class="exv">+8 XP</span>
+        <span class="exl">gagnés<br>sur ce défi SCAN</span>
+      </div>
+      <div class="end-btns">
+        <button class="btn-m" onclick="resetAll()">Scanner un autre stand</button>
+        <button class="btn-s" onclick="resetAll()">Retour au feed</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════ CRÉATEUR ══════ -->
+<div class="step" id="v-createur">
+  <div class="creator-wrap">
+    <div class="cw-hdr">
+      <div class="cw-title">Configurer un SCAN</div>
+      <div class="cw-badge"><span class="cw-badge-txt">ENGIE · Stand B12</span></div>
+    </div>
+
+    <!-- Déclencheurs -->
+    <div class="trigger-card">
+      <div class="tc-lbl">DÉCLENCHEUR — Ce qui active le défi</div>
+      <div class="tc-triggers">
+        <div class="tc-item active" onclick="selectTrigger(this)">
+          <div class="tc-icon">🏷️</div>
+          <div class="tc-info">
+            <div class="tc-name">Logo ou marque</div>
+            <div class="tc-desc">Ton logo détecté via la caméra</div>
+          </div>
+          <div class="tc-check">
+            <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M1.5 4l2 2 3-3" stroke="white" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="tc-item" onclick="selectTrigger(this)">
+          <div class="tc-icon">📋</div>
+          <div class="tc-info">
+            <div class="tc-name">Affiche spécifique</div>
+            <div class="tc-desc">Une affiche uploadée en avance</div>
+          </div>
+          <div class="tc-check"></div>
+        </div>
+        <div class="tc-item" onclick="selectTrigger(this)">
+          <div class="tc-icon">🔧</div>
+          <div class="tc-info">
+            <div class="tc-name">Objet métier</div>
+            <div class="tc-desc">Un outil, produit ou équipement</div>
+          </div>
+          <div class="tc-check"></div>
+        </div>
+        <div class="tc-item" onclick="selectTrigger(this)">
+          <div class="tc-icon">📍</div>
+          <div class="tc-info">
+            <div class="tc-name">Zone géographique</div>
+            <div class="tc-desc">Activé dans un périmètre GPS</div>
+          </div>
+          <div class="tc-check"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Défi configuré -->
+    <div class="defi-config">
+      <div class="dc-lbl">DÉFI ASSOCIÉ AU DÉCLENCHEUR</div>
+      <div class="dc-preview">
+        <div class="dc-q">ENGIE recrute 15 000 personnes par an. Quel profil cherchent-ils en priorité ?</div>
+        <div class="dc-opts-mini">
+          <div class="dc-opt-mini">A. Juriste d'entreprise</div>
+          <div class="dc-opt-mini correct">B. Ingénieur énergie / environnement ✓</div>
+          <div class="dc-opt-mini">C. Comptable senior</div>
+          <div class="dc-opt-mini">D. Community manager</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.6);font-style:italic;">Défi lié : Mes envies · +8 XP · Format CHOOSE</div>
+    </div>
+
+    <!-- Stats live -->
+    <div class="stats-card">
+      <div class="tc-lbl" style="margin-bottom:8px;">STATS EN DIRECT</div>
+      <div class="stats-row">
+        <div class="stat-item"><div class="si-val green" id="crScans">147</div><div class="si-lbl">Scans</div></div>
+        <div class="stat-item"><div class="si-val">89%</div><div class="si-lbl">Taux réponse</div></div>
+        <div class="stat-item"><div class="si-val">68</div><div class="si-lbl">Profils</div></div>
+      </div>
+    </div>
+
+    <button class="publish-btn">Modifier ce SCAN →</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+var AR_QUESTIONS=[
+  {
+    txt:"ENGIE recrute 15 000 personnes par an. Quel profil cherchent-ils en priorité ?",
+    opts:["Juriste d'entreprise","Ingénieur énergie / environnement","Comptable senior","Community manager"],
+    correct:1,
+    socialPct:71,socialTxt:"71% ont répondu pareil"
+  }
+];
+
+function switchView(el,view){
+  document.querySelectorAll('.vt').forEach(t=>{t.classList.remove('on');t.style.background='';t.style.borderColor='';t.style.color='';});
+  el.classList.add('on');
+  var colors={'visiteur':['var(--green)','var(--green)','#0a1200'],'createur':['var(--purple)','var(--purple)','#fff']};
+  var c=colors[view];
+  el.style.background=c[0]; el.style.borderColor=c[1]; el.style.color=c[2];
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('v-'+view).classList.add('active');
+  if(view==='createur') animateCreatorStats();
+}
+
+function goScreen(id){
+  document.getElementById('sc-camera').style.display='none';
+  var ar=document.getElementById('sc-ar'); if(ar) ar.style.display='none';
+  var fin=document.getElementById('sc-fin'); if(fin) fin.style.display='none';
+  var target=document.getElementById(id);
+  if(target) target.style.display='flex';
+}
+
+var scanTimeout=null, detectTimeout=null;
+function startScan(){
+  // Phase 1 : scan en cours
+  document.getElementById('scanFrame').style.display='none';
+  document.getElementById('detectRing').style.display='block';
+  // Phase 2 : badge détecté
+  detectTimeout=setTimeout(()=>{
+    document.getElementById('detectedBadge').style.display='flex';
+  },1200);
+  // Phase 3 : ouvrir AR
+  scanTimeout=setTimeout(()=>{
+    goScreen('sc-ar');
+    loadArDefi();
+  },2400);
+}
+
+var arAnswered=false;
+function loadArDefi(){
+  arAnswered=false;
+  var q=AR_QUESTIONS[0];
+  document.getElementById('arQTxt').textContent=q.txt;
+  document.getElementById('arSocial').style.display='none';
+  var cont=document.getElementById('arOpts');
+  cont.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    var el=document.createElement('div');
+    el.className='adc-opt';
+    el.innerHTML=`<div class="adc-opt-l">${['A','B','C','D'][i]}</div><span class="adc-opt-txt">${opt}</span>`;
+    el.onclick=()=>arAnswer(el,i);
+    cont.appendChild(el);
+  });
+}
+
+function arAnswer(el,idx){
+  if(arAnswered) return;
+  arAnswered=true;
+  var q=AR_QUESTIONS[0];
+  var correct=idx===q.correct;
+  document.querySelectorAll('#arOpts .adc-opt').forEach(o=>o.onclick=null);
+  el.classList.add(correct?'correct':'wrong');
+  if(!correct) document.querySelectorAll('#arOpts .adc-opt')[q.correct].classList.add('correct');
+  var soc=document.getElementById('arSocial');
+  soc.style.display='flex';
+  document.getElementById('arSocialFill').style.width=q.socialPct+'%';
+  document.getElementById('arSocialTxt').textContent=q.socialTxt;
+  // Bouton suivant
+  setTimeout(()=>{
+    var btn=document.createElement('button');
+    btn.style.cssText='width:100%;background:var(--green);border:none;border-radius:11px;padding:11px;font-size:13px;font-weight:500;color:#0a1200;cursor:pointer;margin-top:8px;';
+    btn.textContent='Voir mon résultat';
+    btn.onclick=()=>{goScreen('sc-fin');initEndDims();};
+    document.querySelector('.ar-defi-card').appendChild(btn);
+  },400);
+}
+
+function initEndDims(){
+  var dims=[
+    {name:'Mes envies',pct:72,color:'#D4537E',delta:'+5'},
+    {name:'Mon background',pct:58,color:'#EF9F27',delta:'+3'},
+  ];
+  document.getElementById('endDims').innerHTML=dims.map(d=>`
+    <div class="esc-dim">
+      <span class="esc-dim-lbl">${d.name}</span>
+      <div class="esc-dim-bar"><div class="esc-dim-fill" style="width:${d.pct}%;background:${d.color}"></div></div>
+      <span class="esc-dim-delta">${d.delta}</span>
+    </div>`).join('');
+}
+
+function resetAll(){
+  clearTimeout(scanTimeout); clearTimeout(detectTimeout);
+  arAnswered=false;
+  document.getElementById('scanFrame').style.display='block';
+  document.getElementById('detectRing').style.display='none';
+  document.getElementById('detectedBadge').style.display='none';
+  goScreen('sc-camera');
+}
+
+function selectTrigger(el){
+  document.querySelectorAll('.tc-item').forEach(t=>{
+    t.classList.remove('active');
+    t.querySelector('.tc-check').innerHTML='';
+  });
+  el.classList.add('active');
+  el.querySelector('.tc-check').innerHTML='<svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M1.5 4l2 2 3-3" stroke="white" stroke-width="1.3" stroke-linecap="round"/></svg>';
+}
+
+function animateCreatorStats(){
+  var el=document.getElementById('crScans');
+  if(!el) return;
+  var n=147;
+  setInterval(()=>{n+=Math.floor(Math.random()*2); el.textContent=n;},2000);
+}
+</script>
+</body>
+</html>

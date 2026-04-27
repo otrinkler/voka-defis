@@ -1,0 +1,338 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-sans);}
+.phone{width:300px;margin:0 auto;background:#080810;border-radius:36px;overflow:hidden;border:6px solid #1a1a2e;}
+.sb{display:flex;justify-content:space-between;padding:10px 18px 0;}
+.sb span{font-size:11px;color:rgba(255,255,255,0.3);}
+.step{display:none;}.step.active{display:block;}
+
+/* INTRO */
+.intro-body{padding:18px 16px;}
+.intro-fmt{display:flex;align-items:center;gap:6px;margin-bottom:14px;}
+.intro-pip{width:7px;height:7px;border-radius:50%;background:#B3F70B;}
+.intro-lbl{font-size:11px;color:rgba(179,247,11,0.7);font-weight:500;letter-spacing:0.05em;}
+.intro-title{font-size:18px;font-weight:500;color:#fff;line-height:1.3;margin-bottom:8px;}
+.intro-sub{font-size:13px;color:rgba(255,255,255,0.35);line-height:1.55;margin-bottom:18px;}
+.intro-rules{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.rule-row{display:flex;align-items:center;gap:10px;}
+.rule-icon{width:28px;height:28px;border-radius:8px;background:rgba(179,247,11,0.08);border:0.5px solid rgba(179,247,11,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.rule-txt{font-size:12px;color:rgba(255,255,255,0.45);line-height:1.4;}
+.start-btn{width:100%;background:#B3F70B;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:500;color:#0a1200;cursor:pointer;}
+
+/* QUIZ SCREEN */
+.quiz-top{padding:12px 16px 0;display:flex;justify-content:space-between;align-items:center;}
+.q-counter{font-size:11px;color:rgba(255,255,255,0.3);}
+.timer-wrap{display:flex;align-items:center;gap:6px;background:rgba(179,247,11,0.08);border:0.5px solid rgba(179,247,11,0.2);border-radius:20px;padding:5px 12px;}
+.timer-ring-wrap{position:relative;width:20px;height:20px;}
+.timer-svg{width:20px;height:20px;transform:rotate(-90deg);}
+.timer-track{fill:none;stroke:rgba(255,255,255,0.08);stroke-width:2.5;}
+.timer-fill{fill:none;stroke:#B3F70B;stroke-width:2.5;stroke-linecap:round;stroke-dasharray:56.5;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear, stroke 0.3s;}
+.timer-val{font-size:14px;font-weight:500;color:#B3F70B;min-width:20px;}
+.prog-track{height:3px;background:rgba(255,255,255,0.06);margin:10px 16px 0;}
+.prog-fill{height:3px;border-radius:1.5px;background:#B3F70B;transition:width 0.3s;}
+
+.question-zone{padding:14px 16px 12px;}
+.q-text{font-size:15px;font-weight:500;color:#fff;line-height:1.35;margin-bottom:14px;}
+.options{display:flex;flex-direction:column;gap:7px;}
+.opt{background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:11px;padding:11px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all 0.12s;}
+.opt:hover{background:rgba(255,255,255,0.08);}
+.opt.correct{background:rgba(179,247,11,0.12);border-color:rgba(179,247,11,0.4);}
+.opt.wrong{background:rgba(255,83,33,0.1);border-color:rgba(255,83,33,0.3);}
+.opt.reveal-correct{background:rgba(179,247,11,0.08);border-color:rgba(179,247,11,0.25);}
+.opt-letter{width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:rgba(255,255,255,0.4);flex-shrink:0;}
+.opt.correct .opt-letter{background:rgba(179,247,11,0.2);color:#B3F70B;}
+.opt.wrong .opt-letter{background:rgba(255,83,33,0.2);color:#FF5321;}
+.opt.reveal-correct .opt-letter{background:rgba(179,247,11,0.15);color:#B3F70B;}
+.opt-text{font-size:13px;color:rgba(255,255,255,0.7);}
+.opt.correct .opt-text,.opt.reveal-correct .opt-text{color:#fff;}
+.opt.wrong .opt-text{color:rgba(255,83,33,0.8);}
+
+.micro-feedback{margin:10px 16px 0;padding:8px 12px;border-radius:9px;font-size:11px;line-height:1.45;display:none;}
+.mf-correct{background:rgba(179,247,11,0.08);border:0.5px solid rgba(179,247,11,0.2);color:rgba(179,247,11,0.8);}
+.mf-wrong{background:rgba(255,83,33,0.08);border:0.5px solid rgba(255,83,33,0.2);color:rgba(255,83,33,0.7);}
+.next-q-btn{margin:10px 16px 14px;width:calc(100% - 32px);background:#B3F70B;border:none;border-radius:11px;padding:11px;font-size:13px;font-weight:500;color:#0a1200;cursor:pointer;display:none;}
+
+/* END SCREEN */
+.end-body{padding:20px 16px;}
+.end-score-ring{width:80px;height:80px;margin:0 auto 12px;position:relative;}
+.end-ring-svg{width:80px;height:80px;transform:rotate(-90deg);}
+.end-ring-track{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:6;}
+.end-ring-fill{fill:none;stroke:#B3F70B;stroke-width:6;stroke-linecap:round;stroke-dasharray:220;stroke-dashoffset:66;}
+.end-score-val{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px;font-weight:500;color:#fff;}
+.end-score-lbl{text-align:center;font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:18px;}
+.end-classement{background:rgba(179,247,11,0.06);border:0.5px solid rgba(179,247,11,0.15);border-radius:12px;padding:12px 14px;margin-bottom:12px;}
+.ec-lbl{font-size:9px;color:rgba(179,247,11,0.5);letter-spacing:0.08em;margin-bottom:8px;}
+.ec-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.ec-rank{font-size:12px;font-weight:500;color:rgba(255,255,255,0.5);width:16px;}
+.ec-av{width:20px;height:20px;border-radius:50%;font-size:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:500;}
+.ec-name{font-size:12px;color:rgba(255,255,255,0.5);flex:1;}
+.ec-score{font-size:12px;font-weight:500;}
+.ec-row.me .ec-name{color:#fff;font-weight:500;}
+.ec-row.me .ec-rank{color:#B3F70B;}
+.end-xp-row{display:flex;justify-content:center;align-items:center;gap:6px;margin-bottom:16px;}
+.end-xp-val{font-size:24px;font-weight:500;color:#B3F70B;}
+.end-xp-lbl{font-size:12px;color:rgba(255,255,255,0.3);}
+.end-btns{display:flex;flex-direction:column;gap:8px;}
+.end-btn-main{background:#B3F70B;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#0a1200;cursor:pointer;width:100%;}
+.end-btn-sec{background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px;font-size:13px;color:rgba(255,255,255,0.4);cursor:pointer;width:100%;}
+
+/* TIMEOUT */
+.timeout-screen{padding:40px 16px;text-align:center;}
+.to-icon{width:48px;height:48px;border-radius:50%;background:rgba(255,83,33,0.12);border:1.5px solid rgba(255,83,33,0.3);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;}
+.to-title{font-size:18px;font-weight:500;color:#fff;margin-bottom:6px;}
+.to-sub{font-size:13px;color:rgba(255,255,255,0.3);margin-bottom:24px;}
+.to-btn{width:100%;background:#FF5321;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;}
+</style>
+
+<h2 class="sr-only">Prototype interactif du format CHRONO — quiz minuté avec timer, feedback immédiat et classement</h2>
+
+<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:16px;">
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+
+  <!-- INTRO -->
+  <div class="step active" id="intro">
+    <div class="intro-body">
+      <div class="intro-fmt"><div class="intro-pip"></div><span class="intro-lbl">CHRONO · 60 secondes</span></div>
+      <div class="intro-title">Connais-tu les métiers de demain ?</div>
+      <div class="intro-sub">5 questions. 60 secondes en tout. Le timer tourne dès que tu commences. Pas de retour en arrière.</div>
+      <div class="intro-rules">
+        <div class="rule-row">
+          <div class="rule-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#B3F70B" stroke-width="1.2"/><path d="M6 3v3l2 1.5" stroke="#B3F70B" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+          <span class="rule-txt">60 secondes pour les 5 questions</span>
+        </div>
+        <div class="rule-row">
+          <div class="rule-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#B3F70B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="rule-txt">Bonus vitesse : répond vite pour plus de points</span>
+        </div>
+        <div class="rule-row">
+          <div class="rule-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1l1.5 3h3l-2.5 2 1 3L6 7.5 3 9l1-3L1.5 4h3z" stroke="#B3F70B" stroke-width="1.2"/></svg></div>
+          <span class="rule-txt">Classement avec tes contacts après</span>
+        </div>
+      </div>
+      <button class="start-btn" onclick="startChrono()">C'est parti</button>
+    </div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="step" id="q1">
+    <div class="quiz-top">
+      <span class="q-counter">Question 1 / 5</span>
+      <div class="timer-wrap">
+        <div class="timer-ring-wrap">
+          <svg class="timer-svg" viewBox="0 0 20 20"><circle class="timer-track" cx="10" cy="10" r="9"/><circle class="timer-fill" id="timerCircle" cx="10" cy="10" r="9"/></svg>
+        </div>
+        <span class="timer-val" id="timerVal">60</span>
+      </div>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    <div class="question-zone">
+      <div class="q-text">Quel métier a le plus progressé en offres d'emploi en France en 2025 ?</div>
+      <div class="options" id="opts1">
+        <div class="opt" onclick="answer(this,'q1',false,'A')"><div class="opt-letter">A</div><span class="opt-text">Comptable</span></div>
+        <div class="opt" onclick="answer(this,'q1',true,'B')"><div class="opt-letter">B</div><span class="opt-text">Ingénieur data / IA</span></div>
+        <div class="opt" onclick="answer(this,'q1',false,'C')"><div class="opt-letter">C</div><span class="opt-text">Commercial terrain</span></div>
+        <div class="opt" onclick="answer(this,'q1',false,'D')"><div class="opt-letter">D</div><span class="opt-text">Juriste d'entreprise</span></div>
+      </div>
+    </div>
+    <div class="micro-feedback mf-correct" id="mf1c">+10 pts · L'IA et la data ont explosé les offres tech en 2025.</div>
+    <div class="micro-feedback mf-wrong" id="mf1w">Raté · C'est l'ingénieur data/IA qui domine les offres.</div>
+    <button class="next-q-btn" id="nxt1" onclick="goQ('q2',2)">Question suivante</button>
+  </div>
+
+  <!-- Q2 -->
+  <div class="step" id="q2">
+    <div class="quiz-top">
+      <span class="q-counter">Question 2 / 5</span>
+      <div class="timer-wrap">
+        <div class="timer-ring-wrap">
+          <svg class="timer-svg" viewBox="0 0 20 20"><circle class="timer-track" cx="10" cy="10" r="9"/><circle class="timer-fill" id="timerCircle2" cx="10" cy="10" r="9"/></svg>
+        </div>
+        <span class="timer-val" id="timerVal2">--</span>
+      </div>
+    </div>
+    <div class="prog-track"><div class="prog-fill" style="width:20%"></div></div>
+    <div class="question-zone">
+      <div class="q-text">En 2030, quelle compétence sera la plus valorisée selon les DRH ?</div>
+      <div class="options" id="opts2">
+        <div class="opt" onclick="answer(this,'q2',false,'A')"><div class="opt-letter">A</div><span class="opt-text">Maîtrise d'Excel</span></div>
+        <div class="opt" onclick="answer(this,'q2',false,'B')"><div class="opt-letter">B</div><span class="opt-text">Langues étrangères</span></div>
+        <div class="opt" onclick="answer(this,'q2',true,'C')"><div class="opt-letter">C</div><span class="opt-text">Adaptabilité et résilience</span></div>
+        <div class="opt" onclick="answer(this,'q2',false,'D')"><div class="opt-letter">D</div><span class="opt-text">Diplôme Bac+5</span></div>
+      </div>
+    </div>
+    <div class="micro-feedback mf-correct" id="mf2c">+10 pts · Les DRH citent l'adaptabilité en numéro 1 depuis 2023.</div>
+    <div class="micro-feedback mf-wrong" id="mf2w">Raté · L'adaptabilité et la résilience arrivent largement en tête.</div>
+    <button class="next-q-btn" id="nxt2" onclick="goQ('q3',3)">Question suivante</button>
+  </div>
+
+  <!-- Q3 -->
+  <div class="step" id="q3">
+    <div class="quiz-top">
+      <span class="q-counter">Question 3 / 5</span>
+      <div class="timer-wrap">
+        <div class="timer-ring-wrap">
+          <svg class="timer-svg" viewBox="0 0 20 20"><circle class="timer-track" cx="10" cy="10" r="9"/><circle class="timer-fill" id="timerCircle3" cx="10" cy="10" r="9"/></svg>
+        </div>
+        <span class="timer-val" id="timerVal3">--</span>
+      </div>
+    </div>
+    <div class="prog-track"><div class="prog-fill" style="width:40%"></div></div>
+    <div class="question-zone">
+      <div class="q-text">Combien de postes seront à pourvoir en France d'ici 2030 selon la DARES ?</div>
+      <div class="options" id="opts3">
+        <div class="opt" onclick="answer(this,'q3',false,'A')"><div class="opt-letter">A</div><span class="opt-text">200 000 / an</span></div>
+        <div class="opt" onclick="answer(this,'q3',true,'B')"><div class="opt-letter">B</div><span class="opt-text">800 000 / an</span></div>
+        <div class="opt" onclick="answer(this,'q3',false,'C')"><div class="opt-letter">C</div><span class="opt-text">1,5 million / an</span></div>
+        <div class="opt" onclick="answer(this,'q3',false,'D')"><div class="opt-letter">D</div><span class="opt-text">50 000 / an</span></div>
+      </div>
+    </div>
+    <div class="micro-feedback mf-correct" id="mf3c">+10 pts · 800 000 postes / an à cause des départs en retraite des boomers.</div>
+    <div class="micro-feedback mf-wrong" id="mf3w">Raté · La DARES estime 800 000 postes par an d'ici 2030.</div>
+    <button class="next-q-btn" id="nxt3" onclick="goQ('end_chrono',5)">Voir mon score</button>
+  </div>
+
+  <!-- TIMEOUT -->
+  <div class="step" id="timeout">
+    <div class="timeout-screen">
+      <div class="to-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#FF5321" stroke-width="1.5"/><path d="M10 6v5" stroke="#FF5321" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="14" r="1" fill="#FF5321"/></svg>
+      </div>
+      <div class="to-title">Temps écoulé !</div>
+      <div class="to-sub">T'as répondu à 2 questions sur 5. Pas mal pour un premier essai.</div>
+      <button class="to-btn" onclick="go('end_chrono')">Voir mon score</button>
+    </div>
+  </div>
+
+  <!-- END -->
+  <div class="step" id="end_chrono">
+    <div class="end-body">
+      <div class="end-score-ring">
+        <svg class="end-ring-svg" viewBox="0 0 80 80"><circle class="end-ring-track" cx="40" cy="40" r="35"/><circle class="end-ring-fill" id="endRing" cx="40" cy="40" r="35"/></svg>
+        <div class="end-score-val" id="endScore">28</div>
+      </div>
+      <div class="end-score-lbl">pts sur 50 possibles</div>
+      <div class="end-xp-row"><span class="end-xp-val" id="endXp">+12 XP</span><span class="end-xp-lbl">gagnés</span></div>
+      <div class="end-classement">
+        <div class="ec-lbl">TON CLASSEMENT CONTACTS</div>
+        <div class="ec-row">
+          <span class="ec-rank">1</span>
+          <div class="ec-av" style="background:#FF5321">Y</div>
+          <span class="ec-name">Yasmine</span>
+          <span class="ec-score" style="color:#B3F70B">44 pts</span>
+        </div>
+        <div class="ec-row">
+          <span class="ec-rank">2</span>
+          <div class="ec-av" style="background:#7500B8">M</div>
+          <span class="ec-name">Mehdi</span>
+          <span class="ec-score" style="color:#B3F70B">36 pts</span>
+        </div>
+        <div class="ec-row me">
+          <span class="ec-rank">3</span>
+          <div class="ec-av" style="background:#378ADD">T</div>
+          <span class="ec-name">Toi</span>
+          <span class="ec-score" id="myScore" style="color:#fff">28 pts</span>
+        </div>
+        <div class="ec-row">
+          <span class="ec-rank">4</span>
+          <div class="ec-av" style="background:#30B870">J</div>
+          <span class="ec-name">Juliette</span>
+          <span class="ec-score" style="color:rgba(255,255,255,0.3)">21 pts</span>
+        </div>
+      </div>
+      <div class="end-btns">
+        <button class="end-btn-main" onclick="go('intro')">Rejouer</button>
+        <button class="end-btn-sec">Retour au feed</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+var timerInt=null, timeLeft=60, score=0, answered=0;
+var timerIds=['timerCircle','timerCircle2','timerCircle3'];
+var valIds=['timerVal','timerVal2','timerVal3'];
+
+function go(id){
+  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+}
+
+function startChrono(){
+  score=0; answered=0; timeLeft=60;
+  go('q1');
+  runTimer();
+}
+
+function runTimer(){
+  clearInterval(timerInt);
+  timerInt=setInterval(function(){
+    timeLeft--;
+    updateTimerDisplay();
+    if(timeLeft<=0){
+      clearInterval(timerInt);
+      go('timeout');
+    }
+  },1000);
+}
+
+function updateTimerDisplay(){
+  var pct=timeLeft/60;
+  var offset=56.5*(1-pct);
+  var color=timeLeft>20?'#B3F70B':timeLeft>10?'#EF9F27':'#FF5321';
+  timerIds.forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){el.style.strokeDashoffset=offset;el.style.stroke=color;}
+  });
+  valIds.forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){el.textContent=timeLeft;el.style.color=color;}
+  });
+}
+
+function answer(el, qId, correct, letter){
+  var opts=el.parentNode.querySelectorAll('.opt');
+  opts.forEach(function(o){o.style.pointerEvents='none';});
+  var pts=correct?Math.max(4,Math.round(timeLeft/6)):0;
+  if(correct){
+    el.classList.add('correct');
+    var mfc=document.getElementById('mf'+qId.replace('q','')+'c');
+    if(mfc){mfc.style.display='block';}
+    score+=pts;
+  } else {
+    el.classList.add('wrong');
+    opts.forEach(function(o){
+      if(o.querySelector('.opt-letter').textContent===getCorrectLetter(qId)){o.classList.add('reveal-correct');}
+    });
+    var mfw=document.getElementById('mf'+qId.replace('q','')+'w');
+    if(mfw){mfw.style.display='block';}
+  }
+  answered++;
+  var nxt=document.getElementById('nxt'+qId.replace('q',''));
+  if(nxt){nxt.style.display='block';}
+}
+
+function getCorrectLetter(qId){
+  var map={q1:'B',q2:'C',q3:'B'};
+  return map[qId]||'A';
+}
+
+function goQ(nextId, qNum){
+  go(nextId);
+  if(nextId==='end_chrono'){showEnd();}
+}
+
+function showEnd(){
+  clearInterval(timerInt);
+  var xp=Math.round(score/50*12)+6;
+  document.getElementById('endScore').textContent=score;
+  document.getElementById('endXp').textContent='+'+xp+' XP';
+  document.getElementById('myScore').textContent=score+' pts';
+  var pct=score/50;
+  var offset=220*(1-pct);
+  var ring=document.getElementById('endRing');
+  if(ring){ring.style.strokeDashoffset=offset;}
+}
+</script>

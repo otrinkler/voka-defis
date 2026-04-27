@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VOKA — CERCLE</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --purple:#7500B8;--green:#B3F70B;--orange:#FF5321;--amber:#EF9F27;--pink:#D4537E;--blue:#378ADD;--teal:#1D9E75;
+  --bg:#080810;--bg2:#0f0f1e;
+  --w:#fff;--w6:rgba(255,255,255,0.6);--w5:rgba(255,255,255,0.5);--w4:rgba(255,255,255,0.4);
+  --w2:rgba(255,255,255,0.12);--w1:rgba(255,255,255,0.06);
+}
+body{background:#111;display:flex;justify-content:center;padding:20px;}
+.phone{width:390px;min-height:844px;background:var(--bg);border-radius:48px;overflow:hidden;border:7px solid #1e1e2e;display:flex;flex-direction:column;}
+.sb{display:flex;justify-content:space-between;padding:12px 22px 0;font-size:12px;color:var(--w4);flex-shrink:0;}
+.view{display:none;flex-direction:column;flex:1;}
+.view.on{display:flex;}
+
+/* ═══ INTRO ═══ */
+.hero{height:190px;position:relative;overflow:hidden;flex-shrink:0;background:linear-gradient(160deg,#0d0420 0%,#100a18 100%);}
+.hero-glow{position:absolute;border-radius:50%;filter:blur(28px);}
+.hero-ring{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.hr-outer{width:130px;height:130px;border-radius:50%;border:1px solid rgba(212,83,126,0.2);position:relative;display:flex;align-items:center;justify-content:center;}
+.hr-av{position:absolute;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;}
+.hr-center{width:32px;height:32px;border-radius:50%;background:rgba(212,83,126,0.35);border:2px solid var(--pink);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;}
+.hero-grad{position:absolute;bottom:0;left:0;right:0;height:70px;background:linear-gradient(to top,var(--bg) 0%,transparent 100%);}
+.hero-tag{position:absolute;top:14px;left:16px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,0.65);border:0.5px solid rgba(212,83,126,0.4);border-radius:10px;padding:5px 12px;}
+.ht-dot{width:6px;height:6px;border-radius:50%;background:var(--pink);}
+.ht-txt{font-size:10px;color:#f090b0;font-weight:500;letter-spacing:0.04em;}
+.hero-xp{position:absolute;top:14px;right:16px;font-size:11px;color:var(--green);background:rgba(179,247,11,0.1);border:0.5px solid rgba(179,247,11,0.2);padding:4px 10px;border-radius:8px;font-weight:500;}
+
+.intro-scroll{flex:1;padding:14px 20px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;}
+.i-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(212,83,126,0.1);border:0.5px solid rgba(240,144,176,0.2);border-radius:6px;padding:3px 9px;}
+.i-tag-txt{font-size:10px;color:#f090b0;font-weight:500;letter-spacing:0.04em;}
+.i-title{font-size:20px;font-weight:500;color:var(--w);line-height:1.3;}
+.i-sub{font-size:13px;color:var(--w6);line-height:1.6;}
+.how-it-works{display:flex;flex-direction:column;gap:7px;}
+.hiw-step{display:flex;align-items:flex-start;gap:10px;background:var(--w1);border:0.5px solid var(--w2);border-radius:10px;padding:10px 12px;}
+.hiw-num{width:22px;height:22px;border-radius:50%;background:rgba(212,83,126,0.2);border:0.5px solid rgba(240,144,176,0.3);font-size:10px;font-weight:600;color:#f090b0;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.hiw-body{}
+.hiw-title{font-size:12px;font-weight:500;color:var(--w);margin-bottom:2px;}
+.hiw-sub{font-size:11px;color:var(--w5);line-height:1.4;}
+.start-btn{margin:0 20px 20px;background:var(--pink);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:500;color:#fff;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:8px;}
+
+/* ═══ BRIEF ═══ */
+#v-brief{background:var(--bg);}
+.brief-scroll{flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;}
+.section-lbl{font-size:10px;color:#f090b0;letter-spacing:0.08em;font-weight:500;}
+.sujet-card{background:rgba(212,83,126,0.08);border:1px solid rgba(212,83,126,0.22);border-radius:14px;padding:14px;}
+.sc-title{font-size:17px;font-weight:500;color:var(--w);line-height:1.3;margin-bottom:6px;}
+.sc-sub{font-size:12px;color:var(--w6);line-height:1.55;}
+.rules-list{display:flex;flex-direction:column;gap:6px;}
+.rl-item{display:flex;align-items:flex-start;gap:8px;background:var(--w1);border:0.5px solid var(--w2);border-radius:9px;padding:9px 11px;}
+.rl-num{width:18px;height:18px;border-radius:50%;background:rgba(212,83,126,0.18);font-size:9px;font-weight:600;color:#f090b0;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.rl-txt{font-size:12px;color:var(--w6);line-height:1.45;flex:1;}
+.rl-txt b{color:var(--w);}
+.voice-note{display:flex;align-items:flex-start;gap:9px;background:rgba(179,247,11,0.06);border:0.5px solid rgba(179,247,11,0.15);border-radius:10px;padding:10px 12px;}
+.vn-icon{font-size:18px;flex-shrink:0;}
+.vn-txt{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.5;flex:1;}
+.vn-txt b{color:#d4fb6b;}
+.brief-btn{margin:0 20px 20px;background:var(--pink);border:none;border-radius:14px;padding:13px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;flex-shrink:0;}
+
+/* ═══ RÔLE ═══ */
+#v-role{background:var(--bg);}
+.role-scroll{flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;}
+.role-intro{font-size:13px;color:var(--w6);line-height:1.6;}
+.role-cards{display:flex;flex-direction:column;gap:8px;}
+.rc{border-radius:13px;padding:13px;border:0.5px solid;cursor:pointer;transition:all 0.15s;}
+.rc.sel{border-width:1.5px;}
+.rc-top{display:flex;align-items:center;gap:9px;margin-bottom:4px;}
+.rc-emoji{font-size:18px;}
+.rc-name{font-size:14px;font-weight:500;color:var(--w);flex:1;}
+.rc-check{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--w2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.rc.sel .rc-check{background:var(--pink);border-color:var(--pink);}
+.rc-desc{font-size:12px;color:var(--w5);line-height:1.45;margin-bottom:6px;}
+.rc-position{font-size:11px;font-style:italic;padding:6px 9px;border-radius:6px;line-height:1.4;}
+.role-btn{margin:0 20px 20px;background:var(--pink);border:none;border-radius:14px;padding:13px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;flex-shrink:0;display:none;}
+
+/* ═══ DÉBAT VOCAL ═══ */
+#v-debate{background:#fff;}
+.dv-hdr{background:#fff;padding:12px 16px 0;flex-shrink:0;}
+.dv-hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.dv-round{font-size:11px;color:rgba(0,0,0,0.4);background:rgba(0,0,0,0.05);padding:3px 9px;border-radius:6px;}
+.dv-timer{display:flex;align-items:center;gap:5px;background:rgba(212,83,126,0.07);border:0.5px solid rgba(212,83,126,0.2);border-radius:20px;padding:4px 10px;}
+.dv-timer-svg{width:18px;height:18px;transform:rotate(-90deg);}
+.dvt-track{fill:none;stroke:rgba(0,0,0,0.08);stroke-width:2.5;}
+.dvt-fill{fill:none;stroke:var(--pink);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:50.3;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke 0.3s;}
+.dv-timer-val{font-size:12px;font-weight:500;color:#111;}
+.dv-prog{height:2px;background:rgba(0,0,0,0.07);border-radius:1px;overflow:hidden;}
+.dv-prog-fill{height:2px;background:var(--pink);transition:width 0.4s;}
+
+/* Sujet + rôle pill */
+.dv-context{background:#fff;padding:8px 16px 0;flex-shrink:0;}
+.dv-sujet{font-size:12px;font-weight:500;color:#222;background:rgba(212,83,126,0.06);border:0.5px solid rgba(212,83,126,0.18);border-radius:8px;padding:8px 11px;margin-bottom:6px;line-height:1.4;}
+.dv-role-pill{display:inline-flex;align-items:center;gap:5px;border-radius:6px;padding:3px 9px;font-size:10px;font-weight:500;border:0.5px solid;}
+
+/* Feed débat (texte seulement pour les autres, icône micro pour toi) */
+.dv-feed{flex:1;overflow-y:auto;padding:10px 16px 0;background:#fff;display:flex;flex-direction:column;gap:8px;}
+.dv-msg{display:flex;flex-direction:column;gap:2px;}
+.dv-msg-who{font-size:10px;color:rgba(0,0,0,0.4);padding:0 3px;}
+.dv-msg-bubble{border-radius:12px;padding:9px 12px;font-size:13px;line-height:1.5;max-width:84%;}
+.dv-msg.other .dv-msg-bubble{background:#f0f0f5;color:#111;border-radius:4px 12px 12px 12px;}
+.dv-msg.system .dv-msg-bubble{background:transparent;font-size:11px;color:rgba(0,0,0,0.35);font-style:italic;text-align:center;padding:3px;}
+/* Mes prises de parole = carte récap après enregistrement */
+.dv-msg.me{align-items:flex-end;}
+.my-speech-card{background:rgba(212,83,126,0.1);border:0.5px solid rgba(212,83,126,0.25);border-radius:12px 4px 12px 12px;padding:10px 12px;max-width:84%;}
+.msc-top{display:flex;align-items:center;gap:6px;margin-bottom:5px;}
+.msc-mic{font-size:13px;}
+.msc-meta{font-size:10px;color:rgba(212,83,126,0.8);font-weight:500;}
+.msc-waveform{display:flex;align-items:center;gap:2px;height:20px;margin-bottom:6px;}
+.msc-bar{width:3px;border-radius:2px;background:rgba(212,83,126,0.5);}
+.msc-transcript{font-size:12px;color:#1a0010;line-height:1.5;font-style:italic;}
+.msc-signals{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px;}
+.msc-signal{font-size:9px;padding:1px 6px;border-radius:3px;font-weight:500;}
+
+/* Zone d'enregistrement */
+.dv-record-zone{background:#fff;border-top:1px solid rgba(0,0,0,0.08);padding:12px 16px;flex-shrink:0;}
+.drz-prompt{font-size:12px;color:rgba(0,0,0,0.5);margin-bottom:8px;line-height:1.4;}
+.drz-prompt b{color:#111;}
+.drz-btn-row{display:flex;gap:8px;align-items:center;}
+.drz-rec-btn{flex:1;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all 0.2s;}
+.drz-rec-btn.idle{background:var(--pink);color:#fff;}
+.drz-rec-btn.recording{background:#FF5321;color:#fff;animation:recPulse 1.2s ease-in-out infinite;}
+.drz-rec-btn.done{background:rgba(179,247,11,0.15);border:1px solid rgba(179,247,11,0.3);color:#1a2a00;}
+@keyframes recPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.02);}}
+.drz-skip{background:rgba(0,0,0,0.05);border:0.5px solid rgba(0,0,0,0.1);border-radius:12px;padding:13px 14px;font-size:13px;color:rgba(0,0,0,0.4);cursor:pointer;white-space:nowrap;}
+
+/* Recording in progress overlay */
+.rec-overlay{position:absolute;inset:0;background:rgba(255,83,33,0.97);z-index:50;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;border-radius:41px;}
+.rec-overlay.on{display:flex;}
+.ro-ring{width:100px;height:100px;border-radius:50%;border:3px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;position:relative;}
+.ro-ring-pulse{position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);animation:roPulse 1.2s ease-in-out infinite;}
+@keyframes roPulse{0%,100%{transform:scale(1);opacity:0.6;}50%{transform:scale(1.08);opacity:1;}}
+.ro-mic{font-size:36px;}
+.ro-timer{font-size:28px;font-weight:300;color:#fff;}
+.ro-label{font-size:14px;color:rgba(255,255,255,0.85);}
+.ro-waveform{display:flex;align-items:center;gap:3px;height:30px;}
+.ro-bar{width:4px;border-radius:2px;background:rgba(255,255,255,0.6);}
+.ro-stop-btn{background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.5);border-radius:12px;padding:12px 28px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;}
+
+/* ═══ ANALYSE IA ═══ */
+#v-analysis{background:var(--bg);}
+.analysis-scroll{flex:1;padding:18px 20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;}
+.ia-spinner{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 0;}
+.ia-ring{width:56px;height:56px;border-radius:50%;border:3px solid var(--w2);border-top-color:var(--pink);animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.ia-txt{font-size:13px;color:var(--w5);text-align:center;}
+/* Transcription recap */
+.speech-recap{background:var(--bg2);border-radius:13px;padding:13px 14px;border:0.5px solid var(--w2);}
+.sr-lbl{font-size:10px;color:#f090b0;letter-spacing:0.07em;font-weight:500;margin-bottom:8px;}
+.sr-items{display:flex;flex-direction:column;gap:8px;}
+.sr-item{display:flex;gap:9px;}
+.sri-num{width:18px;height:18px;border-radius:50%;background:rgba(212,83,126,0.18);font-size:9px;font-weight:600;color:#f090b0;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.sri-body{}
+.sri-ctx{font-size:10px;color:var(--w4);margin-bottom:2px;}
+.sri-quote{font-size:12px;color:var(--w6);font-style:italic;line-height:1.5;margin-bottom:4px;}
+.sri-signals{display:flex;gap:4px;flex-wrap:wrap;}
+.sri-sig{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;}
+/* Métriques vocales */
+.metrics-card{background:var(--bg2);border-radius:13px;padding:13px 14px;border:0.5px solid var(--w2);}
+.mc-lbl{font-size:10px;color:#f090b0;letter-spacing:0.07em;font-weight:500;margin-bottom:10px;}
+.metric-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.metric-row:last-child{margin-bottom:0;}
+.mr-icon{font-size:14px;flex-shrink:0;}
+.mr-label{font-size:11px;color:var(--w5);width:110px;flex-shrink:0;}
+.mr-bar{flex:1;height:4px;background:var(--w1);border-radius:2px;overflow:hidden;}
+.mr-fill{height:4px;border-radius:2px;transition:width 0.8s ease;}
+.mr-val{font-size:11px;font-weight:500;width:32px;text-align:right;flex-shrink:0;}
+/* Profil comportemental */
+.profile-card{background:rgba(212,83,126,0.08);border:0.5px solid rgba(212,83,126,0.2);border-radius:13px;padding:13px 14px;}
+.pc-lbl{font-size:10px;color:#f090b0;letter-spacing:0.07em;font-weight:500;margin-bottom:8px;}
+.pc-title{font-size:17px;font-weight:500;color:var(--w);margin-bottom:5px;}
+.pc-sub{font-size:12px;color:var(--w6);line-height:1.55;}
+.insights-list{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.insight-item{display:flex;gap:7px;align-items:flex-start;}
+.ii-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.ii-txt{font-size:12px;color:var(--w6);line-height:1.5;}
+.ii-txt b{color:var(--w);}
+/* Dims */
+.dims-card{background:rgba(117,0,184,0.07);border:0.5px solid rgba(179,147,230,0.14);border-radius:12px;padding:12px 14px;}
+.dc-lbl{font-size:10px;color:#c98ff0;letter-spacing:0.07em;font-weight:500;margin-bottom:8px;}
+.dim-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.dim-row:last-child{margin-bottom:0;}
+.dim-name{font-size:11px;color:rgba(255,255,255,0.65);width:120px;flex-shrink:0;}
+.dim-bar{flex:1;height:4px;background:var(--w1);border-radius:2px;overflow:hidden;}
+.dim-fill{height:4px;border-radius:2px;}
+.dim-delta{font-size:11px;font-weight:500;color:var(--green);width:24px;text-align:right;flex-shrink:0;}
+.xp-row{display:flex;align-items:center;gap:10px;}
+.xp-val{font-size:34px;font-weight:300;color:var(--green);}
+.xp-lbl{font-size:13px;color:var(--w5);line-height:1.5;}
+.end-btns{padding:0 20px 24px;display:flex;flex-direction:column;gap:7px;flex-shrink:0;}
+.btn-m{background:var(--pink);border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;}
+.btn-s{background:var(--w1);border:0.5px solid var(--w2);border-radius:13px;padding:11px;font-size:13px;color:rgba(255,255,255,0.65);cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+<div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+
+<!-- ═══ INTRO ═══ -->
+<div class="view on" id="v-intro">
+  <div class="hero">
+    <div class="hero-glow" style="width:110px;height:110px;background:var(--pink);top:10%;left:15%;opacity:0.18;"></div>
+    <div class="hero-ring">
+      <div class="hr-outer">
+        <div class="hr-av" style="top:-13px;left:50%;transform:translateX(-50%);background:rgba(55,138,221,0.5);">K</div>
+        <div class="hr-av" style="top:12%;right:-13px;background:rgba(29,158,117,0.5);">S</div>
+        <div class="hr-av" style="bottom:12%;right:-13px;background:rgba(239,159,39,0.5);">M</div>
+        <div class="hr-av" style="bottom:-13px;left:50%;transform:translateX(-50%);background:rgba(117,0,184,0.5);">L</div>
+        <div class="hr-av" style="top:12%;left:-13px;background:rgba(212,83,126,0.5);">R</div>
+        <div class="hr-center">T</div>
+      </div>
+    </div>
+    <div class="hero-grad"></div>
+    <div class="hero-tag"><div class="ht-dot"></div><span class="ht-txt">CERCLE · vocal · IA</span></div>
+    <div class="hero-xp">+35 XP</div>
+  </div>
+  <div class="intro-scroll">
+    <div class="i-tag"><span class="i-tag-txt">MES TALENTS CACHÉS · MES FORCES</span></div>
+    <div class="i-title">Un débat vocal. Tu défends une position assignée. L'IA analyse comment tu parles.</div>
+    <div class="i-sub">À chaque moment clé du débat, tu enregistres ton intervention à voix haute. L'IA transcrit, détecte les signaux comportementaux, et construit ton profil.</div>
+    <div class="how-it-works">
+      <div class="hiw-step">
+        <div class="hiw-num">1</div>
+        <div class="hiw-body">
+          <div class="hiw-title">Tu reçois un rôle et une position</div>
+          <div class="hiw-sub">Pas forcément la tienne. C'est voulu — argumenter une position difficile révèle beaucoup plus.</div>
+        </div>
+      </div>
+      <div class="hiw-step">
+        <div class="hiw-num">2</div>
+        <div class="hiw-body">
+          <div class="hiw-title">Le cercle débat — tu écoutes</div>
+          <div class="hiw-sub">Les autres membres s'expriment. Tu lis ce qu'ils disent. Puis c'est ton tour : tu appuies sur le micro et tu parles.</div>
+        </div>
+      </div>
+      <div class="hiw-step">
+        <div class="hiw-num">3</div>
+        <div class="hiw-body">
+          <div class="hiw-title">L'IA analyse ta prise de parole</div>
+          <div class="hiw-sub">Durée, clarté, assertivité, écoute, adaptation — 5 dimensions comportementales extraites de tes vrais mots.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="start-btn" onclick="show('v-brief')">Voir le sujet →</button>
+</div>
+
+<!-- ═══ BRIEF ═══ -->
+<div class="view" id="v-brief">
+  <div class="brief-scroll">
+    <div class="section-lbl">LE SUJET DU CERCLE</div>
+    <div class="sujet-card">
+      <div class="sc-title">"Le CV sera inutile d'ici 5 ans. Seules les preuves concrètes de compétences compteront."</div>
+      <div class="sc-sub">Un sujet sans bonne réponse — intentionnellement ambigu. Le cercle doit produire une position collective en 10 minutes.</div>
+    </div>
+    <div class="section-lbl">RÈGLES DU DÉBAT</div>
+    <div class="rules-list">
+      <div class="rl-item"><div class="rl-num">1</div><div class="rl-txt"><b>Tu défends un rôle assigné</b> — pas ton opinion personnelle. Argumenter une position difficile révèle tes vrais réflexes.</div></div>
+      <div class="rl-item"><div class="rl-num">2</div><div class="rl-txt"><b>4 moments d'intervention</b> — à chaque fois, tu enregistres ta prise de parole à voix haute, durée libre.</div></div>
+      <div class="rl-item"><div class="rl-num">3</div><div class="rl-txt"><b>Tu peux changer de position</b> si quelqu'un t'a convaincu. Le dire explicitement est un signal de force.</div></div>
+      <div class="rl-item"><div class="rl-num">4</div><div class="rl-txt"><b>Le cercle converge vers une décision</b> commune. Ton rôle dans cette convergence est analysé.</div></div>
+    </div>
+    <div class="voice-note">
+      <div class="vn-icon">🎙️</div>
+      <div class="vn-txt"><b>Tout est vocal.</b> L'app enregistre uniquement ta voix — pas celle des autres. La transcription et l'analyse se font en temps réel par l'IA VOKA.</div>
+    </div>
+  </div>
+  <button class="brief-btn" onclick="show('v-role')">Choisir mon rôle →</button>
+</div>
+
+<!-- ═══ RÔLE ═══ -->
+<div class="view" id="v-role">
+  <div class="role-scroll">
+    <div class="section-lbl">TON RÔLE DANS CE CERCLE</div>
+    <div class="role-intro">Chaque rôle implique une posture et une position à défendre. Choisis le rôle que tu veux explorer — ou celui qui te sort de ta zone de confort.</div>
+    <div class="role-cards">
+
+      <div class="rc" style="background:rgba(255,83,33,0.06);border-color:rgba(255,128,96,0.18);" onclick="pickRole(this,'challenger','⚡ Challenger','#ff8060','rgba(255,83,33,0.08)')">
+        <div class="rc-top"><div class="rc-emoji">⚡</div><div class="rc-name">Challenger</div><div class="rc-check"></div></div>
+        <div class="rc-desc">Tu remets en question tout argument insuffisant. Tu exiges des preuves. Tu es le plus difficile à convaincre.</div>
+        <div class="rc-position" style="background:rgba(255,83,33,0.1);color:#ff8060;">Position : "Le CV est déjà mort. La question n'est plus si mais quand."</div>
+      </div>
+
+      <div class="rc" style="background:rgba(55,138,221,0.06);border-color:rgba(122,184,240,0.18);" onclick="pickRole(this,'moderateur','⚖️ Modérateur','#7ab8f0','rgba(55,138,221,0.08)')">
+        <div class="rc-top"><div class="rc-emoji">⚖️</div><div class="rc-name">Modérateur</div><div class="rc-check"></div></div>
+        <div class="rc-desc">Tu facilites, synthétises, débloque les impasses. Tu ne prends pas de position tranchée mais tu fais avancer.</div>
+        <div class="rc-position" style="background:rgba(55,138,221,0.1);color:#7ab8f0;">Position : "Transition progressive sur 10 ans — ni révolution ni statu quo."</div>
+      </div>
+
+      <div class="rc" style="background:rgba(239,159,39,0.06);border-color:rgba(245,192,64,0.18);" onclick="pickRole(this,'provocateur','🔥 Provocateur','#f5c040','rgba(239,159,39,0.08)')">
+        <div class="rc-top"><div class="rc-emoji">🔥</div><div class="rc-name">Provocateur</div><div class="rc-check"></div></div>
+        <div class="rc-desc">Tu avances des positions extrêmes pour forcer les autres à clarifier leur pensée. Avocat du diable assumé.</div>
+        <div class="rc-position" style="background:rgba(239,159,39,0.1);color:#f5c040;">Position : "Le vrai problème c'est la culture du diplôme — le CV n'en est qu'un symptôme."</div>
+      </div>
+
+      <div class="rc" style="background:rgba(29,158,117,0.06);border-color:rgba(109,219,160,0.18);" onclick="pickRole(this,'defenseur','🛡️ Défenseur','#6ddba0','rgba(29,158,117,0.08)')">
+        <div class="rc-top"><div class="rc-emoji">🛡️</div><div class="rc-name">Défenseur</div><div class="rc-check"></div></div>
+        <div class="rc-desc">Tu défends le statu quo contre les attaques. Tu construis des arguments solides pour résister à la pression.</div>
+        <div class="rc-position" style="background:rgba(29,158,117,0.1);color:#6ddba0;">Position : "Le CV protège ceux qui n'ont pas de réseau. Le supprimer favorise les élites."</div>
+      </div>
+
+    </div>
+  </div>
+  <button class="role-btn" id="roleBtn" onclick="startDebate()">Entrer dans le cercle →</button>
+</div>
+
+<!-- ═══ DÉBAT VOCAL ═══ -->
+<div class="view" id="v-debate">
+  <div class="dv-hdr">
+    <div class="dv-hdr-top">
+      <div class="dv-round" id="dvRound">Tour 1 / 4 — Ouverture</div>
+      <div class="dv-timer">
+        <svg class="dv-timer-svg" viewBox="0 0 18 18"><circle class="dvt-track" cx="9" cy="9" r="8"/><circle class="dvt-fill" id="dvtFill" cx="9" cy="9" r="8"/></svg>
+        <span class="dv-timer-val" id="dvTimerVal">10:00</span>
+      </div>
+    </div>
+    <div class="dv-prog"><div class="dv-prog-fill" id="dvProg" style="width:0%"></div></div>
+  </div>
+  <div class="dv-context">
+    <div class="dv-sujet">"Le CV sera inutile d'ici 5 ans."</div>
+    <div class="dv-role-pill" id="dvRolePill" style="background:rgba(255,83,33,0.08);color:#ff8060;border-color:rgba(255,128,96,0.25);">⚡ Challenger — le CV est déjà mort</div>
+  </div>
+  <div class="dv-feed" id="dvFeed"></div>
+  <div class="dv-record-zone" id="dvRecordZone">
+    <div class="drz-prompt" id="drzPrompt"><b>C'est ton tour de prendre la parole.</b> Appuie sur le micro et exprime-toi à voix haute.</div>
+    <div class="drz-btn-row">
+      <button class="drz-rec-btn idle" id="recBtn" onclick="toggleRecord()">
+        <span id="recBtnIcon">🎙️</span>
+        <span id="recBtnTxt">Prendre la parole</span>
+      </button>
+      <button class="drz-skip" onclick="skipTurn()">Passer</button>
+    </div>
+  </div>
+
+  <!-- Overlay enregistrement -->
+  <div class="rec-overlay" id="recOverlay">
+    <div class="ro-ring">
+      <div class="ro-ring-pulse"></div>
+      <div class="ro-mic">🎙️</div>
+    </div>
+    <div class="ro-timer" id="roTimer">0:00</div>
+    <div class="ro-label">Tu parles... parle librement</div>
+    <div class="ro-waveform" id="roWaveform"></div>
+    <button class="ro-stop-btn" onclick="stopRecord()">Terminer mon intervention</button>
+  </div>
+</div>
+
+<!-- ═══ ANALYSE IA ═══ -->
+<div class="view" id="v-analysis">
+  <div class="analysis-scroll" id="analysisScroll">
+    <div class="ia-spinner" id="iaSpinner">
+      <div class="ia-ring"></div>
+      <div class="ia-txt">Analyse IA de tes interventions en cours...</div>
+    </div>
+  </div>
+  <div class="end-btns" id="endBtns" style="display:none;">
+    <button class="btn-m" onclick="show('v-intro')">Nouveau CERCLE</button>
+    <button class="btn-s" onclick="show('v-intro')">Retour au feed</button>
+  </div>
+</div>
+
+</div>
+<script>
+/* ─── CONFIG ─── */
+var ROUNDS = [
+  {
+    label: 'Tour 1 / 4 — Ouverture',
+    prompt: 'Pose ta position de départ sur ce sujet.',
+    context: 'Chaque membre du cercle pose sa position initiale.',
+    others: [
+      {who:'Karim 🛡️', txt:"Le CV a encore du sens. Il structure l'information, permet la comparaison. Sans lui, sur quoi on juge ?"},
+      {who:'Sofia 🔥', txt:"Le CV c'est du storytelling. J'ai vu des gens décrocher des postes avec un portfolio GitHub de 3 projets. Le CV est déjà contourné par ceux qui savent."},
+      {who:'Maya ⚖️', txt:"Je pense qu'on mélange deux choses : le CV comme document et le CV comme système de sélection. Les deux ne mourront pas en même temps."},
+    ]
+  },
+  {
+    label: 'Tour 2 / 4 — Tension',
+    prompt: 'Réponds à quelqu\'un qui t\'a contredit.',
+    context: 'Léo entre dans le débat avec une position surprenante.',
+    others: [
+      {who:'Léo ⚡', txt:"Attendez — on parle du CV ou du système de recrutement entier ? Supprimer le CV sans changer la culture RH, ça ne change rien du tout."},
+      {who:'Karim 🛡️', txt:"Exactement. Le problème c'est l'usage, pas le format. Un bon recruteur peut bien lire un CV."},
+      {who:'Sofia 🔥', txt:"Non. Le format crée les habitudes. Vous changez le format, vous changez les comportements. C'est prouvé par le CV anonyme."},
+    ]
+  },
+  {
+    label: 'Tour 3 / 4 — Convergence',
+    prompt: 'Aide le cercle à converger — ou résiste si tu n\'es pas convaincu.',
+    context: 'Maya tente une synthèse. Le groupe doit choisir : supprimer ou faire évoluer.',
+    others: [
+      {who:'Maya ⚖️', txt:"On s'accorde tous sur un point : le CV seul ne suffit plus. Maintenant : on le supprime ou on l'augmente ?"},
+      {who:'Sofia 🔥', txt:"Supprimer. L'augmenter c'est garder la même logique avec une interface plus jolie."},
+      {who:'Karim 🛡️', txt:"Augmenter. Supprimer sans transition exclut ceux qui n'ont pas les ressources pour un portfolio."},
+    ]
+  },
+  {
+    label: 'Tour 4 / 4 — Décision collective',
+    prompt: 'Le cercle doit formuler une position commune. Tu valides, tu conditions, ou tu t\'opposes.',
+    context: 'Maya propose une formulation finale. Dernière prise de parole.',
+    others: [
+      {who:'Maya ⚖️', txt:"Position commune proposée : 'Le CV doit évoluer vers un système de preuves vérifiables, avec une transition pour ne pas exclure ceux sans accès aux outils.'"},
+      {who:'Léo ⚡', txt:"Je signe. C'est la position la plus honnête."},
+      {who:'Sofia 🔥', txt:"Je signe aussi — mais 'transition' ne doit pas devenir un prétexte pour ne jamais changer."},
+    ]
+  }
+];
+
+var ROLE_SIGNALS = {
+  'challenger': {label:'⚡ Challenger', color:'#ff8060', bg:'rgba(255,83,33,0.08)', pill:'⚡ Challenger — le CV est déjà mort'},
+  'moderateur': {label:'⚖️ Modérateur', color:'#7ab8f0', bg:'rgba(55,138,221,0.08)', pill:'⚖️ Modérateur — transition progressive'},
+  'provocateur': {label:'🔥 Provocateur', color:'#f5c040', bg:'rgba(239,159,39,0.08)', pill:'🔥 Provocateur — culture du diplôme'},
+  'defenseur': {label:'🛡️ Défenseur', color:'#6ddba0', bg:'rgba(29,158,117,0.08)', pill:'🛡️ Défenseur — protéger sans réseau'},
+};
+
+/* ─── ÉTAT ─── */
+var myRole = 'challenger';
+var roundIdx = 0;
+var timerInt = null, timeLeft = 600;
+var recInt = null, recTime = 0;
+var isRecording = false;
+var speeches = []; // {round, duration, simulated transcript, signals}
+var waveAnimInt = null;
+
+/* ─── TRANSCRIPTS SIMULÉS (ce que l'IA "entend" selon le rôle et le tour) ─── */
+var SIM_TRANSCRIPTS = {
+  challenger: [
+    {txt:'"Le CV est déjà contourné par les meilleurs candidats. Les vraies compétences ne tiennent pas sur une page A4 formatée en Arial 11. Maya, tu parles de transition — mais une transition vers quoi exactement ?"', signals:['Assertivité directe','Interpellation nominale','Questionnement ciblé']},
+    {txt:'"Karim dit que le format n\'est pas le problème — mais le format structure la pensée du recruteur. Un CV oblige à linéariser une trajectoire qui ne l\'est pas. C\'est le format lui-même qui biaise."', signals:['Argumentation structurée','Réfutation directe','Concept nouveau introduit']},
+    {txt:'"Je ne signe pas la formulation de Maya parce que \'preuves vérifiables\' ça ne veut rien dire sans définir qui vérifie et selon quels critères. Si c\'est LinkedIn, on a juste remplacé un outil biaisé par un autre."', signals:['Résistance à la pression','Exigence de précision','Position tenue']},
+    {txt:'"Ma position finale : le CV disparaîtra dans les 5 ans pour les secteurs tech et créatifs. Il survivra ailleurs faute d\'alternatives. Ce n\'est pas un triomphe — c\'est une inertie."', signals:['Nuance en maintenant la position','Horizon temporel précis','Conclusion ouverte']},
+  ],
+  moderateur: [
+    {txt:'"Je veux m\'assurer qu\'on parle de la même chose. Quand Sofia dit \'supprimer\', elle parle du document ou du processus de sélection entier ? Et Karim, ta défense du CV — c\'est le format ou la standardisation ?"', signals:['Clarification des termes','Écoute active','Facilitation']},
+    {txt:'"Ce que j\'entends de ce débat c\'est deux peurs : la peur du changement brutal et la peur de l\'inertie. Ces deux peurs sont légitimes. La vraie question c\'est comment on les réconcilie."', signals:['Synthèse empathique','Reformulation','Désamorçage de tension']},
+    {txt:'"Je propose qu\'on distingue trois horizons : 2 ans, 5 ans, 10 ans. Sur 2 ans, le CV survit. Sur 5 ans, il coexiste avec les portfolios. Sur 10 ans, il devient minoritaire. Qui est en désaccord avec ça ?"', signals:['Structuration temporelle','Proposition concrète','Ouverture au consensus']},
+    {txt:'"La formulation de Maya est bonne. Je suggère d\'ajouter une clause de révision à 3 ans pour éviter que \'transition\' devienne un état permanent. Ça répond à l\'inquiétude de Sofia."', signals:['Amendement constructif','Intégration des positions','Leadership de synthèse']},
+  ],
+  provocateur: [
+    {txt:'"Soyons honnêtes — dans cette salle, combien d\'entre vous ont décroché leur dernier poste grâce à leur CV et non à une relation, un projet visible, ou une réputation ? Le CV est une fiction qu\'on maintient pour les gens qui n\'ont pas de réseau."', signals:['Position extrême assumée','Interpellation collective','Déstabilisation rhétorique']},
+    {txt:'"Karim, tu défends le CV parce qu\'il protège ceux sans réseau — mais qui construit ce CV pour eux ? Des agences d\'intérim, des coachs, des parents. Le CV ne nivelle pas, il amplifie les inégalités."', signals:['Retournement d\'argument','Attaque structurelle','Ton offensif maîtrisé']},
+    {txt:'"Maya essaie de trouver un consensus confortable. Mais parfois le consensus est une capitulation déguisée. La vraie question c\'est : est-ce qu\'on veut changer le système ou juste le rendre plus présentable ?"', signals:['Résistance au consensus','Meta-commentaire','Radicalisation du débat']},
+    {txt:'"Je vote contre toute formulation qui préserve le mot CV. Pas par principe — parce que les mots créent des représentations. Tant qu\'on garde le mot, on garde le concept."', signals:['Cohérence idéologique','Position finale tranchée','Argumentation sémiotique']},
+  ],
+  defenseur: [
+    {txt:'"Le CV est un standard universel. Pas parfait — universel. Et l\'universalité a une valeur : quelqu\'un qui sort d\'un lycée professionnel en Picardie peut concourir avec quelqu\'un de Sciences Po sur le même format. Supprimez ça et vous favorisez ceux qui savent se vendre."', signals:['Défense structurée','Argument d\'équité','Ton posé et ferme']},
+    {txt:'"Sofia parle du secteur tech. Mais le secteur tech c\'est 8% de l\'emploi. Dans la santé, le BTP, l\'éducation nationale — comment on remplace le CV par un portfolio ? Par quoi exactement ?"', signals:['Contre-exemple sectoriel','Questionnement pragmatique','Résistance à la généralisation']},
+    {txt:'"Je ne suis pas contre l\'évolution. Je suis contre la précipitation. Chaque fois qu\'on détruit un standard sans en avoir un meilleur, les plus fragiles trinquent en premier. Montrez-moi d\'abord l\'alternative — ensuite on parle de supprimer."', signals:['Position conditionnelle','Argumentation d\'impact','Maintien sous pression']},
+    {txt:'"La formulation de Maya est acceptable — à condition qu\'on précise que la transition dure au moins 10 ans et qu\'elle est accessible à tous, pas juste à ceux qui ont un smartphone et du temps libre."', signals:['Compromis conditionnel','Exigence d\'équité','Intégration partielle']},
+  ],
+};
+
+/* ─── NAV ─── */
+function show(id){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on');});
+  document.getElementById(id).classList.add('on');
+}
+
+/* ─── RÔLE ─── */
+function pickRole(el, role, label, color, bg){
+  document.querySelectorAll('.rc').forEach(function(c){
+    c.style.borderWidth='0.5px';
+    c.querySelector('.rc-check').innerHTML='';
+  });
+  el.style.borderWidth='1.5px';
+  el.querySelector('.rc-check').innerHTML='<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5 3.5-4" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  myRole=role;
+  document.getElementById('roleBtn').style.display='block';
+}
+
+/* ─── DÉBAT ─── */
+function startDebate(){
+  roundIdx=0; speeches=[]; timeLeft=600;
+  show('v-debate');
+  var rs=ROLE_SIGNALS[myRole]||ROLE_SIGNALS['challenger'];
+  var pill=document.getElementById('dvRolePill');
+  pill.textContent=rs.pill; pill.style.color=rs.color;
+  pill.style.background=rs.bg; pill.style.borderColor=rs.color+'44';
+  clearInterval(timerInt);
+  updateDebateTimer();
+  timerInt=setInterval(function(){
+    timeLeft--; if(timeLeft<=0){clearInterval(timerInt);endDebate();} updateDebateTimer();
+  },1000);
+  document.getElementById('dvFeed').innerHTML='';
+  loadRound(0);
+}
+
+function updateDebateTimer(){
+  var m=Math.floor(timeLeft/60),s=timeLeft%60;
+  document.getElementById('dvTimerVal').textContent=m+':'+(s<10?'0':'')+s;
+  var pct=timeLeft/600;
+  var off=50.3*(1-pct);
+  var col=timeLeft>300?'var(--pink)':timeLeft>120?'#EF9F27':'#FF5321';
+  document.getElementById('dvtFill').style.strokeDashoffset=off;
+  document.getElementById('dvtFill').style.stroke=col;
+  document.getElementById('dvProg').style.width=((1-pct)*100)+'%';
+}
+
+function loadRound(idx){
+  var r=ROUNDS[idx];
+  document.getElementById('dvRound').textContent=r.label;
+  addFeedMsg('system','',r.context);
+  // Messages des autres
+  r.others.forEach(function(o,i){
+    setTimeout(function(){
+      addTypingIndicator();
+      setTimeout(function(){
+        removeTypingIndicator();
+        addFeedMsg('other',o.who,o.txt);
+        if(i===r.others.length-1){
+          setTimeout(function(){ showRecordPrompt(r); },500);
+        }
+      },1600);
+    },i*2400);
+  });
+}
+
+function addFeedMsg(type,who,txt){
+  var feed=document.getElementById('dvFeed');
+  var el=document.createElement('div');
+  el.className='dv-msg '+type;
+  if(type==='system'){
+    el.innerHTML='<div class="dv-msg-bubble">— '+txt+' —</div>';
+  } else {
+    el.innerHTML='<div class="dv-msg-who">'+who+'</div><div class="dv-msg-bubble">'+txt+'</div>';
+  }
+  feed.appendChild(el);
+  feed.scrollTop=feed.scrollHeight;
+}
+
+function addTypingIndicator(){
+  var feed=document.getElementById('dvFeed');
+  var el=document.createElement('div');
+  el.id='dvTyping'; el.className='dv-msg other';
+  el.innerHTML='<div class="dv-msg-bubble" style="background:#f0f0f5;display:flex;gap:4px;align-items:center;padding:10px 14px;"><div style="width:5px;height:5px;border-radius:50%;background:rgba(0,0,0,0.2);animation:tAnim 1.2s infinite;"></div><div style="width:5px;height:5px;border-radius:50%;background:rgba(0,0,0,0.2);animation:tAnim 1.2s 0.2s infinite;"></div><div style="width:5px;height:5px;border-radius:50%;background:rgba(0,0,0,0.2);animation:tAnim 1.2s 0.4s infinite;"></div></div>';
+  feed.appendChild(el);
+  feed.scrollTop=feed.scrollHeight;
+}
+
+function removeTypingIndicator(){
+  var el=document.getElementById('dvTyping'); if(el) el.remove();
+}
+
+function showRecordPrompt(r){
+  var zone=document.getElementById('dvRecordZone');
+  zone.style.display='block';
+  document.getElementById('drzPrompt').innerHTML='<b>Ton tour.</b> '+r.prompt;
+  var btn=document.getElementById('recBtn');
+  btn.className='drz-rec-btn idle';
+  document.getElementById('recBtnIcon').textContent='🎙️';
+  document.getElementById('recBtnTxt').textContent='Prendre la parole';
+}
+
+/* ─── ENREGISTREMENT ─── */
+function toggleRecord(){
+  if(isRecording){stopRecord();return;}
+  isRecording=true;
+  recTime=0;
+  var btn=document.getElementById('recBtn');
+  btn.className='drz-rec-btn recording';
+  document.getElementById('recBtnIcon').textContent='⏹';
+  document.getElementById('recBtnTxt').textContent='En cours...';
+  // Overlay
+  document.getElementById('recOverlay').classList.add('on');
+  updateRecTimer();
+  recInt=setInterval(function(){
+    recTime++;
+    updateRecTimer();
+    animWaveform();
+  },1000);
+  // Waveform init
+  buildWaveform();
+}
+
+function stopRecord(){
+  isRecording=false;
+  clearInterval(recInt);
+  clearInterval(waveAnimInt);
+  document.getElementById('recOverlay').classList.remove('on');
+  var dur=recTime;
+  // Simuler post-traitement
+  var btn=document.getElementById('recBtn');
+  btn.className='drz-rec-btn done';
+  document.getElementById('recBtnIcon').textContent='✓';
+  document.getElementById('recBtnTxt').textContent='Analysé — '+dur+'s';
+  // Ajouter ma prise de parole dans le feed
+  var transcripts=SIM_TRANSCRIPTS[myRole]||SIM_TRANSCRIPTS['challenger'];
+  var t=transcripts[roundIdx]||transcripts[0];
+  speeches.push({round:roundIdx+1, duration:dur, transcript:t.txt, signals:t.signals});
+  addMySpeech(dur, t.txt, t.signals);
+  // Passer au tour suivant après 1.2s
+  setTimeout(function(){ nextRound(); },1200);
+}
+
+function skipTurn(){
+  speeches.push({round:roundIdx+1, duration:0, transcript:'(pas d\'intervention)', signals:['Abstention']});
+  nextRound();
+}
+
+function nextRound(){
+  document.getElementById('dvRecordZone').style.display='none';
+  roundIdx++;
+  if(roundIdx>=ROUNDS.length){clearInterval(timerInt);endDebate();}
+  else{loadRound(roundIdx);}
+}
+
+function addMySpeech(dur, transcript, signals){
+  var feed=document.getElementById('dvFeed');
+  var el=document.createElement('div');
+  el.className='dv-msg me';
+  // Générer une waveform décorative
+  var bars='';
+  var heights=[8,14,20,16,10,18,22,12,16,8,20,14,10,18,12,20,16,8,14,22];
+  heights.forEach(function(h){
+    bars+='<div class="msc-bar" style="height:'+h+'px;"></div>';
+  });
+  var sigHtml=signals.map(function(s){
+    return '<span class="msc-signal" style="background:rgba(212,83,126,0.12);color:var(--pink);">'+s+'</span>';
+  }).join('');
+  el.innerHTML='<div class="my-speech-card">'
+    +'<div class="msc-top"><span class="msc-mic">🎙️</span><span class="msc-meta">Toi · '+dur+'s enregistrés</span></div>'
+    +'<div class="msc-waveform">'+bars+'</div>'
+    +'<div class="msc-transcript">'+transcript+'</div>'
+    +'<div class="msc-signals">'+sigHtml+'</div>'
+    +'</div>';
+  feed.appendChild(el);
+  feed.scrollTop=feed.scrollHeight;
+}
+
+function updateRecTimer(){
+  var m=Math.floor(recTime/60),s=recTime%60;
+  document.getElementById('roTimer').textContent=m+':'+(s<10?'0':'')+s;
+}
+
+function buildWaveform(){
+  var wf=document.getElementById('roWaveform');
+  wf.innerHTML='';
+  for(var i=0;i<16;i++){
+    var b=document.createElement('div');
+    b.className='ro-bar';
+    b.style.height='8px';
+    wf.appendChild(b);
+  }
+}
+
+function animWaveform(){
+  var bars=document.getElementById('roWaveform').children;
+  for(var i=0;i<bars.length;i++){
+    bars[i].style.height=(6+Math.random()*22)+'px';
+    bars[i].style.opacity=(0.4+Math.random()*0.6).toFixed(2);
+  }
+}
+
+/* ─── FIN ─── */
+function endDebate(){
+  show('v-analysis');
+  // Spinner 2s puis affichage analyse
+  setTimeout(buildAnalysis, 2200);
+}
+
+function buildAnalysis(){
+  document.getElementById('iaSpinner').style.display='none';
+  var scroll=document.getElementById('analysisScroll');
+  var rs=ROLE_SIGNALS[myRole]||ROLE_SIGNALS['challenger'];
+  var totalDur=speeches.reduce(function(a,s){return a+(s.duration||0);},0);
+  var intervCount=speeches.filter(function(s){return s.duration>0;}).length;
+
+  // ── Titre
+  var h1=document.createElement('div');
+  h1.innerHTML='<div style="font-size:10px;color:#f090b0;letter-spacing:0.08em;font-weight:500;margin-bottom:4px;">ANALYSE DE TON CERCLE</div>'
+    +'<div style="font-size:20px;font-weight:500;color:#fff;line-height:1.28;margin-bottom:4px;">'+intervCount+' interventions · '+totalDur+'s de prise de parole</div>'
+    +'<div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.5;">Rôle joué : '+rs.label+'</div>';
+  scroll.appendChild(h1);
+
+  // ── Transcriptions recap
+  if(speeches.some(function(s){return s.duration>0;})){
+    var rec=document.createElement('div');
+    rec.className='speech-recap';
+    var itemsHtml='';
+    speeches.forEach(function(s,i){
+      if(s.duration===0) return;
+      var sigHtml=s.signals.map(function(sig){
+        return '<span class="sri-sig" style="background:'+rs.bg+';color:'+rs.color+';">'+sig+'</span>';
+      }).join('');
+      itemsHtml+='<div class="sr-item"><div class="sri-num">'+(i+1)+'</div><div class="sri-body">'
+        +'<div class="sri-ctx">Tour '+(i+1)+' · '+s.duration+'s</div>'
+        +'<div class="sri-quote">'+s.transcript+'</div>'
+        +'<div class="sri-signals">'+sigHtml+'</div>'
+        +'</div></div>';
+    });
+    rec.innerHTML='<div class="sr-lbl">CE QUE L\'IA A TRANSCRIT ET ANALYSÉ</div><div class="sr-items">'+itemsHtml+'</div>';
+    scroll.appendChild(rec);
+  }
+
+  // ── Métriques
+  var metrics=document.createElement('div');
+  metrics.className='metrics-card';
+  var avgDur=intervCount>0?Math.round(totalDur/intervCount):0;
+  var assertScore=Math.min(95,50+intervCount*10+(avgDur>20?15:0));
+  var ecouteScore=Math.min(95,60+(intervCount>=3?15:0));
+  var adaptScore=Math.min(95,55+(myRole==='moderateur'?25:myRole==='defenseur'?15:10));
+  var influScore=Math.min(95,50+intervCount*8);
+  var metricsData=[
+    {icon:'⚡',label:'Assertivité',pct:assertScore,color:'#ff8060'},
+    {icon:'👂',label:'Écoute active',pct:ecouteScore,color:'#7ab8f0'},
+    {icon:'🔄',label:'Adaptabilité',pct:adaptScore,color:'#6ddba0'},
+    {icon:'🎯',label:'Influence perçue',pct:influScore,color:'#c98ff0'},
+  ];
+  var mHtml='<div class="mc-lbl">MÉTRIQUES VOCALES</div>';
+  metricsData.forEach(function(m){
+    mHtml+='<div class="metric-row"><div class="mr-icon">'+m.icon+'</div><div class="mr-label">'+m.label+'</div>'
+      +'<div class="mr-bar"><div class="mr-fill" style="width:'+m.pct+'%;background:'+m.color+'"></div></div>'
+      +'<div class="mr-val" style="color:'+m.color+'">'+m.pct+'%</div></div>';
+  });
+  metrics.innerHTML=mHtml;
+  scroll.appendChild(metrics);
+
+  // ── Profil
+  var PROFILES={
+    challenger:{icon:'⚡',name:'Argumentateur offensif',sub:'Tu construis des positions tranchées et les maintiens sous pression. Signal fort d\'assertivité et de clarté dans l\'adversité.',insights:[
+      {dot:'#ff8060',txt:'<b>Résistance à la pression sociale</b> — tu n\'as pas cédé même quand le groupe convergait.'},
+      {dot:'#7ab8f0',txt:'<b>Argumentation factuelle</b> — tes interventions s\'appuient sur des exemples concrets, pas sur des généralités.'},
+      {dot:'#d4fb6b',txt:'<b>Interpellation directe</b> — tu nommes les gens et leurs arguments. Signal de confiance et de présence.'},
+    ]},
+    moderateur:{icon:'⚖️',name:'Architecte de consensus',sub:'Tu trouves naturellement les formulations qui font converger. Leadership discret et pensée systémique.',insights:[
+      {dot:'#7ab8f0',txt:'<b>Écoute structurante</b> — tu reformules ce que tu entends pour clarifier, pas pour te mettre en avant.'},
+      {dot:'#6ddba0',txt:'<b>Facilitation sans capitulation</b> — tu facilites sans perdre ta propre position.'},
+      {dot:'#c98ff0',txt:'<b>Vision temporelle</b> — tu penses en horizons, pas en positions binaires.'},
+    ]},
+    provocateur:{icon:'🔥',name:'Catalyseur de pensée',sub:'Tu forces les autres à clarifier ce qu\'ils pensent vraiment. Signal fort de courage intellectuel et de pensée critique.',insights:[
+      {dot:'#f5c040',txt:'<b>Déstabilisation ciblée</b> — tu ne provoques pas au hasard, tu vises les points faibles des arguments.'},
+      {dot:'#ff8060',txt:'<b>Cohérence idéologique</b> — tes positions extremes sont cohérentes entre elles, pas aléatoires.'},
+      {dot:'#7ab8f0',txt:'<b>Meta-regard</b> — tu commentes le débat lui-même, pas seulement son contenu.'},
+    ]},
+    defenseur:{icon:'🛡️',name:'Constructeur solide',sub:'Tu résistes à la pression et tu maintiens des positions raisonnées. Signal fort de fiabilité et d\'indépendance.',insights:[
+      {dot:'#6ddba0',txt:'<b>Argumentation d\'impact</b> — tu penses toujours aux conséquences pratiques, pas aux positions idéales.'},
+      {dot:'#7ab8f0',txt:'<b>Questionnement pragmatique</b> — tes questions forcent le groupe à préciser ce qu\'il propose vraiment.'},
+      {dot:'#f5c040',txt:'<b>Compromis conditionnel</b> — tu ne résistes pas pour résister, tu poses des conditions précises pour évoluer.'},
+    ]},
+  };
+  var p=PROFILES[myRole]||PROFILES['challenger'];
+  var insHtml='';
+  p.insights.forEach(function(ins){
+    insHtml+='<div class="insight-item"><div class="ii-dot" style="background:'+ins.dot+'"></div><div class="ii-txt">'+ins.txt+'</div></div>';
+  });
+  var prof=document.createElement('div');
+  prof.className='profile-card';
+  prof.innerHTML='<div class="pc-lbl">TON PROFIL DE DÉBATTEUR</div>'
+    +'<div class="pc-title">'+p.icon+' '+p.name+'</div>'
+    +'<div class="pc-sub">'+p.sub+'</div>'
+    +'<div class="insights-list">'+insHtml+'</div>';
+  scroll.appendChild(prof);
+
+  // ── Dims
+  var dims=document.createElement('div');
+  dims.className='dims-card';
+  dims.innerHTML='<div class="dc-lbl">TON PROFIL MIS À JOUR</div>'
+    +'<div class="dim-row"><span class="dim-name">Mes talents cachés</span><div class="dim-bar"><div class="dim-fill" style="width:82%;background:#D4537E"></div></div><span class="dim-delta">+12</span></div>'
+    +'<div class="dim-row"><span class="dim-name">Mes forces</span><div class="dim-bar"><div class="dim-fill" style="width:74%;background:#378ADD"></div></div><span class="dim-delta">+9</span></div>'
+    +'<div class="dim-row"><span class="dim-name">Mon projet</span><div class="dim-bar"><div class="dim-fill" style="width:65%;background:#7500B8"></div></div><span class="dim-delta">+6</span></div>';
+  scroll.appendChild(dims);
+
+  // ── XP
+  var xp=document.createElement('div');
+  xp.innerHTML='<div class="xp-row"><span class="xp-val">+35 XP</span><span class="xp-lbl">gagnés<br>sur ce CERCLE</span></div>';
+  scroll.appendChild(xp);
+
+  document.getElementById('endBtns').style.display='flex';
+}
+
+/* ─── ANIM KEYFRAMES injection ─── */
+var style=document.createElement('style');
+style.textContent='@keyframes tAnim{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-4px);}}';
+document.head.appendChild(style);
+</script>
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VOKA — Défi CHOOSE</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --purple:#7500B8;--green:#B3F70B;--orange:#FF5321;
+  --bg:#080810;--bg2:#0f0f1e;--bg3:#1a1a2e;
+  --white:#fff;--muted:rgba(255,255,255,0.5);--faint:rgba(255,255,255,0.1);
+}
+body{background:#111;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:24px;}
+.phone{width:390px;min-height:844px;background:var(--bg);border-radius:48px;overflow:hidden;border:7px solid #1e1e2e;position:relative;}
+.sb{display:flex;justify-content:space-between;padding:12px 22px 0;font-size:12px;color:var(--muted);}
+.step{display:none;flex-direction:column;height:100%;}
+.step.active{display:flex;}
+
+/* ── INTRO ── */
+.intro-img{width:100%;height:210px;position:relative;overflow:hidden;}
+.intro-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.intro-grad{position:absolute;inset:0;background:linear-gradient(to top,var(--bg) 0%,rgba(8,8,16,0.4) 55%,transparent 100%);}
+.intro-fmt-badge{position:absolute;top:14px;left:14px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,0.5);border-radius:8px;padding:4px 10px;backdrop-filter:blur(4px);}
+.ifb-pip{width:6px;height:6px;border-radius:50%;background:var(--purple);}
+.ifb-txt{font-size:10px;color:rgba(255,255,255,0.7);font-weight:500;letter-spacing:0.04em;}
+.intro-xp{position:absolute;top:14px;right:14px;font-size:11px;color:var(--green);background:rgba(179,247,11,0.12);border:0.5px solid rgba(179,247,11,0.25);padding:4px 10px;border-radius:8px;font-weight:500;}
+.intro-body{padding:16px 20px 0;flex:1;}
+.intro-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(117,0,184,0.15);border:0.5px solid rgba(179,147,230,0.35);border-radius:6px;padding:3px 9px;margin-bottom:10px;}
+.intro-tag-txt{font-size:10px;color:#c98ff0;font-weight:500;letter-spacing:0.04em;}
+.intro-title{font-size:22px;font-weight:500;color:var(--white);line-height:1.28;margin-bottom:8px;}
+.intro-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:18px;}
+.intro-rules{display:flex;flex-direction:column;gap:8px;margin-bottom:22px;}
+.ir{display:flex;align-items:center;gap:10px;}
+.ir-icon{width:28px;height:28px;border-radius:8px;background:rgba(117,0,184,0.1);border:0.5px solid rgba(179,147,230,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ir-txt{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.4;}
+.social-strip{display:flex;align-items:center;gap:8px;margin-bottom:20px;}
+.avs{display:flex;}
+.av{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--bg);font-size:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;margin-left:-5px;}
+.av:first-child{margin-left:0;}
+.soc-txt{font-size:12px;color:rgba(255,255,255,0.45);}
+.soc-txt strong{color:rgba(255,255,255,0.7);font-weight:500;}
+.start-btn{width:100%;background:var(--purple);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:500;color:#fff;cursor:pointer;margin-bottom:20px;}
+.start-btn:active{opacity:0.85;}
+
+/* ── IN-DÉFI ── */
+.defi-header{padding:12px 18px 0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.back-btn{width:32px;height:32px;border-radius:50%;background:var(--faint);display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;flex-shrink:0;}
+.timer-pill{display:flex;align-items:center;gap:6px;background:var(--faint);border-radius:20px;padding:5px 12px;}
+.timer-svg{width:20px;height:20px;transform:rotate(-90deg);flex-shrink:0;}
+.timer-track{fill:none;stroke:rgba(255,255,255,0.1);stroke-width:2.5;}
+.timer-fill{fill:none;stroke:var(--green);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:56.5;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke 0.3s;}
+.timer-val{font-size:13px;font-weight:500;color:var(--white);min-width:22px;}
+.xp-tag{font-size:12px;color:var(--green);background:rgba(179,247,11,0.1);border:0.5px solid rgba(179,247,11,0.2);padding:5px 10px;border-radius:10px;font-weight:500;}
+.prog-track{height:2px;background:var(--faint);margin:12px 18px 0;border-radius:1px;flex-shrink:0;}
+.prog-fill{height:2px;border-radius:1px;background:linear-gradient(90deg,var(--purple),var(--green));transition:width 0.4s ease;}
+
+.question-zone{padding:16px 18px 0;flex-shrink:0;}
+.q-fmt-label{font-size:10px;color:rgba(117,0,184,0.7);letter-spacing:0.08em;font-weight:500;margin-bottom:7px;}
+.q-text{font-size:19px;font-weight:500;color:var(--white);line-height:1.32;margin-bottom:6px;}
+.q-sub{font-size:13px;color:rgba(255,255,255,0.4);line-height:1.5;}
+
+.swipe-hint{text-align:center;margin:14px 0 8px;font-size:11px;color:rgba(255,255,255,0.2);}
+
+/* Stack de cartes */
+.cards-stack{position:relative;height:192px;margin:0 18px;flex-shrink:0;}
+.stack-card{position:absolute;left:0;right:0;border-radius:18px;display:flex;align-items:center;justify-content:center;padding:18px;transition:transform 0.25s ease,opacity 0.25s ease;}
+.sc-back2{height:136px;top:30px;background:rgba(255,255,255,0.03);border:0.5px solid var(--faint);border-radius:16px;}
+.sc-back1{height:152px;top:16px;background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.12);border-radius:17px;}
+.sc-front{height:170px;top:0;background:#fff;cursor:pointer;}
+.sc-front-content{text-align:center;}
+.sc-emoji{font-size:30px;display:block;margin-bottom:8px;}
+.sc-label{font-size:18px;font-weight:500;color:#1a1a1a;line-height:1.3;}
+
+/* Boutons swipe */
+.swipe-actions{display:flex;justify-content:space-between;padding:14px 28px 0;flex-shrink:0;}
+.swipe-btn{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;}
+.swipe-circle{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.sw-no{background:rgba(255,83,33,0.12);border:1.5px solid rgba(255,83,33,0.4);}
+.sw-yes{background:rgba(179,247,11,0.1);border:1.5px solid rgba(179,247,11,0.35);}
+.sw-lbl{font-size:11px;color:rgba(255,255,255,0.35);}
+
+/* Preuve sociale sous les boutons */
+.live-proof{margin:10px 18px 0;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.lp-bar{flex:1;height:4px;background:var(--faint);border-radius:2px;overflow:hidden;}
+.lp-fill{height:4px;border-radius:2px;background:var(--purple);transition:width 0.8s ease;}
+.lp-txt{font-size:11px;color:rgba(255,255,255,0.4);white-space:nowrap;}
+
+/* Feedback */
+.feedback-zone{margin:12px 18px 0;border-radius:12px;padding:12px 14px;display:none;flex-shrink:0;}
+.fz-purple{background:rgba(117,0,184,0.1);border:0.5px solid rgba(179,147,230,0.25);}
+.fz-orange{background:rgba(255,83,33,0.08);border:0.5px solid rgba(255,83,33,0.2);}
+.fz-lbl{font-size:10px;font-weight:500;letter-spacing:0.07em;margin-bottom:4px;}
+.fz-purple .fz-lbl{color:#c98ff0;}
+.fz-orange .fz-lbl{color:rgba(255,83,33,0.7);}
+.fz-txt{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.55;}
+
+.next-btn{margin:12px 18px 0;width:calc(100% - 36px);background:var(--purple);border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;display:none;flex-shrink:0;}
+.next-btn:active{opacity:0.85;}
+
+/* ── FIN DE DÉFI ── */
+.end-bg{position:absolute;inset:0;overflow:hidden;}
+.end-tiles{position:absolute;inset:0;display:flex;flex-wrap:wrap;gap:0;opacity:0.07;}
+.tile-txt{font-size:13px;font-weight:500;color:#fff;white-space:nowrap;padding:6px 10px;transform:rotate(-12deg);}
+.end-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(117,0,184,0.3) 0%,rgba(255,83,33,0.3) 100%);}
+.end-content{position:relative;z-index:2;padding:40px 24px 28px;display:flex;flex-direction:column;align-items:stretch;height:100%;}
+.end-badge{background:#fff;border-radius:6px;padding:8px 18px;display:inline-block;margin-bottom:10px;align-self:flex-start;}
+.end-badge-txt{font-size:22px;font-weight:700;color:#1a1a1a;letter-spacing:0.02em;}
+.end-sub-badge{background:rgba(255,255,255,0.2);border-radius:5px;padding:5px 14px;display:inline-block;margin-bottom:24px;align-self:flex-start;}
+.end-sub-txt{font-size:14px;font-weight:600;color:#fff;letter-spacing:0.04em;}
+.end-body-txt{font-size:15px;font-weight:500;color:#fff;line-height:1.5;margin-bottom:20px;}
+.end-xp-row{display:flex;align-items:center;gap:8px;margin-bottom:20px;}
+.end-xp-val{font-size:28px;font-weight:500;color:var(--green);}
+.end-xp-lbl{font-size:13px;color:rgba(255,255,255,0.5);}
+.end-profile{background:rgba(0,0,0,0.3);border-radius:12px;padding:12px 14px;margin-bottom:auto;}
+.ep-lbl{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.07em;margin-bottom:8px;}
+.ep-dim{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.ep-name{font-size:12px;color:rgba(255,255,255,0.6);flex:1;}
+.ep-bar{width:80px;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;}
+.ep-fill{height:3px;border-radius:2px;}
+.ep-delta{font-size:11px;color:var(--green);font-weight:500;}
+.end-btns{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+.end-btn-main{background:#fff;border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;color:#1a1a1a;cursor:pointer;}
+.end-btn-sec{background:rgba(255,255,255,0.1);border:0.5px solid rgba(255,255,255,0.2);border-radius:13px;padding:11px;font-size:13px;color:rgba(255,255,255,0.7);cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+
+  <!-- ── STEP : INTRO ── -->
+  <div class="step active" id="s-intro" style="flex-direction:column;">
+    <div class="intro-img">
+      <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=85" alt="Groupe de jeunes" onerror="this.parentNode.style.background='#1a0a2e';this.style.display='none'">
+      <div class="intro-grad"></div>
+      <div class="intro-fmt-badge"><div class="ifb-pip"></div><span class="ifb-txt">CHOOSE · 1mn</span></div>
+      <div class="intro-xp">+10 XP</div>
+    </div>
+    <div class="intro-body">
+      <div class="intro-tag"><span class="intro-tag-txt">MON BACKGROUND</span></div>
+      <div class="intro-title">Tu choisis ta voie, pas l'étiquette qu'on te colle.</div>
+      <div class="intro-sub">3 questions sur tes stéréotypes, contraintes économiques et contraintes géographiques. Choisis ce qui te ressemble.</div>
+      <div class="intro-rules">
+        <div class="ir">
+          <div class="ir-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 6.5l3 3 5-5" stroke="#c98ff0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="ir-txt">Pas de bonne réponse — choisis ce qui te ressemble vraiment</span>
+        </div>
+        <div class="ir">
+          <div class="ir-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#c98ff0" stroke-width="1.2"/><path d="M6.5 3.5v3.5l2 1.5" stroke="#c98ff0" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+          <span class="ir-txt">Calibre ton niveau de défis VOKA selon ton contexte</span>
+        </div>
+        <div class="ir">
+          <div class="ir-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="4" r="2" stroke="#c98ff0" stroke-width="1.2"/><path d="M2.5 11c0-2.2 1.8-3.5 4-3.5s4 1.3 4 3.5" stroke="#c98ff0" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+          <span class="ir-txt">Résultat visible uniquement par les recruteurs VOKA qui correspondent</span>
+        </div>
+      </div>
+      <div class="social-strip">
+        <div class="avs">
+          <div class="av" style="background:#FF5321">Y</div>
+          <div class="av" style="background:#7500B8">M</div>
+          <div class="av" style="background:#1A7A4A">J</div>
+          <div class="av" style="background:#378ADD">K</div>
+        </div>
+        <span class="soc-txt"><strong>Yasmine et 847 autres</strong> l'ont complété</span>
+      </div>
+      <button class="start-btn" onclick="startDefi()">Commencer le défi</button>
+    </div>
+  </div>
+
+  <!-- ── STEP : DÉFI ── -->
+  <div class="step" id="s-defi" style="flex-direction:column;padding-bottom:20px;">
+    <div class="defi-header">
+      <button class="back-btn" onclick="goStep('s-intro')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="timer-pill">
+        <svg class="timer-svg" viewBox="0 0 20 20"><circle class="timer-track" cx="10" cy="10" r="9"/><circle class="timer-fill" id="timerCircle" cx="10" cy="10" r="9"/></svg>
+        <span class="timer-val" id="timerVal">60</span>
+      </div>
+      <div class="xp-tag">+10 XP</div>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:10%"></div></div>
+
+    <div class="question-zone">
+      <div class="q-fmt-label" id="qLabel">QUESTION 1 / 3</div>
+      <div class="q-text" id="qText">Ce qui t'intéresse le plus dans un futur job, c'est plutôt…</div>
+      <div class="q-sub" id="qSub">Glisse la carte ou appuie sur une flèche</div>
+    </div>
+
+    <div class="swipe-hint">← glisse →</div>
+
+    <div class="cards-stack" id="cardsStack">
+      <div class="stack-card sc-back2"></div>
+      <div class="stack-card sc-back1"></div>
+      <div class="stack-card sc-front" id="frontCard" onclick="">
+        <div class="sc-front-content">
+          <span class="sc-emoji" id="cardEmoji">⚖️</span>
+          <div class="sc-label" id="cardLabel">Le droit, la compta</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="swipe-actions">
+      <div class="swipe-btn" onclick="swipe('no')">
+        <div class="swipe-circle sw-no">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 10h10" stroke="#FF5321" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <span class="sw-lbl">Pas moi</span>
+      </div>
+      <div class="swipe-btn" onclick="swipe('yes')">
+        <div class="swipe-circle sw-yes">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 10l3.5 3.5L15 7" stroke="#B3F70B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="sw-lbl">C'est moi</span>
+      </div>
+    </div>
+
+    <div class="live-proof">
+      <div class="lp-bar"><div class="lp-fill" id="lpFill" style="width:62%"></div></div>
+      <span class="lp-txt" id="lpTxt">62% ont dit oui</span>
+    </div>
+
+    <div class="feedback-zone fz-purple" id="feedbackZone">
+      <div class="fz-lbl">CE QUE ÇA DIT SUR TOI</div>
+      <div class="fz-txt" id="feedbackTxt">Les environnements structurés et analytiques te correspondent. Signal fort sur ta capacité à naviguer dans des systèmes complexes.</div>
+    </div>
+
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Question suivante</button>
+  </div>
+
+  <!-- ── STEP : FIN ── -->
+  <div class="step" id="s-end" style="position:relative;flex-direction:column;min-height:780px;">
+    <div class="end-bg">
+      <div class="end-tiles" id="endTiles"></div>
+      <div class="end-overlay"></div>
+    </div>
+    <div class="end-content">
+      <div class="end-badge"><span class="end-badge-txt">DÉFI</span></div>
+      <div class="end-sub-badge"><span class="end-sub-txt">TERMINÉ !</span></div>
+      <div class="end-body-txt">Bravo !! tu as gagné 10 points d'XP. Ton profil Mon background est mis à jour.</div>
+      <div class="end-xp-row"><span class="end-xp-val">+10 XP</span><span class="end-xp-lbl">gagnés sur ce défi</span></div>
+      <div class="end-profile">
+        <div class="ep-lbl">TON PROFIL MIS À JOUR</div>
+        <div class="ep-dim">
+          <span class="ep-name">Mon background</span>
+          <div class="ep-bar"><div class="ep-fill" style="width:72%;background:#EF9F27"></div></div>
+          <span class="ep-delta">+6</span>
+        </div>
+        <div class="ep-dim">
+          <span class="ep-name">Mes envies</span>
+          <div class="ep-bar"><div class="ep-fill" style="width:55%;background:#D4537E"></div></div>
+          <span class="ep-delta">+3</span>
+        </div>
+        <div class="ep-dim">
+          <span class="ep-name">Mon projet</span>
+          <div class="ep-bar"><div class="ep-fill" style="width:40%;background:#7500B8"></div></div>
+          <span class="ep-delta">+1</span>
+        </div>
+      </div>
+      <div class="end-btns">
+        <button class="end-btn-main" onclick="goStep('s-intro')">Voir mes recommandations</button>
+        <button class="end-btn-sec" onclick="goStep('s-intro')">Retour au feed</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var QUESTIONS=[
+  {
+    label:'QUESTION 1 / 3',prog:'33%',
+    text:"Ce qui t'intéresse le plus dans un futur job, c'est plutôt…",
+    sub:'Glisse la carte ou appuie sur une flèche',
+    emoji:'⚖️',cardLabel:'Le droit, la compta',
+    yesInsight:'Les environnements structurés et analytiques te correspondent. Signal fort sur ta capacité à naviguer dans des systèmes complexes.',
+    noInsight:'Tu préfères les environnements moins formels. Signal d\'une appétence pour les métiers créatifs ou opérationnels.',
+    yesProof:'62% ont dit oui',yesPct:62,
+    noProof:'38% ont choisi ça',noPct:38,
+    fzClass:'fz-purple'
+  },
+  {
+    label:'QUESTION 2 / 3',prog:'66%',
+    text:"Une contrainte géographique t'empêche d'aller à une opportunité. Tu fais quoi ?",
+    sub:'Pas de bonne réponse — choisis ce qui est vrai',
+    emoji:'🗺️',cardLabel:'Je cherche une alternative proche',
+    yesInsight:'Tu adaptes ta trajectoire plutôt que d\'abandonner. Signal de résilience et de pragmatisme face aux contraintes réelles.',
+    noInsight:'Tu assumes la contrainte sans chercher à contourner. Signal d\'ancrage territorial fort — un atout pour certains recruteurs.',
+    yesProof:'71% ont dit oui',yesPct:71,
+    noProof:'29% ont choisi ça',noPct:29,
+    fzClass:'fz-purple'
+  },
+  {
+    label:'QUESTION 3 / 3',prog:'100%',
+    text:"Quand quelqu'un te colle une étiquette qui ne te correspond pas, ta réaction ?",
+    sub:'Instinctif — ne réfléchis pas trop',
+    emoji:'🏷️',cardLabel:'Ça m\'énerve mais je laisse passer',
+    yesInsight:'Tu intègres les perceptions des autres même quand elles ne te correspondent pas. Signal sur ton rapport aux stéréotypes identitaires.',
+    noInsight:'Tu corriges immédiatement. Signal fort d\'affirmation de soi et de clarté identitaire.',
+    yesProof:'44% ont dit oui',yesPct:44,
+    noProof:'56% ont choisi ça',noPct:56,
+    fzClass:'fz-orange'
+  }
+];
+
+var qIdx=0, answered=false, timerInt=null, timeLeft=60;
+
+function goStep(id){
+  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+}
+
+function startDefi(){
+  qIdx=0; answered=false; timeLeft=60;
+  loadQuestion();
+  goStep('s-defi');
+  startTimer();
+}
+
+function loadQuestion(){
+  var q=QUESTIONS[qIdx];
+  document.getElementById('qLabel').textContent=q.label;
+  document.getElementById('qText').textContent=q.text;
+  document.getElementById('qSub').textContent=q.sub;
+  document.getElementById('cardEmoji').textContent=q.emoji;
+  document.getElementById('cardLabel').textContent=q.cardLabel;
+  document.getElementById('progFill').style.width=q.prog;
+  document.getElementById('feedbackZone').style.display='none';
+  document.getElementById('nextBtn').style.display='none';
+  document.getElementById('lpTxt').textContent=q.yesProof;
+  document.getElementById('lpFill').style.width=q.yesPct+'%';
+  var fc=document.getElementById('frontCard');
+  fc.style.transform='';fc.style.opacity='1';fc.style.transition='';
+  fc.style.pointerEvents='auto';
+  answered=false;
+}
+
+function swipe(choice){
+  if(answered)return;
+  answered=true;
+  var q=QUESTIONS[qIdx];
+  var fc=document.getElementById('frontCard');
+  fc.style.pointerEvents='none';
+  var dir=choice==='yes'?1:-1;
+  fc.style.transition='transform 0.3s ease, opacity 0.3s ease';
+  fc.style.transform='translateX('+(dir*140)+'px) rotate('+(dir*8)+'deg)';
+  fc.style.opacity='0';
+  var fz=document.getElementById('feedbackZone');
+  fz.className='feedback-zone '+(choice==='yes'?q.fzClass:'fz-orange');
+  document.getElementById('feedbackTxt').textContent=choice==='yes'?q.yesInsight:q.noInsight;
+  document.getElementById('lpTxt').textContent=choice==='yes'?q.yesProof:q.noProof;
+  document.getElementById('lpFill').style.width=(choice==='yes'?q.yesPct:q.noPct)+'%';
+  setTimeout(function(){
+    fz.style.display='block';
+    document.getElementById('nextBtn').style.display='block';
+    document.getElementById('nextBtn').textContent=qIdx<QUESTIONS.length-1?'Question suivante':'Voir mon résultat';
+  },350);
+}
+
+function nextQuestion(){
+  qIdx++;
+  if(qIdx>=QUESTIONS.length){
+    clearInterval(timerInt);
+    buildEndTiles();
+    goStep('s-end');
+  } else {
+    loadQuestion();
+  }
+}
+
+function startTimer(){
+  clearInterval(timerInt);
+  timeLeft=60;
+  updateTimerDisplay();
+  timerInt=setInterval(function(){
+    timeLeft--;
+    if(timeLeft<=0){clearInterval(timerInt);if(!answered)swipe('no');}
+    updateTimerDisplay();
+  },1000);
+}
+
+function updateTimerDisplay(){
+  var pct=timeLeft/60;
+  var offset=56.5*(1-pct);
+  var color=timeLeft>20?'#B3F70B':timeLeft>10?'#EF9F27':'#FF5321';
+  var circle=document.getElementById('timerCircle');
+  if(circle){circle.style.strokeDashoffset=offset;circle.style.stroke=color;}
+  var val=document.getElementById('timerVal');
+  if(val){val.textContent=timeLeft;val.style.color=color;}
+}
+
+function buildEndTiles(){
+  var el=document.getElementById('endTiles');
+  el.innerHTML='';
+  for(var i=0;i<40;i++){
+    var s=document.createElement('span');
+    s.className='tile-txt';
+    s.textContent='défi terminé';
+    el.appendChild(s);
+  }
+}
+
+// Swipe geste
+(function(){
+  var fc, startX=0, isDragging=false;
+  document.addEventListener('mousedown',function(e){
+    if(e.target.closest('#frontCard')){fc=document.getElementById('frontCard');startX=e.clientX;isDragging=true;}
+  });
+  document.addEventListener('mousemove',function(e){
+    if(!isDragging||!fc||answered)return;
+    var dx=e.clientX-startX;
+    fc.style.transition='none';
+    fc.style.transform='translateX('+dx+'px) rotate('+(dx/12)+'deg)';
+  });
+  document.addEventListener('mouseup',function(e){
+    if(!isDragging||!fc)return;isDragging=false;
+    var dx=e.clientX-startX;
+    if(Math.abs(dx)>60)swipe(dx>0?'yes':'no');
+    else{fc.style.transition='transform 0.2s ease';fc.style.transform='';}
+    fc=null;
+  });
+  document.addEventListener('touchstart',function(e){
+    if(e.target.closest('#frontCard')){fc=document.getElementById('frontCard');startX=e.touches[0].clientX;isDragging=true;}
+  },{passive:true});
+  document.addEventListener('touchmove',function(e){
+    if(!isDragging||!fc||answered)return;
+    var dx=e.touches[0].clientX-startX;
+    fc.style.transition='none';
+    fc.style.transform='translateX('+dx+'px) rotate('+(dx/12)+'deg)';
+  },{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(!isDragging||!fc)return;isDragging=false;
+    var dx=e.changedTouches[0].clientX-startX;
+    if(Math.abs(dx)>60)swipe(dx>0?'yes':'no');
+    else{fc.style.transition='transform 0.2s ease';fc.style.transform='';}
+    fc=null;
+  });
+})();
+</script>
+</body>
+</html>

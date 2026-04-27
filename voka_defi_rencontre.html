@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VOKA — RENCONTRE</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --purple:#7500B8;--green:#B3F70B;--orange:#FF5321;--blue:#378ADD;--pink:#D4537E;--amber:#EF9F27;
+  --bg:#080810;--bg2:#0f0f1e;
+  --w:#fff;--w7:rgba(255,255,255,0.7);--w6:rgba(255,255,255,0.6);
+  --w5:rgba(255,255,255,0.5);--w4:rgba(255,255,255,0.4);
+  --w2:rgba(255,255,255,0.12);--w1:rgba(255,255,255,0.06);
+}
+body{background:#111;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px;}
+.phone{width:390px;min-height:844px;background:var(--bg);border-radius:48px;overflow:hidden;border:7px solid #1e1e2e;position:relative;display:flex;flex-direction:column;}
+.sb{display:flex;justify-content:space-between;padding:12px 22px 0;font-size:12px;color:var(--w4);flex-shrink:0;}
+.step{display:none;flex-direction:column;flex:1;}
+.step.active{display:flex;}
+
+/* ═══════ INTRO ═══════ */
+.intro-hero{height:200px;position:relative;overflow:hidden;flex-shrink:0;background:#0a0416;}
+.ih-bg{position:absolute;inset:0;}
+/* Deux silhouettes face à face */
+.ih-scene{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;gap:60px;padding-bottom:16px;}
+.sil{display:flex;flex-direction:column;align-items:center;gap:0;}
+.sil-head{border-radius:50%;}
+.sil-body{border-radius:8px 8px 0 0;}
+.sil-glow{position:absolute;border-radius:50%;filter:blur(20px);opacity:0.35;}
+.ih-grad{position:absolute;bottom:0;left:0;right:0;height:70px;background:linear-gradient(to top,var(--bg) 0%,transparent 100%);}
+.ih-badge{position:absolute;top:14px;left:16px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,0.6);border:0.5px solid rgba(240,144,176,0.35);border-radius:10px;padding:5px 11px;}
+.ihb-dot{width:6px;height:6px;border-radius:50%;background:var(--pink);}
+.ihb-txt{font-size:10px;color:#f090b0;font-weight:500;letter-spacing:0.04em;}
+.ih-xp{position:absolute;top:14px;right:16px;font-size:11px;color:var(--green);background:rgba(179,247,11,0.1);border:0.5px solid rgba(179,247,11,0.2);padding:4px 10px;border-radius:8px;font-weight:500;}
+
+.intro-body{padding:16px 20px 0;flex:1;}
+.ib-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(212,83,126,0.1);border:0.5px solid rgba(240,144,176,0.25);border-radius:6px;padding:3px 9px;margin-bottom:10px;}
+.ib-tag-txt{font-size:10px;color:#f090b0;font-weight:500;letter-spacing:0.04em;}
+.ib-title{font-size:21px;font-weight:500;color:var(--w);line-height:1.28;margin-bottom:8px;}
+.ib-sub{font-size:13px;color:var(--w6);line-height:1.6;margin-bottom:16px;}
+
+.rule-cards{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;}
+.rc{display:flex;align-items:flex-start;gap:10px;background:var(--w1);border:0.5px solid var(--w2);border-radius:10px;padding:10px 12px;}
+.rc-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.rc-txt{font-size:12px;color:var(--w6);line-height:1.45;flex:1;}
+.rc-txt strong{color:var(--w);font-weight:500;}
+
+.start-btn{margin:0 20px 20px;background:var(--pink);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:500;color:#fff;cursor:pointer;width:calc(100% - 40px);flex-shrink:0;}
+
+/* ═══════ MATCH ═══════ */
+.match-wrap{flex:1;display:flex;flex-direction:column;padding:14px 20px 0;}
+.match-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-shrink:0;}
+.match-title{font-size:15px;font-weight:500;color:var(--w);}
+.match-timer-pill{display:flex;align-items:center;gap:6px;background:rgba(212,83,126,0.1);border:0.5px solid rgba(240,144,176,0.2);border-radius:20px;padding:5px 12px;}
+.mtp-svg{width:20px;height:20px;transform:rotate(-90deg);}
+.mtp-track{fill:none;stroke:rgba(255,255,255,0.1);stroke-width:2.5;}
+.mtp-fill{fill:none;stroke:var(--pink);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:56.5;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke 0.3s;}
+.mtp-val{font-size:13px;font-weight:500;color:var(--w);min-width:26px;}
+
+/* Profil de l'autre */
+.other-profile{background:var(--bg2);border-radius:14px;padding:14px;border:0.5px solid var(--w2);margin-bottom:14px;flex-shrink:0;}
+.op-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.op-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;color:#fff;flex-shrink:0;}
+.op-info{flex:1;}
+.op-name{font-size:14px;font-weight:500;color:var(--w);}
+.op-level{font-size:11px;color:var(--w5);}
+.op-tags{display:flex;gap:5px;flex-wrap:wrap;}
+.op-tag{font-size:10px;padding:2px 7px;border-radius:5px;background:var(--w1);border:0.5px solid var(--w2);color:var(--w5);}
+
+/* Mission secrète */
+.mission-card{border-radius:12px;padding:12px 14px;margin-bottom:14px;flex-shrink:0;position:relative;}
+.mc-secret-badge{position:absolute;top:-8px;right:12px;font-size:9px;font-weight:600;padding:2px 8px;border-radius:4px;letter-spacing:0.06em;}
+.mc-lbl{font-size:10px;font-weight:600;letter-spacing:0.07em;margin-bottom:5px;}
+.mc-mission{font-size:14px;font-weight:500;color:var(--w);line-height:1.35;margin-bottom:6px;}
+.mc-sub{font-size:12px;line-height:1.5;}
+
+/* Conversation simulée */
+.convo-zone{flex:1;background:var(--bg2);border-radius:14px;padding:12px;border:0.5px solid var(--w2);display:flex;flex-direction:column;gap:8px;overflow:hidden;min-height:160px;margin-bottom:10px;}
+.msg{max-width:80%;display:flex;flex-direction:column;gap:2px;}
+.msg.them{align-self:flex-start;}
+.msg.me{align-self:flex-end;align-items:flex-end;}
+.msg-bubble{padding:9px 12px;border-radius:12px;font-size:13px;line-height:1.45;}
+.msg.them .msg-bubble{background:rgba(255,255,255,0.07);border:0.5px solid var(--w2);color:var(--w7);border-radius:4px 12px 12px 12px;}
+.msg.me .msg-bubble{background:rgba(212,83,126,0.2);border:0.5px solid rgba(240,144,176,0.25);color:var(--w);border-radius:12px 4px 12px 12px;}
+.msg-time{font-size:10px;color:var(--w4);padding:0 2px;}
+.msg-typing{display:flex;align-items:center;gap:4px;padding:9px 12px;background:rgba(255,255,255,0.05);border-radius:4px 12px 12px 12px;border:0.5px solid var(--w2);align-self:flex-start;}
+.typing-dot{width:5px;height:5px;border-radius:50%;background:var(--w4);animation:typingAnim 1.2s infinite;}
+.typing-dot:nth-child(2){animation-delay:0.2s;}
+.typing-dot:nth-child(3){animation-delay:0.4s;}
+@keyframes typingAnim{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-4px);}}
+
+/* Boutons de réponse */
+.reply-options{display:flex;flex-direction:column;gap:6px;flex-shrink:0;margin-bottom:8px;}
+.reply-opt{background:var(--w1);border:0.5px solid var(--w2);border-radius:10px;padding:10px 13px;cursor:pointer;font-size:13px;color:var(--w6);transition:all 0.12s;text-align:left;}
+.reply-opt:hover{background:rgba(212,83,126,0.08);}
+.reply-opt.chosen{background:rgba(212,83,126,0.12);border-color:rgba(240,144,176,0.3);color:var(--w);}
+
+.convo-next-btn{width:100%;background:var(--pink);border:none;border-radius:12px;padding:11px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;display:none;flex-shrink:0;}
+
+/* ═══════ RÉVÉLATION MISSION ═══════ */
+.reveal-wrap{flex:1;display:flex;flex-direction:column;padding:20px;}
+.rev-icon{font-size:40px;text-align:center;margin-bottom:12px;}
+.rev-title{font-size:20px;font-weight:500;color:var(--w);text-align:center;margin-bottom:6px;}
+.rev-sub{font-size:13px;color:var(--w6);text-align:center;line-height:1.6;margin-bottom:20px;}
+
+/* Comparaison des deux missions -->
+.missions-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.mc-side{border-radius:12px;padding:12px 10px;text-align:center;}
+.mcs-lbl{font-size:9px;font-weight:600;letter-spacing:0.07em;margin-bottom:6px;}
+.mcs-mission{font-size:12px;font-weight:500;color:var(--w);line-height:1.4;margin-bottom:4px;}
+.mcs-result{font-size:11px;line-height:1.35;}
+.mcs-achieved{font-size:12px;font-weight:500;margin-top:5px;padding:2px 8px;border-radius:4px;display:inline-block;}
+
+/* Tags évaluation */
+.eval-section{margin-bottom:14px;}
+.eval-lbl{font-size:10px;color:var(--w5);letter-spacing:0.07em;margin-bottom:8px;font-weight:500;}
+.eval-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.eval-tag{font-size:11px;padding:5px 11px;border-radius:7px;cursor:pointer;border:0.5px solid;transition:all 0.15s;font-weight:500;}
+.eval-tag.active-pos{background:rgba(179,247,11,0.1);border-color:rgba(179,247,11,0.3);color:#d4fb6b;}
+.eval-tag.active-neg{background:rgba(255,83,33,0.1);border-color:rgba(255,83,33,0.25);color:#ff8060;}
+
+.rev-next-btn{width:100%;background:var(--pink);border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;margin-top:auto;}
+
+/* ═══════ RÉSULTAT ═══════ */
+.end-wrap{flex:1;display:flex;flex-direction:column;padding:22px 20px;}
+.end-match-card{background:var(--bg2);border-radius:16px;padding:16px;border:0.5px solid var(--w2);margin-bottom:14px;}
+.emc-header{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:12px;padding-bottom:12px;border-bottom:0.5px solid var(--w2);}
+.emc-av{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;color:#fff;}
+.emc-vs{font-size:12px;color:var(--w4);}
+.emc-match-score{text-align:center;margin-bottom:10px;}
+.ems-pct{font-size:38px;font-weight:300;color:var(--pink);}
+.ems-lbl{font-size:12px;color:var(--w5);margin-top:2px;}
+.emc-dims{display:flex;flex-direction:column;gap:6px;}
+.emd-row{display:flex;align-items:center;gap:8px;}
+.emd-lbl{font-size:11px;color:var(--w5);flex:1;}
+.emd-bar{width:80px;height:4px;background:var(--w1);border-radius:2px;overflow:hidden;}
+.emd-fill{height:4px;border-radius:2px;transition:width 0.8s ease;}
+.emd-val{font-size:11px;font-weight:500;width:24px;text-align:right;flex-shrink:0;}
+.insights-box{background:rgba(212,83,126,0.07);border:0.5px solid rgba(240,144,176,0.15);border-radius:12px;padding:12px 14px;margin-bottom:14px;}
+.ib-lbl{font-size:10px;color:#f090b0;letter-spacing:0.07em;font-weight:500;margin-bottom:8px;}
+.ib-items{display:flex;flex-direction:column;gap:6px;}
+.ib-item{display:flex;gap:8px;align-items:flex-start;}
+.ibi-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.ibi-txt{font-size:12px;color:var(--w6);line-height:1.5;}
+.dims-update{background:rgba(117,0,184,0.07);border:0.5px solid rgba(179,147,230,0.15);border-radius:12px;padding:12px 14px;margin-bottom:14px;}
+.du-lbl{font-size:10px;color:#c98ff0;letter-spacing:0.07em;font-weight:500;margin-bottom:8px;}
+.du-rows{display:flex;flex-direction:column;gap:6px;}
+.dur-row{display:flex;align-items:center;gap:8px;}
+.dur-name{font-size:11px;color:var(--w5);width:110px;flex-shrink:0;}
+.dur-bar{flex:1;height:4px;background:var(--w1);border-radius:2px;overflow:hidden;}
+.dur-fill{height:4px;border-radius:2px;transition:width 0.8s ease;}
+.dur-delta{font-size:11px;font-weight:500;color:var(--green);width:24px;text-align:right;flex-shrink:0;}
+.end-xp{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.exv{font-size:34px;font-weight:300;color:var(--green);}
+.exl{font-size:13px;color:var(--w5);line-height:1.5;}
+.end-btns{display:flex;flex-direction:column;gap:7px;margin-top:auto;}
+.btn-m{border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;cursor:pointer;background:var(--pink);color:#fff;}
+.btn-s{background:var(--w1);border:0.5px solid var(--w2);border-radius:13px;padding:11px;font-size:13px;color:var(--w6);cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+
+<!-- ═══════ INTRO ═══════ -->
+<div class="step active" id="s-intro">
+  <div class="intro-hero">
+    <div class="ih-bg" style="background:linear-gradient(180deg,#0d0418 0%,#140820 50%,#080810 100%)"></div>
+    <div class="sil-glow" style="width:120px;height:120px;background:var(--pink);top:20%;left:20%;"></div>
+    <div class="sil-glow" style="width:100px;height:100px;background:var(--purple);top:25%;right:18%;"></div>
+    <div class="ih-scene">
+      <div class="sil">
+        <div class="sil-head" style="width:36px;height:38px;background:#D4A876;"></div>
+        <div class="sil-body" style="width:52px;height:48px;background:#1a0e28;"></div>
+      </div>
+      <div class="sil">
+        <div class="sil-head" style="width:34px;height:36px;background:#8B6040;"></div>
+        <div class="sil-body" style="width:48px;height:45px;background:#0e1828;"></div>
+      </div>
+    </div>
+    <div class="ih-grad"></div>
+    <div class="ih-badge"><div class="ihb-dot"></div><span class="ihb-txt">RENCONTRE · 5 min</span></div>
+    <div class="ih-xp">+20 XP</div>
+  </div>
+  <div class="intro-body">
+    <div class="ib-tag"><span class="ib-tag-txt">MES TALENTS CACHÉS · MES FORCES</span></div>
+    <div class="ib-title">5 minutes avec un inconnu. Une mission secrète chacun.</div>
+    <div class="ib-sub">Vous recevez chacun une mission différente. Vous ne savez pas quelle est celle de l'autre. La conversation révèle votre style relationnel naturel.</div>
+    <div class="rule-cards">
+      <div class="rc">
+        <div class="rc-icon" style="background:rgba(212,83,126,0.1);border-color:rgba(240,144,176,0.15);">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="4" r="2.2" stroke="#f090b0" stroke-width="1.2"/><circle cx="10" cy="4" r="2.2" stroke="#f090b0" stroke-width="1.2"/><path d="M1.5 12c0-2 1.5-3.2 3.5-3.2M8.5 12c0-2 1.5-3.2 3.5-3.2M7 8.8c0-2 0 0 0 0" stroke="#f090b0" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="rc-txt"><strong>Mission asymétrique</strong> — toi et l'autre avez des objectifs différents sans le savoir</div>
+      </div>
+      <div class="rc">
+        <div class="rc-icon" style="background:rgba(117,0,184,0.1);border-color:rgba(179,147,230,0.15);">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v5M4 9l3 3 3-3" stroke="#c98ff0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="rc-txt"><strong>Pas de script</strong> — tu guides la conversation naturellement vers ton objectif</div>
+      </div>
+      <div class="rc">
+        <div class="rc-icon" style="background:rgba(179,247,11,0.08);border-color:rgba(179,247,11,0.15);">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7.5l3 3 7-6" stroke="#B3F70B" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="rc-txt"><strong>Évaluation croisée</strong> — à la fin, chacun note l'autre indépendamment. Le signal = la corrélation</div>
+      </div>
+    </div>
+  </div>
+  <button class="start-btn" onclick="goStep('s-match');initMatch()">Démarrer la rencontre</button>
+</div>
+
+<!-- ═══════ MATCH ═══════ -->
+<div class="step" id="s-match">
+  <div class="match-wrap">
+    <div class="match-hdr">
+      <div class="match-title">Rencontre en cours</div>
+      <div class="match-timer-pill">
+        <svg class="mtp-svg" viewBox="0 0 20 20"><circle class="mtp-track" cx="10" cy="10" r="9"/><circle class="mtp-fill" id="mtpFill" cx="10" cy="10" r="9"/></svg>
+        <span class="mtp-val" id="mtpVal">5:00</span>
+      </div>
+    </div>
+
+    <!-- Profil de l'autre -->
+    <div class="other-profile">
+      <div class="op-header">
+        <div class="op-av" style="background:rgba(55,138,221,0.3);border:2px solid var(--blue);">M</div>
+        <div class="op-info">
+          <div class="op-name">Marcus D.</div>
+          <div class="op-level">Challenger · Marketing digital</div>
+        </div>
+      </div>
+      <div class="op-tags">
+        <div class="op-tag">Île-de-France</div>
+        <div class="op-tag">Bac+2</div>
+        <div class="op-tag">Sport</div>
+        <div class="op-tag">Musique</div>
+      </div>
+    </div>
+
+    <!-- Mission secrète -->
+    <div class="mission-card" style="background:rgba(212,83,126,0.08);border:0.5px solid rgba(240,144,176,0.2);">
+      <div class="mc-secret-badge" style="background:rgba(212,83,126,0.2);color:#f090b0;">TA MISSION SECRÈTE</div>
+      <div class="mc-lbl" style="color:#f090b0;">TON OBJECTIF</div>
+      <div class="mc-mission">Trouve 3 points communs avec Marcus.</div>
+      <div class="mc-sub" style="color:rgba(240,144,176,0.7);">Il ne sait pas que c'est ta mission. La conversation doit rester naturelle.</div>
+    </div>
+
+    <!-- Conversation -->
+    <div class="convo-zone" id="convoZone"></div>
+
+    <!-- Options de réponse -->
+    <div class="reply-options" id="replyOpts"></div>
+    <button class="convo-next-btn" id="convoNextBtn" onclick="nextConvoPhase()">Continuer →</button>
+  </div>
+</div>
+
+<!-- ═══════ RÉVÉLATION ═══════ -->
+<div class="step" id="s-reveal">
+  <div class="reveal-wrap">
+    <div class="rev-icon">🎭</div>
+    <div class="rev-title">La révélation des missions</div>
+    <div class="rev-sub">Les 5 minutes sont écoulées. Voici ce que vous cherchiez chacun — sans le savoir.</div>
+
+    <div class="missions-compare">
+      <div class="mc-side" style="background:rgba(212,83,126,0.08);border:0.5px solid rgba(240,144,176,0.2);">
+        <div class="mcs-lbl" style="color:#f090b0;">TOI</div>
+        <div class="mcs-mission">Trouver 3 points communs</div>
+        <div class="mcs-result" style="color:rgba(255,255,255,0.6);">Points trouvés :</div>
+        <span class="mcs-achieved" id="yourAchieved" style="background:rgba(179,247,11,0.1);color:#d4fb6b;">2 / 3 ✓</span>
+      </div>
+      <div class="mc-side" style="background:rgba(55,138,221,0.08);border:0.5px solid rgba(122,184,240,0.2);">
+        <div class="mcs-lbl" style="color:#7ab8f0;">MARCUS</div>
+        <div class="mcs-mission">Trouver 1 désaccord profond</div>
+        <div class="mcs-result" style="color:rgba(255,255,255,0.6);">Résultat :</div>
+        <span class="mcs-achieved" style="background:rgba(255,83,33,0.1);color:#ff8060;">Non révélé ✗</span>
+      </div>
+    </div>
+
+    <div class="eval-section">
+      <div class="eval-lbl">TU ÉVALUES MARCUS — Comment était-il ?</div>
+      <div class="eval-tags" id="evalPosTags"></div>
+    </div>
+    <div class="eval-section">
+      <div class="eval-lbl">ET AUSSI... (optionnel)</div>
+      <div class="eval-tags" id="evalNegTags"></div>
+    </div>
+
+    <button class="rev-next-btn" id="revNextBtn" onclick="goStep('s-end');initEnd()">Voir mon profil relationnel →</button>
+  </div>
+</div>
+
+<!-- ═══════ RÉSULTAT ═══════ -->
+<div class="step" id="s-end">
+  <div class="end-wrap">
+    <div class="end-match-card">
+      <div class="emc-header">
+        <div class="emc-av" style="background:rgba(212,83,126,0.3);border:2px solid var(--pink);">T</div>
+        <div class="emc-vs">×</div>
+        <div class="emc-av" style="background:rgba(55,138,221,0.3);border:2px solid var(--blue);">M</div>
+      </div>
+      <div class="emc-match-score">
+        <div class="ems-pct" id="emsPct">74%</div>
+        <div class="ems-lbl">Score de connexion</div>
+      </div>
+      <div class="emc-dims" id="emcDims"></div>
+    </div>
+
+    <div class="insights-box">
+      <div class="ib-lbl">CE QUE CETTE RENCONTRE RÉVÈLE</div>
+      <div class="ib-items" id="ibItems"></div>
+    </div>
+
+    <div class="dims-update">
+      <div class="du-lbl">TON PROFIL MIS À JOUR</div>
+      <div class="du-rows" id="duRows"></div>
+    </div>
+
+    <div class="end-xp">
+      <span class="exv">+20 XP</span>
+      <span class="exl">gagnés<br>sur cette RENCONTRE</span>
+    </div>
+
+    <div class="end-btns">
+      <button class="btn-m" onclick="goStep('s-intro')">Nouvelle rencontre</button>
+      <button class="btn-s" onclick="goStep('s-intro')">Retour au feed</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+var timerInt=null, timeLeft=300, convoPhase=0, chosenReply=null;
+
+var CONVO_PHASES=[
+  {
+    msgs:[
+      {from:'them',text:"Salut ! C'est la première fois que tu participes à ce genre de truc ?",delay:0},
+    ],
+    replies:[
+      "Oui, première fois — je voulais voir ce que ça donnait.",
+      "Non, j'en ai déjà fait un, c'était sympa.",
+      "Oui, j'avoue j'étais un peu sceptique au départ.",
+    ],
+    myLabel:"Toi"
+  },
+  {
+    msgs:[
+      {from:'them',text:"Pareil pour moi. Tu bosses dans quoi ou t'es encore en études ?",delay:0},
+    ],
+    replies:[
+      "En études, BTS marketing. Et toi t'es dans quoi ?",
+      "J'essaie de m'orienter vers le digital, je cherche encore.",
+      "J'ai fini mon bac pro, là je cherche ce qui me correspond vraiment.",
+    ],
+    myLabel:"Toi"
+  },
+  {
+    msgs:[
+      {from:'them',text:"Cool ! Moi BTS aussi mais communication. T'aimes quoi en dehors des études ?",delay:0},
+    ],
+    replies:[
+      "La musique surtout — je joue de la guitare depuis des années.",
+      "Le sport, j'ai fait de l'athlétisme pendant longtemps.",
+      "Les trucs créatifs en général — photo, vidéo...",
+    ],
+    myLabel:"Toi"
+  },
+  {
+    msgs:[
+      {from:'them',text:"Sérieux ?! Moi aussi la musique c'est un truc central. T'écoutes quoi ?",delay:0},
+    ],
+    replies:[
+      "Plutôt rock indé, des trucs calmes. Et toi ?",
+      "J'écoute de tout vraiment, ça dépend des humées.",
+      "Surtout rap français, Nekfeu et ce genre de trucs.",
+    ],
+    myLabel:"Toi",
+    missionPop:true
+  },
+];
+
+function goStep(id){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function initMatch(){
+  timeLeft=300; convoPhase=0; chosenReply=null;
+  clearInterval(timerInt);
+  updateTimer();
+  timerInt=setInterval(()=>{
+    timeLeft--;
+    if(timeLeft<=0){clearInterval(timerInt);goReveal();}
+    updateTimer();
+  },1000);
+  var zone=document.getElementById('convoZone');
+  zone.innerHTML='';
+  loadPhase(0);
+}
+
+function updateTimer(){
+  var m=Math.floor(timeLeft/60), s=timeLeft%60;
+  document.getElementById('mtpVal').textContent=m+':'+(s<10?'0':'')+s;
+  var pct=timeLeft/300;
+  var offset=56.5*(1-pct);
+  var color=timeLeft>120?'var(--pink)':timeLeft>60?'#EF9F27':'#FF5321';
+  var c=document.getElementById('mtpFill');
+  if(c){c.style.strokeDashoffset=offset;c.style.stroke=color;}
+}
+
+function loadPhase(idx){
+  var phase=CONVO_PHASES[idx];
+  if(!phase) return;
+  // Afficher les messages "them"
+  setTimeout(()=>{
+    phase.msgs.forEach((msg,i)=>{
+      setTimeout(()=>{
+        appendMsg('them',msg.text);
+        if(i===phase.msgs.length-1) showReplies(phase);
+      },i*600);
+    });
+  },400);
+}
+
+function appendMsg(from,text,extra){
+  var zone=document.getElementById('convoZone');
+  // Retirer typing si présent
+  var typing=zone.querySelector('.msg-typing');
+  if(typing) zone.removeChild(typing);
+  var el=document.createElement('div');
+  el.className='msg '+(from==='them'?'them':'me');
+  var t=new Date();
+  var time=(t.getHours())+':'+(t.getMinutes()<10?'0':'')+t.getMinutes();
+  el.innerHTML=`<div class="msg-bubble">${text}</div><div class="msg-time">${time}</div>`;
+  zone.appendChild(el);
+  zone.scrollTop=zone.scrollHeight;
+}
+
+function showTyping(){
+  var zone=document.getElementById('convoZone');
+  var el=document.createElement('div');
+  el.className='msg-typing';
+  el.innerHTML='<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  zone.appendChild(el);
+  zone.scrollTop=zone.scrollHeight;
+}
+
+function showReplies(phase){
+  var cont=document.getElementById('replyOpts');
+  var nextBtn=document.getElementById('convoNextBtn');
+  cont.innerHTML='';
+  nextBtn.style.display='none';
+  chosenReply=null;
+  phase.replies.forEach((r,i)=>{
+    var el=document.createElement('button');
+    el.className='reply-opt';
+    el.textContent=r;
+    el.onclick=()=>{
+      document.querySelectorAll('.reply-opt').forEach(o=>{o.classList.remove('chosen');o.disabled=false;});
+      el.classList.add('chosen');
+      chosenReply=r;
+      // Afficher ma réponse dans la conversation
+      appendMsg('me',r);
+      cont.innerHTML='';
+      // Si phase avec mission pop, afficher un feedback
+      if(phase.missionPop){
+        setTimeout(()=>{
+          showMissionPop();
+        },500);
+      } else {
+        showTyping();
+        setTimeout(()=>{
+          convoPhase++;
+          loadPhase(convoPhase);
+        },1200);
+      }
+    };
+    cont.appendChild(el);
+  });
+}
+
+function showMissionPop(){
+  // Afficher un mini toast "Point commun détecté !"
+  var zone=document.getElementById('convoZone');
+  var toast=document.createElement('div');
+  toast.style.cssText='background:rgba(179,247,11,0.1);border:0.5px solid rgba(179,247,11,0.3);border-radius:8px;padding:7px 12px;font-size:11px;color:#d4fb6b;text-align:center;margin:4px 0;';
+  toast.textContent='🎯 Point commun détecté — La musique ! (2/3)';
+  zone.appendChild(toast);
+  zone.scrollTop=zone.scrollHeight;
+  setTimeout(()=>{
+    document.getElementById('convoNextBtn').style.display='block';
+    document.getElementById('convoNextBtn').textContent='Fin des 5 minutes — Voir la révélation';
+  },600);
+}
+
+function nextConvoPhase(){
+  clearInterval(timerInt);
+  goReveal();
+}
+
+function goReveal(){
+  clearInterval(timerInt);
+  goStep('s-reveal');
+  initEvalTags();
+}
+
+function initEvalTags(){
+  var posTags=['À l\'aise','Curieux','Drôle','Sincère','À l\'écoute','Surprenant','Inspirant','Direct'];
+  var negTags=['Un peu distant','Trop rapide','Vague','Prévisible'];
+  var pos=document.getElementById('evalPosTags');
+  var neg=document.getElementById('evalNegTags');
+  pos.innerHTML=posTags.map(t=>`<div class="eval-tag" style="background:var(--w1);border-color:var(--w2);color:var(--w5);" onclick="toggleTag(this,'pos')">${t}</div>`).join('');
+  neg.innerHTML=negTags.map(t=>`<div class="eval-tag" style="background:var(--w1);border-color:var(--w2);color:var(--w5);" onclick="toggleTag(this,'neg')">${t}</div>`).join('');
+}
+
+function toggleTag(el,type){
+  if(el.classList.contains('active-pos')||el.classList.contains('active-neg')){
+    el.classList.remove('active-pos','active-neg');
+    el.style.background='var(--w1)'; el.style.borderColor='var(--w2)'; el.style.color='var(--w5)';
+  } else {
+    el.classList.add('active-'+type);
+  }
+}
+
+function initEnd(){
+  // Dims match
+  var dims=[
+    {lbl:'Intérêts communs',pct:80,color:'var(--pink)'},
+    {lbl:'Style de comm.',pct:65,color:'var(--blue)'},
+    {lbl:'Valeurs',pct:70,color:'var(--purple)'},
+  ];
+  document.getElementById('emcDims').innerHTML=dims.map(d=>`
+    <div class="emd-row">
+      <span class="emd-lbl">${d.lbl}</span>
+      <div class="emd-bar"><div class="emd-fill" style="width:${d.pct}%;background:${d.color}"></div></div>
+      <span class="emd-val" style="color:${d.color}">${d.pct}%</span>
+    </div>`).join('');
+
+  // Insights
+  var insights=[
+    {dot:'var(--pink)',txt:'Tu as naturellement orienté la conversation vers les points communs — signal fort de comportement coopératif.'},
+    {dot:'var(--blue)',txt:'Marcus cherchait un désaccord et n\'en a pas trouvé. Son évaluation de toi : "Direct et sincère".'},
+    {dot:'var(--green)',txt:'L\'asymétrie des missions crée une tension créative invisible. Ta capacité à créer du lien malgré ça est non-falsifiable.'},
+  ];
+  document.getElementById('ibItems').innerHTML=insights.map(i=>`
+    <div class="ib-item">
+      <div class="ibi-dot" style="background:${i.dot}"></div>
+      <span class="ibi-txt">${i.txt}</span>
+    </div>`).join('');
+
+  // Dims ACT Skills
+  var dims2=[
+    {name:'Mes talents cachés',pct:72,color:'var(--pink)',delta:'+9'},
+    {name:'Mes forces',pct:66,color:'var(--blue)',delta:'+7'},
+    {name:'Mes expériences',pct:58,color:'var(--purple)',delta:'+4'},
+  ];
+  document.getElementById('duRows').innerHTML=dims2.map(d=>`
+    <div class="dur-row">
+      <span class="dur-name">${d.name}</span>
+      <div class="dur-bar"><div class="dur-fill" style="width:${d.pct}%;background:${d.color}"></div></div>
+      <span class="dur-delta">${d.delta}</span>
+    </div>`).join('');
+}
+</script>
+</body>
+</html>

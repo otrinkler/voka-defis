@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VOKA — MASTERCLASS</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --purple:#7500B8;--green:#B3F70B;--orange:#FF5321;--amber:#EF9F27;--blue:#378ADD;--teal:#1D9E75;
+  --bg:#080810;--bg2:#0f0f1e;
+  --w:#fff;--w7:rgba(255,255,255,0.7);--w6:rgba(255,255,255,0.6);--w5:rgba(255,255,255,0.5);
+  --w4:rgba(255,255,255,0.4);--w2:rgba(255,255,255,0.12);--w1:rgba(255,255,255,0.06);
+}
+body{background:#111;display:flex;justify-content:center;padding:20px;}
+.phone{width:390px;min-height:844px;background:var(--bg);border-radius:48px;overflow:hidden;border:7px solid #1e1e2e;display:flex;flex-direction:column;}
+.sb{display:flex;justify-content:space-between;padding:12px 22px 0;font-size:12px;color:var(--w4);flex-shrink:0;}
+.view{display:none;flex-direction:column;flex:1;}
+.view.on{display:flex;}
+
+/* ═══ INTRO ═══ */
+.mc-hero{height:210px;position:relative;overflow:hidden;flex-shrink:0;}
+.mc-hero-bg{position:absolute;inset:0;background:linear-gradient(160deg,#0a0420 0%,#0a1810 60%,#080810 100%);}
+.mc-hero-portrait{position:absolute;bottom:0;right:0;width:160px;height:160px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:12px;}
+.portrait-head{width:50px;height:52px;border-radius:50%;background:#8B6040;}
+.portrait-body{width:70px;height:65px;background:#1a0e28;border-radius:8px 8px 0 0;margin-top:-2px;}
+.portrait-wrap{display:flex;flex-direction:column;align-items:center;}
+.mc-hero-info{position:absolute;bottom:20px;left:18px;}
+.mhi-name{font-size:15px;font-weight:500;color:var(--w);margin-bottom:2px;}
+.mhi-role{font-size:11px;color:rgba(255,255,255,0.55);}
+.mc-hero-tag{position:absolute;top:14px;left:16px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,0.6);border:0.5px solid rgba(245,192,64,0.4);border-radius:10px;padding:5px 12px;}
+.mht-dot{width:6px;height:6px;border-radius:50%;background:var(--amber);}
+.mht-txt{font-size:10px;color:#f5c040;font-weight:500;letter-spacing:0.04em;}
+.mc-hero-xp{position:absolute;top:14px;right:16px;font-size:11px;color:var(--green);background:rgba(179,247,11,0.1);border:0.5px solid rgba(179,247,11,0.2);padding:4px 10px;border-radius:8px;font-weight:500;}
+.mc-hero-grad{position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,var(--bg) 0%,transparent 100%);}
+
+.intro-body{flex:1;padding:14px 20px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;}
+.mc-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(239,159,39,0.1);border:0.5px solid rgba(245,192,64,0.2);border-radius:6px;padding:3px 9px;}
+.mc-tag-txt{font-size:10px;color:#f5c040;font-weight:500;letter-spacing:0.04em;}
+.mc-title{font-size:21px;font-weight:500;color:var(--w);line-height:1.28;}
+.mc-subtitle{font-size:13px;color:var(--w6);line-height:1.6;}
+
+/* Épisodes preview */
+.episodes-preview{display:flex;flex-direction:column;gap:6px;}
+.ep-item{display:flex;align-items:center;gap:10px;background:var(--w1);border:0.5px solid var(--w2);border-radius:10px;padding:9px 11px;}
+.ep-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--bg);flex-shrink:0;}
+.ep-info{flex:1;}
+.ep-name{font-size:12px;font-weight:500;color:var(--w);}
+.ep-fmt{font-size:10px;color:var(--w4);margin-top:1px;}
+.ep-dur{font-size:11px;color:var(--w4);}
+.ep-item.done .ep-name{color:rgba(255,255,255,0.55);}
+.ep-check{font-size:12px;color:var(--green);}
+
+.mc-stats-row{display:flex;gap:8px;}
+.mc-stat{flex:1;background:var(--bg2);border-radius:9px;padding:9px 8px;text-align:center;border:0.5px solid var(--w2);}
+.mcs-val{font-size:17px;font-weight:500;color:var(--w);}
+.mcs-lbl{font-size:10px;color:var(--w5);margin-top:2px;}
+
+.start-btn{margin:0 20px 20px;background:var(--amber);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:500;color:#1a1000;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:8px;}
+
+/* ═══ VIDÉO ═══ */
+#v-video{background:#000;}
+.video-player{height:240px;position:relative;overflow:hidden;flex-shrink:0;background:#050510;}
+.vp-portrait{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:0;}
+.vp-bg-grad{position:absolute;inset:0;background:linear-gradient(to bottom,#0d0520 0%,#0a1018 100%);}
+.vp-char{display:flex;flex-direction:column;align-items:center;position:relative;z-index:2;}
+.vp-head{width:60px;height:62px;border-radius:50%;background:#8B6040;}
+.vp-body{width:84px;height:80px;background:#1a0e28;border-radius:8px 8px 0 0;margin-top:-2px;}
+.vp-speaking-ring{position:absolute;top:0;left:50%;transform:translateX(-50%);width:72px;height:72px;border-radius:50%;border:2px solid rgba(239,159,39,0.5);animation:speakPulse 1.5s ease-in-out infinite;}
+@keyframes speakPulse{0%,100%{transform:translateX(-50%) scale(1);opacity:0.5;}50%{transform:translateX(-50%) scale(1.08);opacity:1;}}
+.vp-name-badge{position:absolute;bottom:16px;left:16px;font-size:11px;font-weight:500;color:var(--w);background:rgba(0,0,0,0.6);padding:4px 10px;border-radius:6px;z-index:3;}
+.vp-ep-badge{position:absolute;bottom:16px;right:16px;font-size:10px;color:#f5c040;background:rgba(0,0,0,0.6);padding:4px 10px;border-radius:6px;z-index:3;}
+.vp-prog-bar{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.1);z-index:4;}
+.vp-prog-fill{height:3px;background:var(--amber);transition:width 0.5s linear;}
+
+/* Sous-titres */
+.subtitles-zone{padding:14px 20px 0;flex-shrink:0;}
+.sub-speaker{font-size:10px;font-weight:500;color:#f5c040;letter-spacing:0.05em;margin-bottom:5px;}
+.sub-text{font-size:15px;color:var(--w);line-height:1.5;min-height:46px;}
+
+/* Contrôles vidéo */
+.video-controls{padding:12px 20px 0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.vc-left{display:flex;align-items:center;gap:8px;}
+.vc-ep-dots{display:flex;gap:4px;}
+.vc-dot{width:7px;height:7px;border-radius:50%;background:var(--w2);}
+.vc-dot.done{background:var(--amber);}
+.vc-dot.cur{background:var(--amber);opacity:0.55;}
+.vc-timer{font-size:12px;color:var(--w4);}
+.vc-skip{font-size:11px;color:var(--w4);background:var(--w1);border:0.5px solid var(--w2);border-radius:8px;padding:5px 10px;cursor:pointer;border-style:none;cursor:pointer;}
+
+.video-next-btn{margin:12px 20px 16px;background:var(--amber);border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#1a1000;cursor:pointer;flex-shrink:0;display:none;}
+
+/* ═══ LOOP (question après vidéo) ═══ */
+#v-loop{background:var(--bg);}
+.loop-header{padding:14px 20px 0;flex-shrink:0;}
+.loop-ep-ref{display:flex;align-items:center;gap:7px;margin-bottom:10px;}
+.ler-pip{width:5px;height:5px;border-radius:50%;background:var(--amber);}
+.ler-txt{font-size:10px;color:#f5c040;font-weight:500;letter-spacing:0.04em;}
+.loop-q{font-size:18px;font-weight:500;color:var(--w);line-height:1.32;margin-bottom:14px;}
+.loop-opts{display:flex;flex-direction:column;gap:7px;padding:0 20px;flex-shrink:0;}
+.loop-opt{background:var(--w1);border:0.5px solid var(--w2);border-radius:12px;padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all 0.12s;}
+.loop-opt.correct{background:rgba(179,247,11,0.08);border-color:rgba(179,247,11,0.3);}
+.loop-opt.wrong{background:rgba(255,83,33,0.08);border-color:rgba(255,83,33,0.2);}
+.loop-opt.chosen{background:rgba(239,159,39,0.1);border-color:rgba(245,192,64,0.3);}
+.lo-l{width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,0.06);font-size:11px;font-weight:500;color:var(--w5);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.loop-opt.correct .lo-l{background:rgba(179,247,11,0.15);color:var(--green);}
+.loop-opt.wrong .lo-l{background:rgba(255,83,33,0.15);color:#ff8060;}
+.loop-opt.chosen .lo-l{background:rgba(239,159,39,0.2);color:#f5c040;}
+.lo-txt{font-size:13px;color:var(--w6);}
+.loop-opt.correct .lo-txt,.loop-opt.chosen .lo-txt{color:var(--w);}
+.loop-feedback{margin:12px 20px 0;border-radius:10px;padding:11px 13px;display:none;flex-shrink:0;}
+.lf-lbl{font-size:9px;font-weight:600;letter-spacing:0.07em;margin-bottom:4px;}
+.lf-txt{font-size:12px;color:rgba(255,255,255,0.75);line-height:1.55;}
+.loop-next{margin:12px 20px 20px;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;cursor:pointer;display:none;flex-shrink:0;}
+
+/* ═══ BUILD (projet final) ═══ */
+#v-build{background:var(--bg);}
+.build-header{padding:14px 20px 0;flex-shrink:0;}
+.build-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(117,0,184,0.12);border:0.5px solid rgba(179,147,230,0.2);border-radius:6px;padding:3px 9px;margin-bottom:8px;}
+.bt-txt{font-size:10px;color:#c98ff0;font-weight:500;letter-spacing:0.04em;}
+.build-title{font-size:18px;font-weight:500;color:var(--w);line-height:1.3;margin-bottom:6px;}
+.build-sub{font-size:12px;color:var(--w6);line-height:1.5;margin-bottom:14px;}
+.build-steps{flex:1;padding:0 20px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;}
+.build-step{background:var(--bg2);border-radius:12px;padding:12px 14px;border:0.5px solid var(--w2);}
+.bs-label{font-size:10px;font-weight:500;letter-spacing:0.07em;margin-bottom:6px;}
+.bs-q{font-size:13px;color:var(--w);margin-bottom:8px;font-weight:500;line-height:1.35;}
+.bs-opts{display:flex;flex-direction:column;gap:5px;}
+.bs-opt{background:var(--w1);border:0.5px solid var(--w2);border-radius:8px;padding:9px 11px;cursor:pointer;font-size:12px;color:var(--w6);transition:all 0.12s;}
+.bs-opt:hover{background:rgba(117,0,184,0.08);}
+.bs-opt.sel{background:rgba(117,0,184,0.12);border-color:rgba(179,147,230,0.3);color:var(--w);}
+.build-submit{margin:12px 20px 20px;background:var(--purple);border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;flex-shrink:0;display:none;}
+
+/* ═══ FIN ═══ */
+#v-end{background:var(--bg);}
+.end-scroll{flex:1;padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;}
+.end-expert-row{display:flex;align-items:center;gap:10px;}
+.ee-av{width:44px;height:44px;border-radius:50%;background:rgba(239,159,39,0.2);border:2px solid var(--amber);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--w);flex-shrink:0;}
+.ee-info{}
+.ee-name{font-size:14px;font-weight:500;color:var(--w);}
+.ee-role{font-size:11px;color:rgba(255,255,255,0.55);}
+.end-h1{font-size:22px;font-weight:500;color:var(--w);line-height:1.25;}
+.end-sub{font-size:13px;color:var(--w6);line-height:1.6;}
+.cert-card{background:rgba(239,159,39,0.08);border:0.5px solid rgba(245,192,64,0.2);border-radius:14px;padding:14px;text-align:center;}
+.cc-icon{font-size:28px;margin-bottom:6px;}
+.cc-title{font-size:15px;font-weight:500;color:var(--w);margin-bottom:3px;}
+.cc-sub{font-size:11px;color:rgba(255,255,255,0.55);margin-bottom:10px;}
+.cc-badge-row{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;}
+.cc-badge{font-size:10px;padding:3px 9px;border-radius:5px;font-weight:500;}
+.build-recap{background:rgba(117,0,184,0.07);border:0.5px solid rgba(179,147,230,0.15);border-radius:12px;padding:12px 14px;}
+.br-lbl{font-size:10px;color:#c98ff0;letter-spacing:0.07em;font-weight:500;margin-bottom:8px;}
+.br-items{display:flex;flex-direction:column;gap:6px;}
+.br-item{display:flex;gap:8px;align-items:flex-start;}
+.bri-dot{width:5px;height:5px;border-radius:50%;background:#c98ff0;flex-shrink:0;margin-top:5px;}
+.bri-txt{font-size:12px;color:rgba(255,255,255,0.75);line-height:1.45;}
+.dims-card{background:rgba(117,0,184,0.06);border:0.5px solid rgba(179,147,230,0.12);border-radius:12px;padding:12px 14px;}
+.dims-lbl{font-size:10px;color:#c98ff0;letter-spacing:0.07em;font-weight:500;margin-bottom:8px;}
+.dim-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.dim-row:last-child{margin-bottom:0;}
+.dim-name{font-size:11px;color:rgba(255,255,255,0.65);width:110px;flex-shrink:0;}
+.dim-bar{flex:1;height:4px;background:var(--w1);border-radius:2px;overflow:hidden;}
+.dim-fill{height:4px;border-radius:2px;}
+.dim-delta{font-size:11px;font-weight:500;color:var(--green);width:24px;text-align:right;flex-shrink:0;}
+.xp-row{display:flex;align-items:center;gap:10px;}
+.xp-val{font-size:36px;font-weight:300;color:var(--green);}
+.xp-lbl{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5;}
+.end-btns{padding:0 20px 24px;display:flex;flex-direction:column;gap:7px;flex-shrink:0;}
+.btn-m{background:var(--amber);border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;color:#1a1000;cursor:pointer;}
+.btn-s{background:var(--w1);border:0.5px solid var(--w2);border-radius:13px;padding:11px;font-size:13px;color:rgba(255,255,255,0.65);cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+
+<!-- ═══ INTRO ═══ -->
+<div class="view on" id="v-intro">
+  <div class="mc-hero">
+    <div class="mc-hero-bg"></div>
+    <div class="mc-hero-portrait">
+      <div class="portrait-wrap">
+        <div class="portrait-head"></div>
+        <div class="portrait-body"></div>
+      </div>
+    </div>
+    <div class="mc-hero-grad"></div>
+    <div class="mc-hero-tag"><div class="mht-dot"></div><span class="mht-txt">MASTERCLASS · 5 épisodes</span></div>
+    <div class="mc-hero-xp">+50 XP</div>
+    <div class="mc-hero-info">
+      <div class="mhi-name">Sophie Vidal</div>
+      <div class="mhi-role">DG ENGIE Transitions · 22 ans d'expérience</div>
+    </div>
+  </div>
+  <div class="intro-body">
+    <div class="mc-tag"><span class="mc-tag-txt">MON PROJET · MES ENVIES · MES FORCES</span></div>
+    <div class="mc-title">La transition énergétique expliquée en 5 minutes.</div>
+    <div class="mc-subtitle">5 vidéos de 60s. Une question après chaque. Un BUILD pour consolider. Certifiable sur ton profil.</div>
+    <div class="episodes-preview" id="episodesPreview"></div>
+    <div class="mc-stats-row">
+      <div class="mc-stat"><div class="mcs-val">5 min</div><div class="mcs-lbl">Durée totale</div></div>
+      <div class="mc-stat"><div class="mcs-val">5</div><div class="mcs-lbl">Questions</div></div>
+      <div class="mc-stat"><div class="mcs-val" style="color:var(--amber)">+50</div><div class="mcs-lbl">XP</div></div>
+    </div>
+  </div>
+  <button class="start-btn" onclick="startMC()">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 2l7 5-7 5V2z" fill="#1a1000"/></svg>
+    Commencer la masterclass
+  </button>
+</div>
+
+<!-- ═══ VIDÉO ═══ -->
+<div class="view" id="v-video">
+  <div class="video-player">
+    <div class="vp-bg-grad"></div>
+    <div class="vp-portrait">
+      <div class="vp-char">
+        <div class="vp-speaking-ring"></div>
+        <div class="vp-head"></div>
+        <div class="vp-body"></div>
+      </div>
+    </div>
+    <div class="vp-name-badge">Sophie Vidal · DG ENGIE</div>
+    <div class="vp-ep-badge" id="vpEpBadge">Épisode 1 / 5</div>
+    <div class="vp-prog-bar"><div class="vp-prog-fill" id="vpProg" style="width:0%"></div></div>
+  </div>
+  <div class="subtitles-zone">
+    <div class="sub-speaker">SOPHIE VIDAL</div>
+    <div class="sub-text" id="subText"></div>
+  </div>
+  <div class="video-controls">
+    <div class="vc-left">
+      <div class="vc-ep-dots" id="vcDots"></div>
+      <span class="vc-timer" id="vcTimer">0:00 / 1:00</span>
+    </div>
+    <button class="vc-skip" onclick="skipVideo()">Passer →</button>
+  </div>
+  <button class="video-next-btn" id="videoNextBtn" onclick="showLoop()">Question sur cet épisode →</button>
+</div>
+
+<!-- ═══ LOOP ═══ -->
+<div class="view" id="v-loop">
+  <div class="loop-header">
+    <div class="loop-ep-ref"><div class="ler-pip"></div><span class="ler-txt" id="lerTxt">APRÈS L'ÉPISODE 1</span></div>
+    <div class="loop-q" id="loopQ"></div>
+  </div>
+  <div class="loop-opts" id="loopOpts"></div>
+  <div class="loop-feedback" id="loopFeedback">
+    <div class="lf-lbl" id="lfLbl"></div>
+    <div class="lf-txt" id="lfTxt"></div>
+  </div>
+  <button class="loop-next" id="loopNext" onclick="afterLoop()"></button>
+</div>
+
+<!-- ═══ BUILD ═══ -->
+<div class="view" id="v-build">
+  <div class="build-header">
+    <div class="build-tag"><span class="bt-txt">BUILD · CONSOLIDATION FINALE</span></div>
+    <div class="build-title">Construis ta vision de la transition énergétique.</div>
+    <div class="build-sub">3 questions pour structurer ce que tu as appris et ce que ça dit sur toi.</div>
+  </div>
+  <div class="build-steps" id="buildSteps"></div>
+  <button class="build-submit" id="buildSubmit" onclick="showEnd()">Générer ma carte de compétence →</button>
+</div>
+
+<!-- ═══ FIN ═══ -->
+<div class="view" id="v-end">
+  <div class="end-scroll">
+    <div class="end-expert-row">
+      <div class="ee-av">S</div>
+      <div class="ee-info">
+        <div class="ee-name">Sophie Vidal</div>
+        <div class="ee-role">ENGIE Transitions · Masterclass complétée</div>
+      </div>
+    </div>
+    <div class="end-h1">Masterclass terminée. Carte générée.</div>
+    <div class="end-sub">Tu as complété les 5 épisodes, répondu à 5 questions et construit ta vision. Cette carte est certifiable sur ton profil VOKA.</div>
+    <div class="cert-card">
+      <div class="cc-icon">🎓</div>
+      <div class="cc-title">Certificat VOKA × ENGIE</div>
+      <div class="cc-sub">La transition énergétique · Niveau Challenger</div>
+      <div class="cc-badge-row">
+        <span class="cc-badge" style="background:rgba(239,159,39,0.15);color:#f5c040;">Sophie Vidal</span>
+        <span class="cc-badge" style="background:rgba(179,247,11,0.1);color:#d4fb6b;">5/5 questions</span>
+        <span class="cc-badge" style="background:rgba(117,0,184,0.15);color:#c98ff0;">BUILD complété</span>
+      </div>
+    </div>
+    <div class="build-recap">
+      <div class="br-lbl">TA VISION DE LA TRANSITION</div>
+      <div class="br-items" id="brItems"></div>
+    </div>
+    <div class="dims-card">
+      <div class="dims-lbl">TON PROFIL MIS À JOUR</div>
+      <div class="dim-row"><span class="dim-name">Mon projet</span><div class="dim-bar"><div class="dim-fill" style="width:84%;background:#7500B8"></div></div><span class="dim-delta">+12</span></div>
+      <div class="dim-row"><span class="dim-name">Mes envies</span><div class="dim-bar"><div class="dim-fill" style="width:76%;background:#D4537E"></div></div><span class="dim-delta">+9</span></div>
+      <div class="dim-row"><span class="dim-name">Mes forces</span><div class="dim-bar"><div class="dim-fill" style="width:68%;background:#378ADD"></div></div><span class="dim-delta">+7</span></div>
+      <div class="dim-row"><span class="dim-name">Mes expériences</span><div class="dim-bar"><div class="dim-fill" style="width:60%;background:#1D9E75"></div></div><span class="dim-delta">+5</span></div>
+    </div>
+    <div class="xp-row">
+      <span class="xp-val">+50 XP</span>
+      <span class="xp-lbl">gagnés<br>sur cette MASTERCLASS</span>
+    </div>
+  </div>
+  <div class="end-btns">
+    <button class="btn-m" onclick="show('v-intro')">Explorer d'autres masterclass</button>
+    <button class="btn-s" onclick="show('v-intro')">Retour au feed</button>
+  </div>
+</div>
+
+</div>
+<script>
+/* ─── DATA ─── */
+var EPISODES = [
+  {
+    title: "Le problème énergétique mondial",
+    color: '#EF9F27',
+    duration: 60,
+    subtitles: [
+      {at:0,  txt:"On consomme encore 80% d'énergie fossile à l'échelle mondiale. Charbon, pétrole, gaz."},
+      {at:15, txt:"Le problème n'est pas juste climatique. C'est une question de sécurité, de souveraineté, et d'emploi."},
+      {at:30, txt:"La transition c'est remplacer 8 milliards de tonnes de CO2 par an. C'est un défi d'ingénierie et d'organisation humaine."},
+      {at:48, txt:"Et c'est là que les jeunes ingénieurs, gestionnaires et communicants entrent en jeu."},
+    ],
+    question: "Selon Sophie, pourquoi la transition énergétique est-elle aussi une question de souveraineté ?",
+    opts: ["Parce que les pays riches veulent contrôler les ressources","Parce que dépendre du pétrole étranger fragilise les économies nationales","Parce que l'énergie solaire appartient à tout le monde","Parce que les entreprises tech dominent le secteur"],
+    correct: 1,
+    fb: ["Incorrect. Sophie parle de dépendance aux importations, pas de contrôle des ressources.","Exact. La dépendance aux importations de combustibles expose les pays à des crises économiques et politiques.","Vrai mais pas le point de Sophie — elle parle de dépendances aux fossiles étrangers.","Pas ce que Sophie mentionne dans cet épisode."],
+    fbColor: ['#ff8060','#d4fb6b','#7ab8f0','#ff8060'],
+    fbBg: ['rgba(255,83,33,0.08)','rgba(179,247,11,0.08)','rgba(55,138,221,0.08)','rgba(255,83,33,0.08)']
+  },
+  {
+    title: "Les trois piliers du changement",
+    color: '#1D9E75',
+    duration: 60,
+    subtitles: [
+      {at:0,  txt:"Chez ENGIE, on parle de trois piliers : décarboner, décentraliser, digitaliser."},
+      {at:18, txt:"Décarboner c'est sortir des fossiles. Décentraliser c'est produire l'énergie là où elle est consommée."},
+      {at:36, txt:"Et digitaliser c'est gérer des millions de sources d'énergie distribuées en temps réel."},
+      {at:50, txt:"Ces trois mouvements créent des métiers que personne n'imaginait il y a 10 ans."},
+    ],
+    question: "Que signifie 'décentraliser' l'énergie selon Sophie ?",
+    opts: ["Privatiser la production d'énergie","Produire l'énergie au plus près de là où elle est consommée","Distribuer l'énergie dans les pays en développement","Réduire le nombre de centrales nucléaires"],
+    correct: 1,
+    fb: ["Incorrect. La décentralisation n'est pas liée à la privatisation.","Exact. C'est le principe des panneaux solaires sur les toits, des éoliennes locales, etc.","Pas le sens utilisé par Sophie dans ce contexte.","La réduction du nucléaire est un débat distinct."],
+    fbColor: ['#ff8060','#d4fb6b','#7ab8f0','#ff8060'],
+    fbBg: ['rgba(255,83,33,0.08)','rgba(179,247,11,0.08)','rgba(55,138,221,0.08)','rgba(255,83,33,0.08)']
+  },
+  {
+    title: "Les métiers de demain",
+    color: '#7500B8',
+    duration: 60,
+    subtitles: [
+      {at:0,  txt:"Il y a 15 000 postes ouverts chez ENGIE chaque année. La moitié n'existait pas il y a 5 ans."},
+      {at:18, txt:"Ingénieur en stockage d'énergie, data scientist de réseau, spécialiste hydrogène vert..."},
+      {at:36, txt:"Mais aussi : gestionnaire de communautés énergétiques, chef de projet transition territorial."},
+      {at:50, txt:"Ce secteur cherche des gens qui comprennent à la fois la technique, les territoires et les usages."},
+    ],
+    question: "Quelle compétence Sophie identifie-t-elle comme la plus rare et la plus recherchée ?",
+    opts: ["La maîtrise du code Python","La capacité à comprendre à la fois la technique, les territoires et les usages","Le diplôme d'une grande école d'ingénieurs","La connaissance de la finance verte"],
+    correct: 1,
+    fb: ["Python est utile mais pas ce que Sophie cite comme rare.","Exact. La combinaison technique + territoire + usage est ce que Sophie met en avant.","Sophie ne mentionne pas les grandes écoles comme critère différenciant.","La finance verte est mentionnée ailleurs, pas dans cet épisode."],
+    fbColor: ['#ff8060','#d4fb6b','#7ab8f0','#ff8060'],
+    fbBg: ['rgba(255,83,33,0.08)','rgba(179,247,11,0.08)','rgba(55,138,221,0.08)','rgba(255,83,33,0.08)']
+  },
+  {
+    title: "Pourquoi les jeunes changent tout",
+    color: '#D4537E',
+    duration: 60,
+    subtitles: [
+      {at:0,  txt:"Les moins de 30 ans apportent quelque chose que les experts n'ont pas : ils n'ont pas peur du changement."},
+      {at:18, txt:"Ils ont grandi avec la notion d'urgence climatique. Pour eux, la transition n'est pas un sujet — c'est une évidence."},
+      {at:36, txt:"Et cette énergie — sans mauvais jeu de mots — est exactement ce dont ce secteur a besoin maintenant."},
+      {at:50, txt:"Le meilleur profil ENGIE en 2030 sera quelqu'un qui a commencé à apprendre aujourd'hui."},
+    ],
+    question: "Selon Sophie, quel avantage spécifique les jeunes ont-ils sur les experts établis ?",
+    opts: ["Ils ont de meilleures compétences numériques","Ils coûtent moins cher","Ils n'ont pas peur du changement et voient la transition comme une évidence","Ils ont plus de diplômes en développement durable"],
+    correct: 2,
+    fb: ["Les compétences numériques sont mentionnées ailleurs, pas ici.","Ce n'est pas ce que Sophie met en avant — elle parle de posture.","Exact. Sophie parle d'une posture naturelle face au changement, non acquise par les experts.","Les diplômes ne sont pas l'argument de Sophie dans cet épisode."],
+    fbColor: ['#ff8060','#ff8060','#d4fb6b','#ff8060'],
+    fbBg: ['rgba(255,83,33,0.08)','rgba(255,83,33,0.08)','rgba(179,247,11,0.08)','rgba(255,83,33,0.08)']
+  },
+  {
+    title: "Un conseil pour démarrer",
+    color: '#378ADD',
+    duration: 60,
+    subtitles: [
+      {at:0,  txt:"Si j'avais un conseil : ne cherchez pas le poste parfait. Cherchez le problème qui vous obsède."},
+      {at:18, txt:"Chez ENGIE, on ne recrute pas des CV. On recrute des gens qui veulent résoudre quelque chose."},
+      {at:36, txt:"Posez-vous une question : dans 5 ans, qu'est-ce que vous voulez pouvoir dire que vous avez changé ?"},
+      {at:50, txt:"Commencez par là. Le reste — les compétences, le réseau, les opportunités — suivra."},
+    ],
+    question: "Quel est le conseil final de Sophie pour démarrer dans ce secteur ?",
+    opts: ["Faire un stage chez ENGIE le plus tôt possible","Chercher le problème qui vous obsède plutôt que le poste parfait","Obtenir un Master en énergie renouvelable","Apprendre à coder en Python"],
+    correct: 1,
+    fb: ["Un stage est utile mais ce n'est pas le conseil de Sophie.","Exact. Sophie encourage à partir du problème, pas du titre ou du poste.","Les diplômes peuvent aider mais Sophie parle d'intention, pas de formation.","Python n'est pas le conseil final de Sophie."],
+    fbColor: ['#ff8060','#d4fb6b','#7ab8f0','#ff8060'],
+    fbBg: ['rgba(255,83,33,0.08)','rgba(179,247,11,0.08)','rgba(55,138,221,0.08)','rgba(255,83,33,0.08)']
+  }
+];
+
+var BUILD_STEPS = [
+  {
+    label: 'ÉTAPE 1 — TON RAPPORT AU SUJET',
+    q: "Ce qui te parle le plus dans la transition énergétique :",
+    opts: ["L'enjeu climatique et environnemental","Les nouvelles technologies et l'innovation","L'impact local sur les territoires","Les nouveaux métiers et opportunités de carrière"]
+  },
+  {
+    label: 'ÉTAPE 2 — TON POSITIONNEMENT',
+    q: "Dans ce secteur, tu te vois plutôt :",
+    opts: ["Sur le terrain, au contact des projets concrets","En conception ou R&D, à inventer des solutions","En coordination, à faire le lien entre acteurs","En communication, à porter la vision auprès des autres"]
+  },
+  {
+    label: 'ÉTAPE 3 — TON HORIZON',
+    q: "Dans 5 ans, ce que tu veux pouvoir dire que tu as changé :",
+    opts: ["J'ai aidé une entreprise à décarboner","J'ai conçu ou déployé une technologie verte","J'ai connecté des acteurs qui ne se parlaient pas","J'ai convaincu des gens de changer leurs habitudes"]
+  }
+];
+
+/* ─── ÉTAT ─── */
+var epIdx = 0, videoInt = null, videoTime = 0;
+var subIdx = 0, buildAnswers = [];
+
+/* ─── NAV ─── */
+function show(id){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on');});
+  document.getElementById(id).classList.add('on');
+}
+
+/* ─── INIT ─── */
+function startMC(){
+  epIdx = 0;
+  buildAnswers = [];
+  playEpisode(0);
+}
+
+function initIntro(){
+  var html = '';
+  EPISODES.forEach(function(ep,i){
+    html += '<div class="ep-item' + (i < epIdx ? ' done' : '') + '">'
+      + '<div class="ep-num" style="background:' + ep.color + '">' + (i+1) + '</div>'
+      + '<div class="ep-info"><div class="ep-name">' + ep.title + '</div>'
+      + '<div class="ep-fmt">Vidéo 60s + LOOP question</div></div>'
+      + '<div class="ep-dur">' + (i < epIdx ? '<span class="ep-check">✓</span>' : '1mn') + '</div>'
+      + '</div>';
+  });
+  document.getElementById('episodesPreview').innerHTML = html;
+}
+initIntro();
+
+/* ─── VIDÉO ─── */
+function playEpisode(i){
+  epIdx = i;
+  show('v-video');
+  var ep = EPISODES[i];
+  videoTime = 0;
+  subIdx = 0;
+  document.getElementById('vpEpBadge').textContent = 'Épisode ' + (i+1) + ' / ' + EPISODES.length;
+  document.getElementById('vpProg').style.width = '0%';
+  document.getElementById('videoNextBtn').style.display = 'none';
+  document.getElementById('subText').textContent = ep.subtitles[0].txt;
+  // Dots
+  var dots = document.getElementById('vcDots');
+  dots.innerHTML = '';
+  EPISODES.forEach(function(_,j){
+    var d = document.createElement('div');
+    d.className = 'vc-dot' + (j < i ? ' done' : j === i ? ' cur' : '');
+    dots.appendChild(d);
+  });
+  clearInterval(videoInt);
+  videoInt = setInterval(function(){
+    videoTime++;
+    var pct = videoTime / ep.duration * 100;
+    document.getElementById('vpProg').style.width = Math.min(pct, 100) + '%';
+    var m = Math.floor(videoTime/60), s = videoTime % 60;
+    document.getElementById('vcTimer').textContent = m + ':' + (s<10?'0':'') + s + ' / 1:00';
+    // Sous-titres
+    for(var k = ep.subtitles.length-1; k >= 0; k--){
+      if(videoTime >= ep.subtitles[k].at){
+        document.getElementById('subText').textContent = ep.subtitles[k].txt;
+        break;
+      }
+    }
+    if(videoTime >= ep.duration){
+      clearInterval(videoInt);
+      document.getElementById('videoNextBtn').style.display = 'block';
+    }
+  }, 1000);
+}
+
+function skipVideo(){
+  clearInterval(videoInt);
+  document.getElementById('vpProg').style.width = '100%';
+  document.getElementById('subText').textContent = EPISODES[epIdx].subtitles[EPISODES[epIdx].subtitles.length-1].txt;
+  document.getElementById('videoNextBtn').style.display = 'block';
+}
+
+/* ─── LOOP ─── */
+function showLoop(){
+  show('v-loop');
+  var ep = EPISODES[epIdx];
+  document.getElementById('lerTxt').textContent = 'APRÈS L\'ÉPISODE ' + (epIdx+1);
+  document.getElementById('loopQ').textContent = ep.question;
+  document.getElementById('loopFeedback').style.display = 'none';
+  document.getElementById('loopNext').style.display = 'none';
+  var cont = document.getElementById('loopOpts');
+  cont.innerHTML = '';
+  ep.opts.forEach(function(opt, i){
+    var el = document.createElement('div');
+    el.className = 'loop-opt';
+    el.innerHTML = '<div class="lo-l">'+['A','B','C','D'][i]+'</div><span class="lo-txt">'+opt+'</span>';
+    el.addEventListener('click', function(){ loopAnswer(el, i, ep); });
+    cont.appendChild(el);
+  });
+}
+
+function loopAnswer(el, i, ep){
+  document.querySelectorAll('.loop-opt').forEach(function(o){o.style.pointerEvents='none';});
+  var correct = i === ep.correct;
+  el.classList.add(correct ? 'correct' : 'wrong');
+  if(!correct) document.querySelectorAll('.loop-opt')[ep.correct].classList.add('correct');
+  var fb = document.getElementById('loopFeedback');
+  fb.style.display = 'block';
+  fb.style.background = ep.fbBg[i];
+  fb.style.border = '0.5px solid ' + ep.fbColor[i] + '44';
+  fb.style.borderRadius = '10px';
+  document.getElementById('lfLbl').style.color = ep.fbColor[i];
+  document.getElementById('lfLbl').textContent = correct ? 'BONNE RÉPONSE' : 'PAS TOUT À FAIT';
+  document.getElementById('lfTxt').textContent = ep.fb[i];
+  var btn = document.getElementById('loopNext');
+  btn.style.display = 'block';
+  btn.style.background = epIdx < EPISODES.length-1 ? ep.color : 'var(--purple)';
+  btn.style.color = '#fff';
+  btn.textContent = epIdx < EPISODES.length-1 ? 'Épisode suivant →' : 'BUILD final →';
+}
+
+function afterLoop(){
+  if(epIdx < EPISODES.length-1){
+    epIdx++;
+    playEpisode(epIdx);
+  } else {
+    showBuild();
+  }
+}
+
+/* ─── BUILD ─── */
+function showBuild(){
+  show('v-build');
+  buildAnswers = new Array(BUILD_STEPS.length).fill(null);
+  var html = '';
+  BUILD_STEPS.forEach(function(step, si){
+    html += '<div class="build-step">'
+      + '<div class="bs-label" style="color:#c98ff0;">' + step.label + '</div>'
+      + '<div class="bs-q">' + step.q + '</div>'
+      + '<div class="bs-opts">';
+    step.opts.forEach(function(opt, oi){
+      html += '<div class="bs-opt" data-si="'+si+'" data-oi="'+oi+'" onclick="buildChoose(this,'+si+','+oi+')">' + opt + '</div>';
+    });
+    html += '</div></div>';
+  });
+  document.getElementById('buildSteps').innerHTML = html;
+  document.getElementById('buildSubmit').style.display = 'none';
+}
+
+function buildChoose(el, si, oi){
+  // Désélectionner les autres options de ce step
+  document.querySelectorAll('.bs-opt[data-si="'+si+'"]').forEach(function(o){o.classList.remove('sel');});
+  el.classList.add('sel');
+  buildAnswers[si] = BUILD_STEPS[si].opts[oi];
+  // Montrer submit si toutes les étapes remplies
+  if(buildAnswers.every(function(a){return a !== null;})){
+    document.getElementById('buildSubmit').style.display = 'block';
+  }
+}
+
+/* ─── FIN ─── */
+function showEnd(){
+  show('v-end');
+  var html = '';
+  buildAnswers.forEach(function(a, i){
+    if(a) html += '<div class="br-item"><div class="bri-dot"></div><div class="bri-txt">' + BUILD_STEPS[i].q.replace(':','') + ' <strong>' + a.toLowerCase() + '</strong></div></div>';
+  });
+  document.getElementById('brItems').innerHTML = html || '<div class="bri-txt">BUILD complété.</div>';
+}
+</script>
+</body>
+</html>

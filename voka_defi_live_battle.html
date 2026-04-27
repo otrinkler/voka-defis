@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VOKA — LIVE BATTLE</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --purple:#7500B8;--green:#B3F70B;--orange:#FF5321;--blue:#378ADD;
+  --bg:#080810;--bg2:#0f0f1e;--bg3:#1a1a2e;
+  --w:#fff;--w7:rgba(255,255,255,0.7);--w6:rgba(255,255,255,0.6);
+  --w4:rgba(255,255,255,0.55);--w2:rgba(255,255,255,0.12);--w1:rgba(255,255,255,0.06);
+  --teal:#1D9E75;--teal-l:#6ddba0;
+}
+body{background:#111;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px;}
+.phone{width:390px;min-height:844px;background:var(--bg);border-radius:48px;overflow:hidden;border:7px solid #1e1e2e;position:relative;display:flex;flex-direction:column;}
+.sb{display:flex;justify-content:space-between;padding:12px 22px 0;font-size:12px;color:var(--w4);flex-shrink:0;}
+.step{display:none;flex-direction:column;flex:1;}
+.step.active{display:flex;}
+
+/* ─── TABS PERSPECTIVES ─── */
+.view-tabs{display:flex;gap:5px;padding:10px 16px 0;flex-shrink:0;}
+.vt{flex:1;padding:7px 4px;border-radius:9px;font-size:10px;font-weight:500;text-align:center;cursor:pointer;border:0.5px solid var(--w2);color:var(--w4);background:var(--w1);transition:all 0.15s;letter-spacing:0.03em;}
+.vt.on{color:#fff;border-color:transparent;}
+
+/* ─── VUE SALLE (participant) ─── */
+
+/* Lobby salle */
+.salle-hdr{padding:12px 20px 0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.event-badge{display:flex;align-items:center;gap:6px;background:rgba(255,83,33,0.12);border:0.5px solid rgba(255,128,96,0.3);border-radius:20px;padding:5px 12px;}
+.eb-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.eb-txt{font-size:11px;color:#ff8060;font-weight:500;letter-spacing:0.04em;}
+.live-count{font-size:11px;color:var(--w4);background:var(--w1);padding:4px 10px;border-radius:8px;}
+.live-count strong{color:var(--w6);}
+
+/* Scène simulée */
+.stage-preview{margin:12px 16px 0;border-radius:14px;overflow:hidden;position:relative;flex-shrink:0;}
+.stage-bg{height:160px;background:linear-gradient(180deg,#0a0518 0%,#120a24 60%,#080810 100%);display:flex;align-items:center;justify-content:center;position:relative;}
+.stage-lights{position:absolute;top:0;left:0;right:0;height:80px;background:linear-gradient(180deg,rgba(117,0,184,0.25) 0%,transparent 100%);}
+.stage-fighters{display:flex;align-items:flex-end;justify-content:center;gap:0;position:relative;z-index:2;width:100%;padding-bottom:8px;}
+.fighter-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;}
+.fighter-av{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;color:#fff;border:2px solid;}
+.fighter-name{font-size:11px;font-weight:500;}
+.fighter-score-badge{font-size:18px;font-weight:500;padding:4px 14px;border-radius:8px;}
+.stage-vs{display:flex;flex-direction:column;align-items:center;gap:3px;padding-bottom:20px;}
+.stage-vs-txt{font-size:16px;font-weight:500;color:var(--w4);}
+.stage-vs-q{font-size:10px;color:var(--w6);letter-spacing:0.07em;}
+.stage-overlay{position:absolute;bottom:0;left:0;right:0;height:30px;background:linear-gradient(to top,var(--bg) 0%,transparent 100%);}
+
+/* QR Join */
+.join-box{margin:10px 16px 0;display:flex;align-items:center;gap:10px;background:var(--bg2);border-radius:12px;padding:12px 14px;border:0.5px solid var(--w2);flex-shrink:0;}
+.qr-mock{width:44px;height:44px;background:var(--w);border-radius:6px;display:grid;grid-template-columns:repeat(5,1fr);gap:1px;padding:3px;flex-shrink:0;}
+.qr-cell{border-radius:1px;}
+.join-info{flex:1;}
+.join-title{font-size:13px;font-weight:500;color:var(--w);margin-bottom:2px;}
+.join-sub{font-size:11px;color:rgba(255,255,255,0.6);}
+.join-btn{background:var(--orange);border:none;border-radius:9px;padding:7px 14px;font-size:12px;font-weight:500;color:#fff;cursor:pointer;white-space:nowrap;}
+
+/* Sondage actif */
+.poll-zone{margin:10px 16px 0;flex-shrink:0;}
+.pz-lbl{font-size:10px;color:var(--w4);letter-spacing:0.08em;margin-bottom:8px;font-weight:500;}
+.pz-question{font-size:16px;font-weight:500;color:var(--w);line-height:1.32;margin-bottom:12px;}
+.pz-opts{display:flex;flex-direction:column;gap:6px;}
+.pz-opt{border-radius:12px;padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;border:0.5px solid var(--w2);background:var(--w1);transition:all 0.15s;}
+.pz-opt:hover{background:rgba(255,83,33,0.06);}
+.pz-opt.voted{background:rgba(255,83,33,0.12);border-color:rgba(255,128,96,0.35);}
+.pz-opt.winner{background:rgba(179,247,11,0.08);border-color:rgba(179,247,11,0.3);}
+.pz-opt-letter{width:26px;height:26px;border-radius:7px;background:var(--w1);font-size:12px;font-weight:500;color:var(--w4);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pz-opt.voted .pz-opt-letter{background:rgba(255,83,33,0.2);color:#ff8060;}
+.pz-opt.winner .pz-opt-letter{background:rgba(179,247,11,0.15);color:var(--green);}
+.pz-opt-text{font-size:13px;color:var(--w6);flex:1;}
+.pz-opt.voted .pz-opt-text,.pz-opt.winner .pz-opt-text{color:var(--w);}
+.pz-bar{height:3px;background:rgba(255,83,33,0.35);border-radius:2px;margin-top:5px;width:0%;transition:width 0.5s ease;}
+.pz-opt.winner .pz-bar{background:var(--green);}
+.pz-pct{font-size:11px;font-weight:500;color:var(--w4);margin-top:3px;display:none;}
+
+/* Grand écran simul */
+.screen-simul{margin:10px 16px 0;background:#020208;border-radius:12px;overflow:hidden;border:0.5px solid var(--w2);flex-shrink:0;}
+.ss-top{padding:8px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:0.5px solid var(--w2);}
+.ss-title{font-size:11px;font-weight:500;color:var(--w6);}
+.ss-live{display:flex;align-items:center;gap:5px;}
+.ss-live-dot{width:5px;height:5px;border-radius:50%;background:var(--orange);animation:pulse 1.2s infinite;}
+.ss-live-txt{font-size:10px;color:#ff8060;}
+.ss-scores{display:grid;grid-template-columns:1fr 40px 1fr;padding:10px 14px;align-items:center;}
+.ss-fighter{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.ss-av{width:34px;height:34px;border-radius:50%;font-size:13px;font-weight:600;color:#fff;display:flex;align-items:center;justify-content:center;}
+.ss-name{font-size:10px;font-weight:500;}
+.ss-score{font-size:22px;font-weight:500;}
+.ss-vs-center{text-align:center;font-size:11px;color:var(--w4);}
+.ss-bar-row{padding:0 14px 8px;}
+.ss-bar-wrap{display:flex;height:5px;border-radius:3px;overflow:hidden;}
+.ss-bar-a{height:5px;transition:width 0.5s ease;}
+.ss-bar-b{height:5px;transition:width 0.5s ease;}
+.ss-voters{text-align:center;font-size:10px;color:rgba(255,255,255,0.55);padding-bottom:8px;}
+
+/* ─── VUE COMBATTANT ─── */
+.battle-hdr{padding:12px 16px 0;flex-shrink:0;}
+.bh-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.battle-scores{display:flex;align-items:center;gap:0;background:var(--bg2);border-radius:12px;overflow:hidden;border:0.5px solid var(--w2);}
+.bs-side{padding:7px 16px;display:flex;flex-direction:column;align-items:center;gap:1px;flex:1;}
+.bs-me{border-right:0.5px solid var(--w2);}
+.bs-name{font-size:9px;font-weight:500;letter-spacing:0.06em;}
+.bs-val{font-size:22px;font-weight:500;color:var(--w);}
+.battle-timer{display:flex;align-items:center;gap:6px;background:rgba(255,83,33,0.1);border:0.5px solid rgba(255,83,33,0.25);border-radius:20px;padding:5px 12px;}
+.bt-svg{width:20px;height:20px;transform:rotate(-90deg);}
+.bt-track{fill:none;stroke:rgba(255,255,255,0.1);stroke-width:2.5;}
+.bt-fill{fill:none;stroke:var(--orange);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:56.5;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke 0.3s;}
+.bt-val{font-size:13px;font-weight:500;color:var(--w);}
+.battle-prog{height:2px;background:var(--w1);border-radius:1px;overflow:hidden;}
+.battle-prog-fill{height:2px;background:linear-gradient(90deg,var(--orange),var(--purple));border-radius:1px;transition:width 0.3s;}
+
+/* Vote public mini */
+.audience-bar{margin:8px 16px 0;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.ab-lbl{font-size:10px;color:var(--w4);}
+.ab-wrap{flex:1;display:flex;height:5px;border-radius:3px;overflow:hidden;}
+.ab-me{height:5px;transition:width 0.5s;}
+.ab-opp{height:5px;transition:width 0.5s;}
+.ab-counts{font-size:10px;color:var(--w4);display:flex;gap:6px;}
+.ab-me-c{color:#ff8060;}
+.ab-opp-c{color:#7ab8f0;}
+
+.battle-q{padding:12px 16px 0;flex-shrink:0;}
+.bq-num{font-size:10px;color:var(--w4);letter-spacing:0.08em;margin-bottom:5px;}
+.bq-text{font-size:18px;font-weight:500;color:var(--w);line-height:1.32;}
+
+.battle-opts{display:flex;flex-direction:column;gap:6px;padding:12px 16px 0;flex-shrink:0;}
+.b-opt{background:var(--w1);border:0.5px solid var(--w2);border-radius:12px;padding:12px 13px;cursor:pointer;display:flex;align-items:center;gap:9px;transition:all 0.12s;}
+.b-opt:hover{background:rgba(255,83,33,0.06);}
+.b-opt.correct{background:rgba(179,247,11,0.08);border-color:rgba(179,247,11,0.3);}
+.b-opt.wrong{background:rgba(255,83,33,0.08);border-color:rgba(255,83,33,0.25);}
+.b-opt.chosen{background:rgba(255,83,33,0.1);border-color:rgba(255,128,96,0.3);}
+.b-opt-letter{width:24px;height:24px;border-radius:7px;background:var(--w1);font-size:11px;font-weight:500;color:var(--w4);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.b-opt.correct .b-opt-letter{background:rgba(179,247,11,0.15);color:var(--green);}
+.b-opt.wrong .b-opt-letter{background:rgba(255,83,33,0.15);color:#ff8060;}
+.b-opt.chosen .b-opt-letter{background:rgba(255,128,96,0.2);color:#ff8060;}
+.b-opt-text{font-size:13px;color:var(--w6);}
+.b-opt.correct .b-opt-text{color:var(--w);}
+
+.fb-zone{margin:10px 16px 0;background:var(--bg2);border-radius:10px;padding:10px 12px;border:0.5px solid var(--w2);display:none;flex-shrink:0;}
+.fbz-row{display:flex;align-items:center;gap:8px;}
+.fbz-av{width:20px;height:20px;border-radius:50%;font-size:8px;font-weight:600;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;}
+.fbz-name{font-size:11px;font-weight:500;flex:1;}
+.fbz-ans{font-size:11px;color:var(--w4);}
+.fbz-pts{font-size:11px;font-weight:500;}
+.pts-g{color:var(--green);}
+.pts-r{color:#ff8060;}
+
+.battle-next{margin:10px 16px 0;width:calc(100% - 32px);background:var(--orange);border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;display:none;flex-shrink:0;}
+
+/* ─── VUE ANIMATEUR ─── */
+.anim-screen{background:#020208;margin:12px 16px 0;border-radius:14px;overflow:hidden;border:0.5px solid rgba(255,83,33,0.2);flex-shrink:0;}
+.as-header{padding:10px 14px;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;}
+.ash-left{display:flex;align-items:center;gap:8px;}
+.ash-logo{font-size:11px;font-weight:500;color:var(--purple);background:rgba(117,0,184,0.15);padding:2px 8px;border-radius:5px;}
+.ash-event{font-size:12px;font-weight:500;color:var(--w);}
+.ash-live{display:flex;align-items:center;gap:4px;background:rgba(255,83,33,0.12);border-radius:8px;padding:3px 8px;}
+.ash-dot{width:5px;height:5px;border-radius:50%;background:var(--orange);animation:pulse 1.2s infinite;}
+.ash-txt{font-size:10px;color:#ff8060;font-weight:500;}
+.as-fighters{padding:10px 14px 0;display:grid;grid-template-columns:1fr 36px 1fr;align-items:center;gap:0;}
+.asf{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.asf-av{width:40px;height:40px;border-radius:50%;font-size:15px;font-weight:600;color:#fff;display:flex;align-items:center;justify-content:center;}
+.asf-name{font-size:11px;font-weight:500;}
+.asf-score{font-size:26px;font-weight:300;}
+.asf-change{font-size:10px;font-weight:500;}
+.asvs{text-align:center;font-size:12px;color:var(--w4);}
+.as-vote-bar{padding:8px 14px;}
+.asvb-lbl{font-size:10px;color:var(--w6);letter-spacing:0.06em;margin-bottom:5px;}
+.asvb-wrap{display:flex;height:8px;border-radius:4px;overflow:hidden;}
+.asvb-a{height:8px;transition:width 0.5s;}
+.asvb-b{height:8px;transition:width 0.5s;}
+.asvb-counts{display:flex;justify-content:space-between;margin-top:4px;}
+.asvb-ca,.asvb-cb{font-size:10px;font-weight:500;}
+.as-q{padding:8px 14px;background:rgba(117,0,184,0.08);border-top:0.5px solid rgba(255,255,255,0.05);}
+.asq-lbl{font-size:9px;color:rgba(117,0,184,0.7);letter-spacing:0.07em;margin-bottom:4px;}
+.asq-txt{font-size:13px;font-weight:500;color:var(--w);line-height:1.3;}
+.as-controls{padding:10px 14px;display:flex;gap:6px;}
+.asc-btn{flex:1;padding:8px;border-radius:9px;font-size:11px;font-weight:500;cursor:pointer;border:none;transition:all 0.15s;}
+.asc-prev{background:rgba(255,255,255,0.06);color:var(--w4);}
+.asc-reveal{background:var(--green);color:#0a1200;}
+.asc-next{background:var(--purple);color:#fff;}
+.as-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:0 14px 12px;}
+.ast-card{background:rgba(255,255,255,0.04);border-radius:7px;padding:7px 8px;}
+.ast-val{font-size:16px;font-weight:500;color:var(--w);}
+.ast-val.green{color:var(--green);}
+.ast-val.orange{color:var(--orange);}
+.ast-lbl{font-size:9px;color:rgba(255,255,255,0.3);margin-top:1px;}
+
+/* ─── FIN BATTLE ─── */
+.end-bg-battle{position:absolute;inset:0;overflow:hidden;}
+.ebb-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,83,33,0.15) 0%,rgba(117,0,184,0.2) 100%);}
+.end-content-battle{position:relative;z-index:2;padding:28px 22px;display:flex;flex-direction:column;align-items:center;flex:1;}
+.ecb-title{font-size:28px;font-weight:500;text-align:center;margin-bottom:4px;line-height:1.2;}
+.ecb-sub{font-size:13px;color:var(--w6);text-align:center;line-height:1.5;margin-bottom:22px;}
+.winner-card{background:rgba(0,0,0,0.35);border-radius:16px;padding:18px;width:100%;margin-bottom:16px;border:0.5px solid rgba(255,255,255,0.1);text-align:center;}
+.wc-crown{font-size:32px;margin-bottom:8px;}
+.wc-av{width:72px;height:72px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:600;color:#fff;border:3px solid;}
+.wc-name{font-size:18px;font-weight:500;margin-bottom:4px;}
+.wc-score{font-size:28px;font-weight:300;margin-bottom:8px;}
+.wc-pills{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;}
+.wc-pill{font-size:11px;padding:3px 9px;border-radius:5px;font-weight:500;}
+.scores-comparison{width:100%;margin-bottom:18px;}
+.sc-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+.scr-av{width:32px;height:32px;border-radius:50%;font-size:12px;font-weight:600;color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid;flex-shrink:0;}
+.scr-info{flex:1;}
+.scr-name{font-size:12px;font-weight:500;margin-bottom:3px;}
+.scr-bar{height:4px;background:var(--w2);border-radius:2px;overflow:hidden;}
+.scr-fill{height:4px;border-radius:2px;transition:width 1s ease;}
+.scr-pts{font-size:13px;font-weight:500;width:48px;text-align:right;flex-shrink:0;}
+.vote-summary{background:rgba(255,255,255,0.04);border-radius:10px;padding:10px 14px;width:100%;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;}
+.vs-lbl{font-size:11px;color:var(--w4);}
+.vs-val{font-size:13px;font-weight:500;color:var(--w);}
+.xp-row-end{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.xpe-val{font-size:34px;font-weight:500;color:var(--green);}
+.xpe-lbl{font-size:13px;color:var(--w4);line-height:1.5;}
+.end-btns{display:flex;flex-direction:column;gap:7px;width:100%;margin-top:auto;}
+.btn-m{border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;cursor:pointer;}
+.btn-s{background:var(--w1);border:0.5px solid var(--w2);border-radius:13px;padding:11px;font-size:13px;color:var(--w6);cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+
+<!-- TABS -->
+<div class="view-tabs">
+  <div class="vt on" style="background:#FF5321;border-color:#FF5321;" onclick="switchView(this,'salle')">👥 Salle</div>
+  <div class="vt" onclick="switchView(this,'combattant')">⚔️ Combattant</div>
+  <div class="vt" onclick="switchView(this,'animateur')">🎙️ Animateur</div>
+</div>
+
+<!-- ══════════ VUE SALLE ══════════ -->
+<div class="step active" id="v-salle">
+
+  <!-- LOBBY SALLE -->
+  <div id="salle-lobby">
+    <div class="salle-hdr">
+      <div class="event-badge"><div class="eb-dot"></div><span class="eb-txt">LIVE BATTLE · Choose Your Future</span></div>
+      <div class="live-count"><strong id="salleLiveCount">312</strong> en salle</div>
+    </div>
+
+    <!-- Scène -->
+    <div class="stage-preview">
+      <div class="stage-bg">
+        <div class="stage-lights"></div>
+        <div class="stage-fighters">
+          <div class="fighter-wrap">
+            <div class="fighter-av" style="background:rgba(117,0,184,0.35);border-color:var(--purple);">T</div>
+            <span class="fighter-name" style="color:#c98ff0;">Thomas</span>
+            <div class="fighter-score-badge" style="color:var(--green);" id="sceneScoreA">0</div>
+          </div>
+          <div class="stage-vs">
+            <div class="stage-vs-txt">VS</div>
+            <div class="stage-vs-q">Q.2/4</div>
+          </div>
+          <div class="fighter-wrap">
+            <div class="fighter-av" style="background:rgba(55,138,221,0.3);border-color:var(--blue);">Y</div>
+            <span class="fighter-name" style="color:#7ab8f0;">Yasmine</span>
+            <div class="fighter-score-badge" style="color:#7ab8f0;" id="sceneScoreB">0</div>
+          </div>
+        </div>
+        <div class="stage-overlay"></div>
+      </div>
+    </div>
+
+    <!-- Rejoindre -->
+    <div class="join-box">
+      <div class="qr-mock" id="qrMock"></div>
+      <div class="join-info">
+        <div class="join-title">Participe au vote</div>
+        <div class="join-sub">Scanne ou tape voka.fr/live-battle</div>
+      </div>
+      <button class="join-btn" onclick="startSallePoll()">Voter →</button>
+    </div>
+
+    <!-- Grand écran simulation -->
+    <div class="screen-simul">
+      <div class="ss-top">
+        <span class="ss-title">Grand écran · salle</span>
+        <div class="ss-live"><div class="ss-live-dot"></div><span class="ss-live-txt">EN DIRECT</span></div>
+      </div>
+      <div class="ss-scores">
+        <div class="ss-fighter">
+          <div class="ss-av" style="background:#7500B8">T</div>
+          <div class="ss-name" style="color:#c98ff0">Thomas</div>
+          <div class="ss-score" style="color:var(--green)" id="ssScoreA">0</div>
+        </div>
+        <div class="ss-vs-center">VS</div>
+        <div class="ss-fighter">
+          <div class="ss-av" style="background:#378ADD">Y</div>
+          <div class="ss-name" style="color:#7ab8f0">Yasmine</div>
+          <div class="ss-score" style="color:#7ab8f0" id="ssScoreB">0</div>
+        </div>
+      </div>
+      <div class="ss-bar-row">
+        <div class="ss-bar-wrap">
+          <div class="ss-bar-a" id="ssBarA" style="width:50%;background:var(--purple)"></div>
+          <div class="ss-bar-b" id="ssBarB" style="width:50%;background:var(--blue)"></div>
+        </div>
+      </div>
+      <div class="ss-voters" id="ssVoters">312 spectateurs · votes en direct</div>
+    </div>
+  </div>
+
+  <!-- SALLE VOTE ACTIF -->
+  <div id="salle-vote" style="display:none;padding:12px 16px 0;flex-direction:column;gap:0;">
+    <div style="font-size:10px;color:var(--w4);letter-spacing:0.08em;margin-bottom:8px;font-weight:500;">LA QUESTION EN SALLE</div>
+    <div style="font-size:17px;font-weight:500;color:var(--w);line-height:1.32;margin-bottom:14px;" id="salleQTxt"></div>
+    <div style="display:flex;flex-direction:column;gap:7px;" id="salleOptsCont"></div>
+    <div id="salleFeedback" style="display:none;margin-top:12px;background:rgba(255,83,33,0.08);border:0.5px solid rgba(255,128,96,0.2);border-radius:10px;padding:10px 13px;font-size:12px;color:var(--w6);line-height:1.55;"></div>
+    <div style="margin-top:10px;font-size:11px;color:var(--w4);font-style:italic;" id="salleVoteCount"></div>
+  </div>
+</div>
+
+<!-- ══════════ VUE COMBATTANT ══════════ -->
+<div class="step" id="v-combattant">
+  <div class="battle-hdr">
+    <div class="bh-top">
+      <div class="battle-scores">
+        <div class="bs-side bs-me">
+          <span class="bs-name" style="color:#ff8060;">MOI</span>
+          <span class="bs-val" id="btScoreMe">0</span>
+        </div>
+        <div class="bs-side">
+          <span class="bs-name" style="color:#7ab8f0;">YASMINE</span>
+          <span class="bs-val" id="btScoreOpp">0</span>
+        </div>
+      </div>
+      <div class="battle-timer">
+        <svg class="bt-svg" viewBox="0 0 20 20"><circle class="bt-track" cx="10" cy="10" r="9"/><circle class="bt-fill" id="btCircle" cx="10" cy="10" r="9"/></svg>
+        <span class="bt-val" id="btVal">45</span>
+      </div>
+    </div>
+    <div class="battle-prog"><div class="battle-prog-fill" id="btProg" style="width:25%"></div></div>
+  </div>
+
+  <div class="audience-bar">
+    <span class="ab-lbl">Salle vote</span>
+    <div class="ab-wrap">
+      <div class="ab-me" id="abMe" style="width:44%;background:var(--orange)"></div>
+      <div class="ab-opp" id="abOpp" style="width:56%;background:var(--blue)"></div>
+    </div>
+    <div class="ab-counts">
+      <span class="ab-me-c" id="abMeC">44%</span>
+      <span class="ab-opp-c" id="abOppC">56%</span>
+    </div>
+  </div>
+
+  <div class="battle-q">
+    <div class="bq-num" id="btQNum">QUESTION 2 / 4</div>
+    <div class="bq-text" id="btQText">Quelle compétence sera la plus valorisée en entreprise d'ici 2030 ?</div>
+  </div>
+
+  <div class="battle-opts" id="btOpts"></div>
+
+  <div class="fb-zone" id="btFb">
+    <div class="fbz-row" id="fbRowMe"></div>
+    <div style="height:6px;"></div>
+    <div class="fbz-row" id="fbRowOpp"></div>
+  </div>
+
+  <button class="battle-next" id="btNextBtn" onclick="btNextQ()"></button>
+</div>
+
+<!-- ══════════ VUE ANIMATEUR ══════════ -->
+<div class="step" id="v-animateur">
+  <div style="padding:12px 16px 0;font-size:10px;color:var(--w4);letter-spacing:0.07em;font-weight:500;flex-shrink:0;">CONSOLE ANIMATEUR</div>
+
+  <div class="anim-screen">
+    <div class="as-header">
+      <div class="ash-left">
+        <span class="ash-logo">VOKA</span>
+        <span class="ash-event">Choose Your Future 2026</span>
+      </div>
+      <div class="ash-live"><div class="ash-dot"></div><span class="ash-txt">LIVE</span></div>
+    </div>
+
+    <div class="as-fighters">
+      <div class="asf">
+        <div class="asf-av" style="background:rgba(117,0,184,0.35);border:2px solid var(--purple);">T</div>
+        <div class="asf-name" style="color:#c98ff0">Thomas</div>
+        <div class="asf-score" style="color:var(--green)" id="animScoreA">0</div>
+        <div class="asf-change" id="animDeltaA" style="color:var(--green)"></div>
+      </div>
+      <div class="asvs">VS</div>
+      <div class="asf">
+        <div class="asf-av" style="background:rgba(55,138,221,0.3);border:2px solid var(--blue);">Y</div>
+        <div class="asf-name" style="color:#7ab8f0">Yasmine</div>
+        <div class="asf-score" style="color:#7ab8f0" id="animScoreB">0</div>
+        <div class="asf-change" id="animDeltaB" style="color:#7ab8f0"></div>
+      </div>
+    </div>
+
+    <div class="as-vote-bar">
+      <div class="asvb-lbl">VOTE SALLE EN DIRECT</div>
+      <div class="asvb-wrap">
+        <div class="asvb-a" id="animBarA" style="width:44%;background:var(--purple)"></div>
+        <div class="asvb-b" id="animBarB" style="width:56%;background:var(--blue)"></div>
+      </div>
+      <div class="asvb-counts">
+        <span class="asvb-ca" id="animVoteA" style="color:#c98ff0">44% Thomas</span>
+        <span class="asvb-cb" id="animVoteB" style="color:#7ab8f0">56% Yasmine</span>
+      </div>
+    </div>
+
+    <div class="as-q">
+      <div class="asq-lbl">QUESTION EN COURS</div>
+      <div class="asq-txt" id="animQTxt">Quelle compétence sera la plus valorisée en entreprise d'ici 2030 ?</div>
+    </div>
+
+    <div class="as-controls">
+      <button class="asc-btn asc-prev" onclick="animPrev()">← Préc.</button>
+      <button class="asc-btn asc-reveal" onclick="animReveal()">Révéler →</button>
+      <button class="asc-btn asc-next" onclick="animNext()">Suivant →</button>
+    </div>
+
+    <div class="as-stats">
+      <div class="ast-card"><div class="ast-val green" id="astLive">312</div><div class="ast-lbl">En salle</div></div>
+      <div class="ast-card"><div class="ast-val" id="astVotes">287</div><div class="ast-lbl">Votes reçus</div></div>
+      <div class="ast-card"><div class="ast-val orange" id="astQ">2/4</div><div class="ast-lbl">Question</div></div>
+      <div class="ast-card"><div class="ast-val" id="astTaux">92%</div><div class="ast-lbl">Taux réponse</div></div>
+    </div>
+  </div>
+
+  <div style="margin:10px 16px 0;font-size:11px;color:var(--w4);font-style:italic;line-height:1.5;flex-shrink:0;">
+    La console affiche les résultats en temps réel. Clique "Révéler" pour afficher la bonne réponse sur le grand écran avant de passer à la suivante.
+  </div>
+</div>
+
+<!-- ══════════ FIN BATTLE ══════════ -->
+<div class="step" id="v-end" style="position:relative;">
+  <div class="end-bg-battle"><div class="ebb-overlay"></div></div>
+  <div class="end-content-battle">
+    <div class="ecb-title" id="endTitle">🏆 Thomas gagne !</div>
+    <div class="ecb-sub" id="endSub">La salle a parlé. 312 spectateurs ont suivi la battle.</div>
+
+    <div class="winner-card" id="winnerCard">
+      <div class="wc-crown">👑</div>
+      <div class="wc-av" id="winnerAv" style="background:rgba(117,0,184,0.35);border-color:var(--purple);">T</div>
+      <div class="wc-name" id="winnerName" style="color:#c98ff0">Thomas</div>
+      <div class="wc-score" id="winnerScore" style="color:var(--green)">0 pts</div>
+      <div class="wc-pills" id="winnerPills"></div>
+    </div>
+
+    <div class="scores-comparison" id="scoresComp"></div>
+
+    <div class="vote-summary">
+      <div><div class="vs-lbl">Vote de la salle</div><div class="vs-val" id="vsFinal">—</div></div>
+      <div style="text-align:right"><div class="vs-lbl">Spectateurs</div><div class="vs-val">312</div></div>
+    </div>
+
+    <div class="xp-row-end">
+      <span class="xpe-val" id="endXp">+0 XP</span>
+      <span class="xpe-lbl" id="endXpLbl">XP gagnés<br>sur cette battle</span>
+    </div>
+
+    <div class="end-btns">
+      <button class="btn-m" id="endBtnMain" style="background:var(--orange);color:#fff;" onclick="resetAll()">Nouvelle battle</button>
+      <button class="btn-s" onclick="resetAll()">Retour au feed</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+/* ─── DATA ─── */
+var QUESTIONS=[
+  {txt:"Dans 5 ans, l'IA aura-t-elle remplacé la plupart des métiers juniors ?",opts:["Oui, inévitablement","Non, elle créera de nouveaux métiers","Partiellement","Impossible à prévoir"],correct:1},
+  {txt:"Quelle compétence sera la plus valorisée en entreprise d'ici 2030 ?",opts:["Maîtrise Excel avancée","Adaptabilité et résilience","Diplôme grande école","Langues étrangères"],correct:1},
+  {txt:"Quel % des offres d'emploi junior exigent une première expérience ?",opts:["20%","40%","65%","85%"],correct:2},
+  {txt:"Quel secteur recrute le plus de jeunes sans diplôme en France ?",opts:["Finance","Luxe","BTP & construction","Informatique"],correct:2}
+];
+var qIdx=1, scoreA=0, scoreB=0, timeLeft=45, timerInt=null, btAnswered=false, salleVoted=false;
+var audienceVoteA=44, audienceVoteB=56;
+
+/* ─── NAVIGATION ─── */
+function switchView(el, view){
+  document.querySelectorAll('.vt').forEach(t=>{t.classList.remove('on');t.style.background='';t.style.borderColor='';});
+  el.classList.add('on');
+  var colors={'salle':'#FF5321','combattant':'#7500B8','animateur':'#1D9E75'};
+  el.style.background=colors[view]; el.style.borderColor=colors[view];
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('v-'+view).classList.add('active');
+  if(view==='combattant' && !timerInt) startBattleTimer();
+}
+
+function goStep(id){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ─── SALLE ─── */
+function startSallePoll(){
+  document.getElementById('salle-lobby').style.display='none';
+  var sv=document.getElementById('salle-vote');
+  sv.style.display='flex';
+  var q=QUESTIONS[qIdx];
+  document.getElementById('salleQTxt').textContent=q.txt;
+  var cont=document.getElementById('salleOptsCont');
+  cont.innerHTML='';
+  salleVoted=false;
+  q.opts.forEach((opt,i)=>{
+    var el=document.createElement('div');
+    el.className='pz-opt';
+    el.innerHTML=`<div class="pz-opt-letter">${['A','B','C','D'][i]}</div><span class="pz-opt-text">${opt}</span>`;
+    el.onclick=()=>salleVote(el,i);
+    cont.appendChild(el);
+  });
+  document.getElementById('salleFeedback').style.display='none';
+  document.getElementById('salleVoteCount').textContent='';
+  // live audience counter
+  animateLiveCount();
+}
+
+function salleVote(el,idx){
+  if(salleVoted) return;
+  salleVoted=true;
+  var q=QUESTIONS[qIdx];
+  var correct=idx===q.correct;
+  document.querySelectorAll('#salleOptsCont .pz-opt').forEach(o=>o.onclick=null);
+  el.classList.add(correct?'winner':'voted');
+  if(!correct) document.querySelectorAll('#salleOptsCont .pz-opt')[q.correct].classList.add('winner');
+  var fb=document.getElementById('salleFeedback');
+  fb.style.display='block';
+  fb.textContent=correct?
+    '✓ Bonne réponse ! Ta voix rejoint les '+(Math.floor(audienceVoteA/100*312)+' spectateurs qui ont voté pareil.'):
+    'La bonne réponse était : '+q.opts[q.correct]+'. La salle était à '+(100-audienceVoteA)+'% d\'accord avec toi.';
+  var total=268+Math.floor(Math.random()*20);
+  document.getElementById('salleVoteCount').textContent=total+' votes reçus · '+Math.floor(total/312*100)+'% de participation';
+}
+
+function animateLiveCount(){
+  var el=document.getElementById('salleLiveCount');
+  var n=312, target=347;
+  var int=setInterval(()=>{n+=Math.floor(Math.random()*3)+1; if(n>=target){clearInterval(int);} el.textContent=n;},800);
+}
+
+/* ─── COMBATTANT ─── */
+function loadBtQuestion(){
+  btAnswered=false;
+  var q=QUESTIONS[qIdx];
+  document.getElementById('btQNum').textContent='QUESTION '+(qIdx+1)+' / '+QUESTIONS.length;
+  document.getElementById('btQText').textContent=q.txt;
+  document.getElementById('btProg').style.width=((qIdx+1)/QUESTIONS.length*100)+'%';
+  document.getElementById('btFb').style.display='none';
+  document.getElementById('btNextBtn').style.display='none';
+  var cont=document.getElementById('btOpts');
+  cont.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    var el=document.createElement('div');
+    el.className='b-opt';
+    el.innerHTML=`<div class="b-opt-letter">${['A','B','C','D'][i]}</div><span class="b-opt-text">${opt}</span>`;
+    el.onclick=()=>btAnswer(el,i);
+    cont.appendChild(el);
+  });
+  // Yasmine répond après 3-6s
+  var delay=3000+Math.random()*3000;
+  setTimeout(()=>{if(!btAnswered) yasmineAnswer();}, delay);
+  // Mettre à jour audience bar dynamiquement
+  updateAudienceBar();
+}
+
+var yasmineAnswered=false;
+function btAnswer(el, idx){
+  if(btAnswered) return;
+  btAnswered=true;
+  var q=QUESTIONS[qIdx];
+  var correct=idx===q.correct;
+  var pts=correct?Math.max(10,Math.round(timeLeft/3)):0;
+  document.querySelectorAll('#btOpts .b-opt').forEach(o=>o.onclick=null);
+  if(correct){el.classList.add('correct'); scoreA+=pts;}
+  else{el.classList.add('wrong'); document.querySelectorAll('#btOpts .b-opt')[q.correct].classList.add('correct');}
+  updateScores();
+  showBtFeedback(correct,pts,'me');
+  if(yasmineAnswered) showBtNextBtn();
+}
+
+function yasmineAnswer(){
+  yasmineAnswered=true;
+  var q=QUESTIONS[qIdx];
+  var correct=Math.random()>0.4;
+  var pts=correct?Math.max(10,Math.round(timeLeft/3.5)):0;
+  if(correct) scoreB+=pts;
+  updateScores();
+  showBtFeedback(correct,pts,'opp');
+  if(btAnswered) showBtNextBtn();
+}
+
+function showBtFeedback(correct,pts,who){
+  var fb=document.getElementById('btFb');
+  fb.style.display='block';
+  var rowId=who==='me'?'fbRowMe':'fbRowOpp';
+  var color=who==='me'?'#7500B8':'#378ADD';
+  var initial=who==='me'?'T':'Y';
+  var name=who==='me'?'Toi':'Yasmine';
+  document.getElementById(rowId).innerHTML=`
+    <div class="fbz-av" style="background:${color}">${initial}</div>
+    <span class="fbz-name" style="color:${who==='me'?'#c98ff0':'#7ab8f0'}">${name}</span>
+    <span class="fbz-ans">${correct?'✓ Correct':'✗ Raté'}</span>
+    <span class="fbz-pts ${pts>0?'pts-g':'pts-r'}">${pts>0?'+'+pts+' pts':'0 pt'}</span>`;
+}
+
+function showBtNextBtn(){
+  var btn=document.getElementById('btNextBtn');
+  btn.style.display='block';
+  btn.textContent=qIdx<QUESTIONS.length-1?'Question suivante →':'Voir le résultat final';
+}
+
+function btNextQ(){
+  yasmineAnswered=false;
+  qIdx++;
+  if(qIdx>=QUESTIONS.length){clearInterval(timerInt);showEnd();return;}
+  timeLeft=45; updateTimer(); loadBtQuestion();
+  syncAllScores();
+}
+
+function startBattleTimer(){
+  clearInterval(timerInt);
+  timerInt=setInterval(()=>{
+    timeLeft--;
+    if(timeLeft<=0){clearInterval(timerInt);if(!btAnswered) btAnswer({classList:{add:()=>{}}},9);}
+    updateTimer();
+  },1000);
+  loadBtQuestion();
+}
+
+function updateTimer(){
+  var pct=timeLeft/45;
+  var offset=56.5*(1-pct);
+  var color=timeLeft>15?'var(--orange)':timeLeft>7?'#EF9F27':'#FF5321';
+  var c=document.getElementById('btCircle'); if(c){c.style.strokeDashoffset=offset;c.style.stroke=color;}
+  var v=document.getElementById('btVal'); if(v){v.textContent=timeLeft;v.style.color=color;}
+}
+
+function updateScores(){
+  document.getElementById('btScoreMe').textContent=scoreA;
+  document.getElementById('btScoreOpp').textContent=scoreB;
+  syncAllScores();
+}
+
+function syncAllScores(){
+  ['ssScoreA','sceneScoreA','animScoreA'].forEach(id=>{var e=document.getElementById(id);if(e)e.textContent=scoreA;});
+  ['ssScoreB','sceneScoreB','animScoreB'].forEach(id=>{var e=document.getElementById(id);if(e)e.textContent=scoreB;});
+  var total=scoreA+scoreB||1;
+  var pctA=Math.round(scoreA/total*100), pctB=100-pctA;
+  var barA=document.getElementById('ssBarA'),barB=document.getElementById('ssBarB');
+  if(barA){barA.style.width=pctA+'%';barB.style.width=pctB+'%';}
+  var aB=document.getElementById('animBarA'),aB2=document.getElementById('animBarB');
+  if(aB){
+    // Mélange score + vote salle
+    var mA=Math.round((audienceVoteA+pctA)/2), mB=100-mA;
+    aB.style.width=mA+'%'; aB2.style.width=mB+'%';
+    var va=document.getElementById('animVoteA'),vb=document.getElementById('animVoteB');
+    if(va){va.textContent=mA+'% Thomas'; vb.textContent=mB+'% Yasmine';}
+  }
+  var da=document.getElementById('animDeltaA'),db=document.getElementById('animDeltaB');
+  if(da&&scoreA>0)da.textContent='+'+scoreA+' pts';
+  if(db&&scoreB>0)db.textContent='+'+scoreB+' pts';
+}
+
+function updateAudienceBar(){
+  audienceVoteA=38+Math.floor(Math.random()*24);
+  audienceVoteB=100-audienceVoteA;
+  var eA=document.getElementById('abMe'),eB=document.getElementById('abOpp');
+  var eAC=document.getElementById('abMeC'),eBC=document.getElementById('abOppC');
+  if(eA){eA.style.width=audienceVoteA+'%';eB.style.width=audienceVoteB+'%';}
+  if(eAC){eAC.textContent=audienceVoteA+'%';eBC.textContent=audienceVoteB+'%';}
+}
+
+/* ─── ANIMATEUR ─── */
+var animQIdx=1;
+function animPrev(){if(animQIdx>0){animQIdx--;animQTxtUpdate();}}
+function animNext(){animQIdx=Math.min(animQIdx+1,QUESTIONS.length-1);animQTxtUpdate();}
+function animReveal(){
+  var q=QUESTIONS[animQIdx];
+  document.getElementById('animQTxt').textContent='✓ Bonne réponse : '+q.opts[q.correct];
+  document.getElementById('astTaux').textContent=Math.floor(78+Math.random()*18)+'%';
+}
+function animQTxtUpdate(){
+  document.getElementById('animQTxt').textContent=QUESTIONS[animQIdx].txt;
+  document.getElementById('astQ').textContent=(animQIdx+1)+'/'+QUESTIONS.length;
+  var v=Math.floor(250+Math.random()*60);
+  document.getElementById('astVotes').textContent=v;
+  document.getElementById('astTaux').textContent=Math.floor(v/347*100)+'%';
+}
+// Simuler compteur live
+setInterval(()=>{
+  var e=document.getElementById('astLive');
+  if(e)e.textContent=312+Math.floor(Math.random()*10-3);
+},2000);
+
+/* ─── QR MOCK ─── */
+(function(){
+  var qr=document.getElementById('qrMock');
+  if(!qr)return;
+  var pattern=[1,1,1,0,1,1,0,1,1,1,1,0,1,0,1,1,0,0,0,0,1,1,1,1,1];
+  pattern.forEach(v=>{
+    var c=document.createElement('div');
+    c.className='qr-cell';
+    c.style.background=v?'#080810':'transparent';
+    qr.appendChild(c);
+  });
+})();
+
+/* ─── FIN ─── */
+function showEnd(){
+  goStep('v-end');
+  var wonA=scoreA>=scoreB;
+  document.getElementById('endTitle').textContent=(wonA?'🏆 Thomas gagne !':'🏆 Yasmine gagne !');
+  document.getElementById('endSub').textContent='La salle a parlé. 312 spectateurs ont suivi la battle.';
+
+  var wAv=document.getElementById('winnerAv');
+  var wNm=document.getElementById('winnerName');
+  var wSc=document.getElementById('winnerScore');
+  if(wonA){
+    wAv.style.background='rgba(117,0,184,0.35)'; wAv.style.borderColor='var(--purple)'; wAv.textContent='T';
+    wNm.style.color='#c98ff0'; wNm.textContent='Thomas';
+    wSc.textContent=scoreA+' pts';
+  } else {
+    wAv.style.background='rgba(55,138,221,0.3)'; wAv.style.borderColor='var(--blue)'; wAv.textContent='Y';
+    wNm.style.color='#7ab8f0'; wNm.textContent='Yasmine';
+    wSc.textContent=scoreB+' pts';
+  }
+
+  document.getElementById('winnerPills').innerHTML=[
+    {t:'×3 XP',c:'rgba(179,247,11,0.15)',tc:'var(--green)'},
+    {t:'Salle vote 56%',c:'rgba(255,255,255,0.07)',tc:'var(--w6)'},
+    {t:'Signal Forces',c:'rgba(117,0,184,0.15)',tc:'#c98ff0'}
+  ].map(p=>`<span class="wc-pill" style="background:${p.c};color:${p.tc}">${p.t}</span>`).join('');
+
+  var maxS=Math.max(scoreA,scoreB,1);
+  document.getElementById('scoresComp').innerHTML=`
+    <div class="sc-row">
+      <div class="scr-av" style="background:rgba(117,0,184,0.35);border-color:var(--purple)">T</div>
+      <div class="scr-info">
+        <div class="scr-name" style="color:#c98ff0">Thomas${wonA?' 👑':''}</div>
+        <div class="scr-bar"><div class="scr-fill" style="width:${scoreA/maxS*100}%;background:var(--purple)"></div></div>
+      </div>
+      <div class="scr-pts" style="color:#c98ff0">${scoreA} pts</div>
+    </div>
+    <div class="sc-row">
+      <div class="scr-av" style="background:rgba(55,138,221,0.3);border-color:var(--blue)">Y</div>
+      <div class="scr-info">
+        <div class="scr-name" style="color:#7ab8f0">Yasmine${!wonA?' 👑':''}</div>
+        <div class="scr-bar"><div class="scr-fill" style="width:${scoreB/maxS*100}%;background:var(--blue)"></div></div>
+      </div>
+      <div class="scr-pts" style="color:#7ab8f0">${scoreB} pts</div>
+    </div>`;
+
+  document.getElementById('vsFinal').textContent=wonA?'56% Thomas':'61% Yasmine';
+  var xp=wonA?scoreA*3:Math.round(scoreB*1.5);
+  document.getElementById('endXp').textContent='+'+(wonA?scoreA*3:Math.round(scoreA*1.5))+' XP';
+  document.getElementById('endXpLbl').textContent='XP gagnés\n'+(wonA?'(×3 victoire)':'sur cette battle');
+  document.getElementById('endXp').style.color=wonA?'var(--green)':'#7ab8f0';
+  document.getElementById('endBtnMain').style.background=wonA?'var(--green)':'var(--blue)';
+  document.getElementById('endBtnMain').style.color=wonA?'#0a1200':'#fff';
+}
+
+function resetAll(){
+  qIdx=1; scoreA=0; scoreB=0; timeLeft=45; timerInt=null; btAnswered=false; yasmineAnswered=false;
+  document.getElementById('salle-lobby').style.display='block';
+  document.getElementById('salle-vote').style.display='none';
+  switchView(document.querySelector('.vt'), 'salle');
+  document.querySelectorAll('.vt').forEach((t,i)=>{t.classList.remove('on');t.style.background='';t.style.borderColor='';});
+  document.querySelectorAll('.vt')[0].classList.add('on');
+  document.querySelectorAll('.vt')[0].style.background='#FF5321';
+  document.querySelectorAll('.vt')[0].style.borderColor='#FF5321';
+  document.getElementById('v-salle').classList.add('active');
+  syncAllScores();
+}
+</script>
+</body>
+</html>

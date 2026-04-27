@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VOKA — STAND</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --purple:#7500B8;--green:#B3F70B;--orange:#FF5321;--blue:#378ADD;--amber:#EF9F27;--teal:#1D9E75;
+  --bg:#080810;--bg2:#0f0f1e;--bg3:#1a1a2e;
+  --w:#fff;--w7:rgba(255,255,255,0.7);--w6:rgba(255,255,255,0.6);
+  --w4:rgba(255,255,255,0.55);--w2:rgba(255,255,255,0.12);--w1:rgba(255,255,255,0.06);
+}
+body{background:#111;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px;}
+.phone{width:390px;min-height:844px;background:var(--bg);border-radius:48px;overflow:hidden;border:7px solid #1e1e2e;position:relative;display:flex;flex-direction:column;}
+.sb{display:flex;justify-content:space-between;padding:12px 22px 0;font-size:12px;color:var(--w4);flex-shrink:0;}
+.step{display:none;flex-direction:column;flex:1;}
+.step.active{display:flex;}
+
+/* ── TABS PERSPECTIVES ── */
+.view-tabs{display:flex;gap:5px;padding:10px 16px 0;flex-shrink:0;}
+.vt{flex:1;padding:7px 4px;border-radius:9px;font-size:10px;font-weight:500;text-align:center;cursor:pointer;border:0.5px solid var(--w2);color:var(--w4);background:var(--w1);transition:all 0.15s;letter-spacing:0.03em;}
+.vt.on{color:#fff;border-color:transparent;}
+
+/* ═══════════ VUE VISITEUR ═══════════ */
+
+/* Scan QR */
+.scan-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;}
+.scan-title{font-size:22px;font-weight:500;color:var(--w);text-align:center;margin-bottom:6px;line-height:1.25;}
+.scan-sub{font-size:13px;color:var(--w4);text-align:center;line-height:1.6;margin-bottom:28px;}
+.qr-big{width:160px;height:160px;background:var(--w);border-radius:16px;padding:12px;display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin:0 auto 20px;}
+.qr-cell-big{border-radius:2px;}
+.scan-url{font-size:13px;color:var(--teal);font-weight:500;background:rgba(29,158,117,0.1);border:0.5px solid rgba(109,219,160,0.25);padding:7px 16px;border-radius:10px;margin-bottom:28px;}
+.scan-cta{width:100%;background:var(--teal);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:500;color:#fff;cursor:pointer;}
+
+/* Accroche stand */
+.stand-accueil{flex:1;display:flex;flex-direction:column;}
+.stand-hero{position:relative;height:200px;overflow:hidden;flex-shrink:0;}
+.stand-hero-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.shb-inner{width:100%;height:100%;background:linear-gradient(135deg,#0a0320 0%,#1a0a30 50%,#080810 100%);}
+.stand-logo-zone{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
+.slz-logo{width:72px;height:72px;border-radius:16px;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#0a0320;}
+.slz-name{font-size:18px;font-weight:500;color:var(--w);}
+.slz-tag{font-size:11px;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.06);padding:3px 10px;border-radius:6px;}
+.stand-hero-grad{position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to top,var(--bg) 0%,transparent 100%);}
+.stand-body{padding:0 20px;flex:1;}
+.sb-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(29,158,117,0.1);border:0.5px solid rgba(109,219,160,0.2);border-radius:6px;padding:3px 9px;margin-bottom:10px;}
+.sb-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);}
+.sb-badge-txt{font-size:10px;color:#6ddba0;font-weight:500;letter-spacing:0.04em;}
+.sb-title{font-size:22px;font-weight:500;color:var(--w);line-height:1.25;margin-bottom:7px;}
+.sb-sub{font-size:13px;color:var(--w4);line-height:1.6;margin-bottom:16px;}
+.stand-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:16px;}
+.ss-item{background:var(--bg2);border-radius:9px;padding:9px 8px;text-align:center;border:0.5px solid var(--w2);}
+.ss-val{font-size:18px;font-weight:500;color:var(--w);}
+.ss-lbl{font-size:10px;color:var(--w6);margin-top:1px;line-height:1.3;}
+.stand-proof{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+.sp-avs{display:flex;}
+.sp-av{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--bg);font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;color:#fff;margin-left:-6px;}
+.sp-av:first-child{margin-left:0;}
+.sp-txt{font-size:12px;color:var(--w4);}
+.sp-txt strong{color:var(--w6);}
+.stand-launch-btn{width:100%;background:var(--teal);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:500;color:#fff;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;}
+
+/* Défi en contexte */
+.defi-zone{padding:0 20px;flex:1;display:flex;flex-direction:column;}
+.dz-fmt{display:inline-flex;align-items:center;gap:5px;background:rgba(29,158,117,0.1);border:0.5px solid rgba(109,219,160,0.2);border-radius:6px;padding:3px 9px;margin-bottom:10px;}
+.dz-fmt-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);}
+.dz-fmt-txt{font-size:10px;color:#6ddba0;font-weight:500;letter-spacing:0.04em;}
+.dz-company{font-size:11px;color:var(--w4);margin-bottom:5px;}
+.dz-q{font-size:18px;font-weight:500;color:var(--w);line-height:1.32;margin-bottom:14px;}
+.dz-opts{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.dz-opt{background:var(--w1);border:0.5px solid var(--w2);border-radius:12px;padding:12px 13px;cursor:pointer;display:flex;align-items:center;gap:9px;transition:all 0.12s;}
+.dz-opt:hover{background:rgba(29,158,117,0.06);}
+.dz-opt.chosen{background:rgba(29,158,117,0.1);border-color:rgba(109,219,160,0.3);}
+.dz-opt.correct{background:rgba(179,247,11,0.07);border-color:rgba(179,247,11,0.25);}
+.dz-opt.wrong{background:rgba(255,83,33,0.07);border-color:rgba(255,83,33,0.2);}
+.dz-opt-l{width:24px;height:24px;border-radius:7px;background:var(--w1);font-size:11px;font-weight:500;color:var(--w4);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.dz-opt.chosen .dz-opt-l{background:rgba(29,158,117,0.2);color:#6ddba0;}
+.dz-opt.correct .dz-opt-l{background:rgba(179,247,11,0.15);color:var(--green);}
+.dz-opt.wrong .dz-opt-l{background:rgba(255,83,33,0.15);color:#ff8060;}
+.dz-opt-txt{font-size:13px;color:var(--w6);}
+.dz-opt.chosen .dz-opt-txt,.dz-opt.correct .dz-opt-txt{color:var(--w);}
+.dz-prog{height:3px;background:var(--w1);border-radius:2px;overflow:hidden;margin-bottom:10px;}
+.dz-prog-fill{height:3px;border-radius:2px;background:var(--teal);transition:width 0.3s;}
+.dz-feedback{background:rgba(29,158,117,0.08);border:0.5px solid rgba(109,219,160,0.18);border-radius:11px;padding:12px 14px;display:none;margin-bottom:10px;}
+.df-lbl{font-size:9px;color:#6ddba0;letter-spacing:0.07em;font-weight:500;margin-bottom:4px;}
+.df-txt{font-size:12px;color:var(--w6);line-height:1.55;}
+.dz-social{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.dzs-bar{flex:1;height:4px;background:var(--w1);border-radius:2px;overflow:hidden;}
+.dzs-fill{height:4px;border-radius:2px;background:var(--teal);transition:width 0.6s ease;}
+.dzs-txt{font-size:11px;color:var(--w4);white-space:nowrap;}
+.dz-next{width:100%;background:var(--teal);border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;display:none;margin-bottom:8px;}
+
+/* Contact capture */
+.contact-capture{padding:0 20px 16px;flex:1;display:flex;flex-direction:column;}
+.cc-lbl{font-size:10px;color:var(--w4);letter-spacing:0.07em;margin-bottom:12px;font-weight:500;}
+.cc-card{background:var(--bg2);border-radius:14px;padding:14px;border:0.5px solid var(--w2);margin-bottom:12px;}
+.cc-profile-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.cc-av{width:40px;height:40px;border-radius:50%;background:rgba(29,158,117,0.25);border:2px solid var(--teal);font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;}
+.cc-info{flex:1;}
+.cc-name{font-size:14px;font-weight:500;color:var(--w);}
+.cc-handle{font-size:11px;color:var(--w4);}
+.cc-skills{display:flex;flex-direction:column;gap:5px;}
+.cc-skill{display:flex;align-items:center;gap:8px;}
+.ccs-lbl{font-size:11px;color:var(--w4);width:110px;flex-shrink:0;}
+.ccs-bar{flex:1;height:3px;background:var(--w1);border-radius:2px;overflow:hidden;}
+.ccs-fill{height:3px;border-radius:2px;transition:width 0.8s ease;}
+.ccs-val{font-size:11px;font-weight:500;width:24px;text-align:right;flex-shrink:0;}
+.cc-toggle-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.ct-lbl{font-size:12px;color:var(--w6);}
+.ct-toggle{width:40px;height:22px;background:var(--teal);border-radius:11px;position:relative;cursor:pointer;}
+.ct-toggle-dot{position:absolute;top:3px;right:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:right 0.2s;}
+.ct-toggle.off{background:var(--w2);}
+.ct-toggle.off .ct-toggle-dot{right:auto;left:3px;}
+.cc-confirm-btn{width:100%;background:var(--teal);border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;margin-bottom:8px;}
+.cc-skip{text-align:center;font-size:12px;color:var(--w4);cursor:pointer;padding:4px;}
+
+/* ═══════════ VUE GESTIONNAIRE STAND ═══════════ */
+.stand-mgr{padding:12px 16px;flex:1;display:flex;flex-direction:column;gap:0;}
+.mgr-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-shrink:0;}
+.mgr-title{font-size:16px;font-weight:500;color:var(--w);}
+.mgr-live{display:flex;align-items:center;gap:5px;background:rgba(29,158,117,0.1);border:0.5px solid rgba(109,219,160,0.2);border-radius:8px;padding:4px 10px;}
+.mgr-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.mgr-live-txt{font-size:10px;color:#6ddba0;font-weight:500;}
+
+/* Stats live */
+.mgr-stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:14px;flex-shrink:0;}
+.mgr-stat{background:var(--bg2);border-radius:11px;padding:12px;border:0.5px solid var(--w2);}
+.mgs-val{font-size:26px;font-weight:300;color:var(--w);}
+.mgs-val.green{color:var(--green);}
+.mgs-val.teal{color:#6ddba0;}
+.mgs-val.orange{color:var(--orange);}
+.mgs-lbl{font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px;line-height:1.3;}
+.mgs-delta{font-size:10px;font-weight:500;color:var(--green);margin-top:3px;}
+
+/* Flux contacts -->
+.contacts-flux{flex:1;overflow:hidden;flex-shrink:0;}
+.cf-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.cf-lbl{font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.07em;font-weight:500;}
+.cf-export{font-size:11px;color:#6ddba0;cursor:pointer;}
+.cf-items{display:flex;flex-direction:column;gap:6px;}
+.cf-item{background:var(--bg2);border-radius:10px;padding:8px 10px;border:0.5px solid var(--w2);animation:fadeSlide 0.35s ease;}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+.cf-table{width:100%;border-collapse:collapse;table-layout:fixed;}
+.cf-table td{vertical-align:middle;padding:0;}
+.cf-td-av{width:36px;}
+.cf-td-info{width:auto;}
+.cf-td-score{width:40px;text-align:right;white-space:nowrap;padding-right:4px;}
+.cf-td-badge{width:32px;text-align:right;white-space:nowrap;}
+.cfi-av{width:28px;height:28px;border-radius:50%;font-size:11px;font-weight:600;color:#fff;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cfi-name{font-size:12px;font-weight:500;color:var(--w);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cfi-meta{font-size:11px;color:rgba(255,255,255,0.65);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cfi-score{font-size:12px;font-weight:500;color:var(--green);}
+.cfi-badge{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:500;display:inline-block;}
+.badge-ok{background:rgba(179,247,11,0.12);color:#d4fb6b;}
+.badge-hot{background:rgba(255,83,33,0.15);color:#ff8060;}
+
+/* Répartition des réponses */
+.answers-dist{margin-bottom:12px;flex-shrink:0;}
+.ad-lbl{font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.07em;margin-bottom:8px;font-weight:500;}
+.ad-q{font-size:12px;color:rgba(255,255,255,0.75);margin-bottom:8px;line-height:1.4;}
+.ad-bars{display:flex;flex-direction:column;gap:5px;}
+.ad-row{display:flex;align-items:center;gap:7px;}
+.ad-opt{font-size:11px;color:rgba(255,255,255,0.65);width:130px;flex-shrink:0;line-height:1.3;}
+.ad-bar-w{flex:1;height:6px;background:var(--w1);border-radius:3px;overflow:hidden;}
+.ad-fill{height:6px;border-radius:3px;transition:width 0.8s ease;}
+.ad-pct{font-size:11px;font-weight:500;width:30px;text-align:right;flex-shrink:0;}
+
+/* ═══════════ VUE FIN ═══════════ */
+.end-wrap{flex:1;display:flex;flex-direction:column;padding:24px 20px;}
+.end-company-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.ecr-logo{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#0a0320;flex-shrink:0;}
+.ecr-info{flex:1;}
+.ecr-name{font-size:15px;font-weight:500;color:var(--w);}
+.ecr-tag{font-size:11px;color:var(--w4);}
+.end-score-big{display:flex;flex-direction:column;align-items:center;background:var(--bg2);border-radius:14px;padding:18px;margin-bottom:16px;border:0.5px solid var(--w2);}
+.esb-icon{font-size:32px;margin-bottom:8px;}
+.esb-title{font-size:15px;font-weight:500;color:var(--w);margin-bottom:4px;text-align:center;}
+.esb-sub{font-size:12px;color:rgba(255,255,255,0.65);text-align:center;line-height:1.5;margin-bottom:12px;}
+.esb-xp{font-size:36px;font-weight:300;color:var(--green);}
+.esb-xp-lbl{font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px;}
+.profile-update{background:rgba(29,158,117,0.07);border:0.5px solid rgba(109,219,160,0.18);border-radius:12px;padding:12px 14px;margin-bottom:14px;}
+.pu-lbl{font-size:10px;color:#6ddba0;letter-spacing:0.07em;margin-bottom:8px;font-weight:500;}
+.pu-dims{display:flex;flex-direction:column;gap:6px;}
+.pu-dim{display:flex;align-items:center;gap:8px;}
+.pd-name{font-size:11px;color:rgba(255,255,255,0.65);flex:1;}
+.pd-bar{width:80px;height:3px;background:var(--w1);border-radius:2px;overflow:hidden;}
+.pd-fill{height:3px;border-radius:2px;transition:width 0.8s ease;}
+.pd-delta{font-size:11px;font-weight:500;color:var(--green);}
+.discover-card{background:rgba(255,255,255,0.04);border:0.5px solid var(--w2);border-radius:12px;padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.dc-logo{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,0.88);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#0a0320;flex-shrink:0;}
+.dc-info{flex:1;}
+.dc-title{font-size:13px;font-weight:500;color:var(--w);margin-bottom:2px;}
+.dc-sub{font-size:11px;color:rgba(255,255,255,0.65);line-height:1.4;}
+.dc-cta{font-size:11px;color:#6ddba0;font-weight:500;flex-shrink:0;}
+.end-btns{display:flex;flex-direction:column;gap:7px;margin-top:auto;}
+.btn-m{border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;cursor:pointer;}
+.btn-s{background:var(--w1);border:0.5px solid var(--w2);border-radius:13px;padding:11px;font-size:13px;color:var(--w6);cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+
+<div class="view-tabs">
+  <div class="vt on" style="background:var(--teal);border-color:var(--teal);" onclick="switchView(this,'visiteur')">👤 Visiteur</div>
+  <div class="vt" onclick="switchView(this,'gestionnaire')">📊 Gestionnaire</div>
+</div>
+
+<!-- ═══════ VUE VISITEUR ═══════ -->
+<div class="step active" id="v-visiteur">
+
+  <!-- 1. SCAN QR -->
+  <div id="screen-scan" class="scan-screen">
+    <div class="scan-title">Scanne le QR code<br>du stand ENGIE.</div>
+    <div class="scan-sub">Un défi de 3 minutes conçu pour toi. Découvre si tu as le profil ENGIE.</div>
+    <div class="qr-big" id="qrBig"></div>
+    <div class="scan-url">voka.fr/stand/engie-cyf26</div>
+    <button class="scan-cta" onclick="goScreen('screen-accueil')">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-right:6px"><path d="M1 1h4v4H1zM9 1h4v4H9zM1 9h4v4H1z" stroke="white" stroke-width="1.3" stroke-linejoin="round"/><rect x="9" y="9" width="2" height="2" fill="white"/><rect x="11" y="11" width="2" height="2" fill="white"/><rect x="9" y="11" width="2" height="2" fill="white"/><rect x="11" y="9" width="2" height="2" fill="white"/></svg>
+      Scanner & accéder
+    </button>
+  </div>
+
+  <!-- 2. ACCUEIL STAND -->
+  <div id="screen-accueil" style="display:none;flex:1;flex-direction:column;">
+    <div class="stand-hero">
+      <div class="stand-hero-bg"><div class="shb-inner"></div></div>
+      <div class="stand-logo-zone">
+        <div class="slz-logo">⚡</div>
+        <div class="slz-name">ENGIE</div>
+        <div class="slz-tag">Forum Choose Your Future 2026</div>
+      </div>
+      <div class="stand-hero-grad"></div>
+    </div>
+    <div class="stand-body">
+      <div class="sb-badge"><div class="sb-badge-dot"></div><span class="sb-badge-txt">STAND · ENGIE</span></div>
+      <div class="sb-title">As-tu le profil d'un énergéticien de demain ?</div>
+      <div class="sb-sub">3 défis conçus avec ENGIE pour révéler ton affinité avec leurs métiers. Résultat immédiat sur ton profil VOKA.</div>
+      <div class="stand-stats">
+        <div class="ss-item"><div class="ss-val">3</div><div class="ss-lbl">Défis à relever</div></div>
+        <div class="ss-item"><div class="ss-val">3mn</div><div class="ss-lbl">Durée estimée</div></div>
+        <div class="ss-item"><div class="ss-val">+10 XP</div><div class="ss-lbl">Récompense</div></div>
+      </div>
+      <div class="stand-proof">
+        <div class="sp-avs">
+          <div class="sp-av" style="background:#7500B8">T</div>
+          <div class="sp-av" style="background:#FF5321">Y</div>
+          <div class="sp-av" style="background:#1D9E75">K</div>
+          <div class="sp-av" style="background:#378ADD">M</div>
+        </div>
+        <span class="sp-txt"><strong>147 visiteurs</strong> l'ont fait aujourd'hui</span>
+      </div>
+      <button class="stand-launch-btn" onclick="goScreen('screen-defi')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 2l7 5-7 5V2z" fill="white"/></svg>
+        Relever le défi ENGIE
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. DÉFI EN CONTEXTE -->
+  <div id="screen-defi" style="display:none;flex:1;flex-direction:column;padding-top:10px;">
+    <div class="defi-zone">
+      <div class="dz-fmt"><div class="dz-fmt-dot"></div><span class="dz-fmt-txt">STAND · CHOOSE · Q.<span id="dzQNum">1</span>/3</span></div>
+      <div class="dz-company">Défi ENGIE × VOKA · Mes envies</div>
+      <div class="dz-prog"><div class="dz-prog-fill" id="dzProg" style="width:10%"></div></div>
+      <div class="dz-q" id="dzQTxt">Dans un projet énergie, tu préfères travailler sur quoi ?</div>
+      <div class="dz-opts" id="dzOpts"></div>
+      <div class="dz-feedback" id="dzFeedback">
+        <div class="df-lbl">CE QUE ÇA DIT</div>
+        <div class="df-txt" id="dzFeedbackTxt"></div>
+      </div>
+      <div class="dz-social" id="dzSocial" style="display:none;">
+        <div class="dzs-bar"><div class="dzs-fill" id="dzSocialFill"></div></div>
+        <span class="dzs-txt" id="dzSocialTxt"></span>
+      </div>
+      <button class="dz-next" id="dzNextBtn" onclick="dzNext()"></button>
+    </div>
+  </div>
+
+  <!-- 4. CONTACT CAPTURE -->
+  <div id="screen-contact" style="display:none;flex:1;flex-direction:column;padding-top:12px;">
+    <div class="contact-capture">
+      <div class="cc-lbl">TON RÉSULTAT ENGIE</div>
+      <div class="cc-card">
+        <div class="cc-profile-row">
+          <div class="cc-av">T</div>
+          <div class="cc-info">
+            <div class="cc-name">Thomas R.</div>
+            <div class="cc-handle">Challenger · @thomas_r</div>
+          </div>
+        </div>
+        <div class="cc-skills" id="ccSkills"></div>
+      </div>
+      <div style="font-size:14px;font-weight:500;color:var(--w);margin-bottom:4px;">ENGIE veut garder contact avec toi.</div>
+      <div style="font-size:12px;color:var(--w4);line-height:1.6;margin-bottom:12px;">Partage ton profil VOKA avec leur équipe RH. Tu seras contacté si tu corresponds à une ouverture.</div>
+      <div class="cc-toggle-row">
+        <span class="ct-lbl">Partager mon profil VOKA</span>
+        <div class="ct-toggle" id="shareToggle" onclick="toggleShare()"><div class="ct-toggle-dot"></div></div>
+      </div>
+      <div class="cc-toggle-row">
+        <span class="ct-lbl">Recevoir leurs offres par mail</span>
+        <div class="ct-toggle off" id="mailToggle" onclick="toggleMail(this)"><div class="ct-toggle-dot"></div></div>
+      </div>
+      <div style="height:10px;"></div>
+      <button class="cc-confirm-btn" onclick="goScreen('screen-fin')">Confirmer et voir mon résultat</button>
+      <div class="cc-skip" onclick="goScreen('screen-fin')">Passer cette étape</div>
+    </div>
+  </div>
+
+  <!-- 5. FIN -->
+  <div id="screen-fin" style="display:none;flex:1;flex-direction:column;">
+    <div class="end-wrap">
+      <div class="end-company-row">
+        <div class="ecr-logo">⚡</div>
+        <div class="ecr-info">
+          <div class="ecr-name">ENGIE × VOKA</div>
+          <div class="ecr-tag">Résultat du défi stand</div>
+        </div>
+      </div>
+      <div class="end-score-big">
+        <div class="esb-icon">⚡</div>
+        <div class="esb-title">Profil énergéticien confirmé</div>
+        <div class="esb-sub">Tu partages 3 valeurs clés avec les équipes ENGIE. Ton profil est dans leur vivier.</div>
+        <div class="esb-xp">+10 XP</div>
+        <div class="esb-xp-lbl">sur ce défi stand</div>
+      </div>
+      <div class="profile-update">
+        <div class="pu-lbl">TON PROFIL MIS À JOUR</div>
+        <div class="pu-dims" id="puDims"></div>
+      </div>
+      <div class="discover-card">
+        <div class="dc-logo">⚡</div>
+        <div class="dc-info">
+          <div class="dc-title">Offres ENGIE pour toi</div>
+          <div class="dc-sub">3 postes ouverts correspondent à ton profil ACT SKILLS.</div>
+        </div>
+        <div class="dc-cta">Voir →</div>
+      </div>
+      <div class="end-btns">
+        <button class="btn-m" style="background:var(--teal);color:#fff;" onclick="resetVisiteur()">Voir d'autres stands</button>
+        <button class="btn-s" onclick="resetVisiteur()">Retour au feed</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════ VUE GESTIONNAIRE ═══════ -->
+<div class="step" id="v-gestionnaire">
+  <div class="stand-mgr">
+    <div class="mgr-hdr">
+      <div>
+        <div class="mgr-title">Stand ENGIE</div>
+        <div style="font-size:11px;color:var(--w4);margin-top:2px;">Choose Your Future 2026 · Aujourd'hui</div>
+      </div>
+      <div class="mgr-live"><div class="mgr-dot"></div><span class="mgr-live-txt">EN DIRECT</span></div>
+    </div>
+
+    <div class="mgr-stats-grid">
+      <div class="mgr-stat">
+        <div class="mgs-val teal" id="mgScans">147</div>
+        <div class="mgs-lbl">Scans du QR code aujourd'hui</div>
+        <div class="mgs-delta" id="mgScansDelta">+12 cette heure</div>
+      </div>
+      <div class="mgr-stat">
+        <div class="mgs-val green" id="mgCompletes">112</div>
+        <div class="mgs-lbl">Défis complétés</div>
+        <div class="mgs-delta">76% taux de complétion</div>
+      </div>
+      <div class="mgr-stat">
+        <div class="mgs-val orange" id="mgContacts">68</div>
+        <div class="mgs-lbl">Profils partagés</div>
+        <div class="mgs-delta">+5 depuis 30mn</div>
+      </div>
+      <div class="mgr-stat">
+        <div class="mgs-val" id="mgScore">81%</div>
+        <div class="mgs-lbl">Score affinité moyen</div>
+        <div class="mgs-delta" style="color:#7ab8f0">Bon alignement</div>
+      </div>
+    </div>
+
+    <div class="answers-dist">
+      <div class="ad-lbl">RÉPARTITION DES RÉPONSES · Q.1</div>
+      <div class="ad-q" id="adQ">Dans un projet énergie, tu préfères travailler sur quoi ?</div>
+      <div class="ad-bars" id="adBars"></div>
+    </div>
+
+    <div class="contacts-flux">
+      <div class="cf-hdr">
+        <div class="cf-lbl">DERNIERS CONTACTS QUALIFIÉS</div>
+        <div class="cf-export">Exporter CSV</div>
+      </div>
+      <div class="cf-items" id="cfItems"></div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+/* ── DATA ── */
+var QUESTIONS=[
+  {
+    txt:"Dans un projet énergie, tu préfères travailler sur quoi ?",
+    opts:["La conception technique","L'impact environnemental","La gestion de projet","La relation client"],
+    correct:-1,// pas de bonne réponse sur les CHOOSE contextuels
+    feedback:[
+      "Signal clair : tu es attiré par l'ingénierie et la dimension technique. Chez ENGIE, c'est le cœur du métier d'ingénieur systèmes.",
+      "Tu places l'impact avant la technique. Signal fort sur ta dimension 'Mon projet' — valeur centrale chez ENGIE Transitions.",
+      "Tu penses coordination et livraison. Profil chef de projet ou PMO — très recherché chez ENGIE sur les grands chantiers.",
+      "Tu mets les personnes au centre. Profil commercial ou account manager — ENGIE recrute beaucoup dans cette direction."
+    ],
+    socialPct:[38,29,22,11],dist:[38,29,22,11]
+  },
+  {
+    txt:"Face à une panne sur un réseau électrique, ta première réaction ?",
+    opts:["Analyser les données pour trouver la cause","Appeler l'équipe et coordonner","Documenter pour éviter que ça se reproduise","Prévenir les clients affectés"],
+    correct:-1,
+    feedback:[
+      "Profil analytique et autonome. Tu résous les problèmes par les données. Fort signal sur 'Mes forces — résolution'.",
+      "Tu réfléchis collectif avant tout. Signal de leadership naturel et d'intelligence relationnelle.",
+      "Tu penses processus et amélioration continue. Profil qualité / lean — très valorisé dans les grands groupes industriels.",
+      "Tu mets l'expérience client en premier. Signal de sens des responsabilités et d'empathie opérationnelle."
+    ],
+    socialPct:[41,33,16,10],dist:[41,33,16,10]
+  },
+  {
+    txt:"Ce qui te motive le plus dans un métier de l'énergie, c'est…",
+    opts:["Contribuer à la transition énergétique","Résoudre des problèmes techniques complexes","Travailler sur des projets à grande échelle","Avoir un impact local et visible"],
+    correct:-1,
+    feedback:[
+      "Tu cherches du sens dans l'impact macro. Alignement fort avec la raison d'être d'ENGIE : accélérer la transition.",
+      "Tu veux de la stimulation intellectuelle. Profil ingénierie R&D — ENGIE recrute massivement dans ce segment.",
+      "Tu penses grand. Les projets ENGIE sont souvent à plusieurs centaines de millions — tu cherches exactement ça.",
+      "Tu veux voir ton impact. Signal d'engagement terrain — profil idéal pour les postes opérationnels régionaux."
+    ],
+    socialPct:[45,27,18,10],dist:[45,27,18,10]
+  }
+];
+
+var dzQIdx=0, dzAnswered=false;
+var screenHistory=[];
+
+/* ── NAVIGATION ── */
+function switchView(el,view){
+  document.querySelectorAll('.vt').forEach(t=>{t.classList.remove('on');t.style.background='';t.style.borderColor='';});
+  el.classList.add('on');
+  var c={'visiteur':'var(--teal)','gestionnaire':'var(--amber)'};
+  el.style.background=c[view]; el.style.borderColor=c[view];
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('v-'+view).classList.add('active');
+  if(view==='gestionnaire') initGestionnaire();
+}
+
+function goScreen(id){
+  ['screen-scan','screen-accueil','screen-defi','screen-contact','screen-fin'].forEach(s=>{
+    var el=document.getElementById(s);
+    if(el) el.style.display='none';
+  });
+  var target=document.getElementById(id);
+  if(target) target.style.display='flex';
+  if(id==='screen-defi') initDefi();
+  if(id==='screen-contact') initContact();
+  if(id==='screen-fin') initFin();
+}
+
+function resetVisiteur(){
+  dzQIdx=0; dzAnswered=false;
+  goScreen('screen-scan');
+}
+
+/* ── DÉFI ── */
+function initDefi(){
+  dzQIdx=0; dzAnswered=false;
+  loadDzQ();
+}
+
+function loadDzQ(){
+  dzAnswered=false;
+  var q=QUESTIONS[dzQIdx];
+  document.getElementById('dzQNum').textContent=dzQIdx+1;
+  document.getElementById('dzQTxt').textContent=q.txt;
+  document.getElementById('dzProg').style.width=((dzQIdx+0.2)/QUESTIONS.length*100)+'%';
+  document.getElementById('dzFeedback').style.display='none';
+  document.getElementById('dzSocial').style.display='none';
+  document.getElementById('dzNextBtn').style.display='none';
+  var cont=document.getElementById('dzOpts');
+  cont.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    var el=document.createElement('div');
+    el.className='dz-opt';
+    el.innerHTML=`<div class="dz-opt-l">${['A','B','C','D'][i]}</div><span class="dz-opt-txt">${opt}</span>`;
+    el.onclick=()=>dzAnswer(el,i);
+    cont.appendChild(el);
+  });
+}
+
+function dzAnswer(el,idx){
+  if(dzAnswered) return;
+  dzAnswered=true;
+  var q=QUESTIONS[dzQIdx];
+  document.querySelectorAll('#dzOpts .dz-opt').forEach(o=>o.onclick=null);
+  el.classList.add('chosen');
+  document.getElementById('dzFeedbackTxt').textContent=q.feedback[idx];
+  document.getElementById('dzFeedback').style.display='block';
+  var pct=q.socialPct[idx];
+  document.getElementById('dzSocialFill').style.width=pct+'%';
+  document.getElementById('dzSocialTxt').textContent=pct+'% ont choisi pareil';
+  setTimeout(()=>{document.getElementById('dzSocial').style.display='flex';},300);
+  var btn=document.getElementById('dzNextBtn');
+  btn.style.display='block';
+  btn.textContent=dzQIdx<QUESTIONS.length-1?'Défi suivant →':'Voir mon résultat ENGIE';
+}
+
+function dzNext(){
+  dzQIdx++;
+  if(dzQIdx>=QUESTIONS.length) goScreen('screen-contact');
+  else loadDzQ();
+}
+
+/* ── CONTACT ── */
+var shareOn=true, mailOn=false;
+function toggleShare(){ shareOn=!shareOn; var t=document.getElementById('shareToggle'); t.className='ct-toggle'+(shareOn?'':' off'); }
+function toggleMail(el){ mailOn=!mailOn; el.className='ct-toggle'+(mailOn?'':' off'); }
+
+function initContact(){
+  var dims=[
+    {name:'Mes envies',pct:78,color:'#D4537E',delta:'+8'},
+    {name:'Mes forces',pct:65,color:'#378ADD',delta:'+5'},
+    {name:'Mon projet',pct:82,color:'#7500B8',delta:'+3'},
+  ];
+  document.getElementById('ccSkills').innerHTML=dims.map(d=>`
+    <div class="cc-skill">
+      <span class="ccs-lbl">${d.name}</span>
+      <div class="ccs-bar"><div class="ccs-fill" style="width:${d.pct}%;background:${d.color}"></div></div>
+      <span class="ccs-val" style="color:${d.color}">${d.pct}%</span>
+    </div>`).join('');
+}
+
+function initFin(){
+  var dims=[
+    {name:'Mes envies',pct:78,color:'#D4537E',delta:'+8'},
+    {name:'Mes forces',pct:65,color:'#378ADD',delta:'+5'},
+    {name:'Mon projet',pct:82,color:'#7500B8',delta:'+3'},
+  ];
+  document.getElementById('puDims').innerHTML=dims.map(d=>`
+    <div class="pu-dim">
+      <span class="pd-name">${d.name}</span>
+      <div class="pd-bar"><div class="pd-fill" style="width:${d.pct}%;background:${d.color}"></div></div>
+      <span class="pd-delta">${d.delta}</span>
+    </div>`).join('');
+}
+
+/* ── GESTIONNAIRE ── */
+var mgInitDone=false;
+function initGestionnaire(){
+  if(mgInitDone) return;
+  mgInitDone=true;
+  // Distribution réponses
+  var q=QUESTIONS[0];
+  document.getElementById('adQ').textContent=q.txt;
+  document.getElementById('adBars').innerHTML=q.opts.map((opt,i)=>`
+    <div class="ad-row">
+      <span class="ad-opt">${opt}</span>
+      <div class="ad-bar-w"><div class="ad-fill" id="adFill${i}" style="width:0%;background:${['#7500B8','#1D9E75','#378ADD','#D4537E'][i]}"></div></div>
+      <span class="ad-pct" id="adPct${i}" style="color:${['#c98ff0','#6ddba0','#7ab8f0','#f090b0'][i]}">0%</span>
+    </div>`).join('');
+  setTimeout(()=>{
+    q.dist.forEach((v,i)=>{
+      document.getElementById('adFill'+i).style.width=v+'%';
+      document.getElementById('adPct'+i).textContent=v+'%';
+    });
+  },300);
+  // Contacts flux
+  initContactFlux();
+  // Live counter
+  setInterval(animateMgrCounters,2500);
+}
+
+var CONTACT_DATA=[
+  {init:'S',color:'#7500B8',name:'Sofia M.',meta:'Terminale · Île-de-France',score:'+92%',hot:true},
+  {init:'K',color:'#FF5321',name:'Karim B.',meta:'BTS · Seine-Saint-Denis',score:'+87%',hot:true},
+  {init:'L',color:'#1D9E75',name:'Leïla V.',meta:'Licence Pro · Lyon',score:'+81%',hot:false},
+  {init:'R',color:'#378ADD',name:'Rayan H.',meta:'Bac Pro · Nantes',score:'+76%',hot:false},
+  {init:'J',color:'#D4537E',name:'Jade T.',meta:'Terminale · Bordeaux',score:'+74%',hot:false},
+];
+
+function initContactFlux(){
+  var cont=document.getElementById('cfItems');
+  CONTACT_DATA.forEach((c,i)=>{
+    setTimeout(()=>{
+      var el=document.createElement('div');
+      el.className='cf-item';
+      el.innerHTML=`<table class="cf-table"><tr>
+        <td class="cf-td-av" rowspan="2"><div class="cfi-av" style="background:${c.color}">${c.init}</div></td>
+        <td class="cf-td-info"><span class="cfi-name">${c.name}</span></td>
+        <td class="cf-td-score" rowspan="2"><span class="cfi-score">${c.score}</span></td>
+        <td class="cf-td-badge" rowspan="2"><span class="cfi-badge ${c.hot?'badge-hot':'badge-ok'}">${c.hot?'🔥':'OK'}</span></td>
+      </tr><tr>
+        <td class="cf-td-info"><span class="cfi-meta">${c.meta}</span></td>
+      </tr></table>`;
+      cont.appendChild(el);
+    },i*400);
+  });
+}
+
+function animateMgrCounters(){
+  var scans=parseInt(document.getElementById('mgScans').textContent)||147;
+  scans+=Math.floor(Math.random()*3);
+  document.getElementById('mgScans').textContent=scans;
+  var comp=Math.floor(scans*0.76);
+  document.getElementById('mgCompletes').textContent=comp;
+  var contacts=Math.floor(comp*0.61);
+  document.getElementById('mgContacts').textContent=contacts;
+  document.getElementById('mgScansDelta').textContent='+'+Math.floor(Math.random()*4+8)+' cette heure';
+}
+
+/* ── QR ── */
+(function(){
+  var qr=document.getElementById('qrBig');
+  if(!qr)return;
+  var p=[1,1,1,0,1,0,1,1,0,0,1,1,0,1,1,0,1,0,0,1,0,1,1,1,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,1,1,1,0,1,0];
+  p.forEach(v=>{
+    var c=document.createElement('div');
+    c.className='qr-cell-big';
+    c.style.background=v?'#080810':'#f0f0f0';
+    qr.appendChild(c);
+  });
+})();
+</script>
+</body>
+</html>

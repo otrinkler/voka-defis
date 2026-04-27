@@ -1,0 +1,310 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-sans);}
+.phone{width:300px;margin:0 auto;background:#080810;border-radius:36px;overflow:hidden;border:6px solid #1a1a2e;}
+.sb{display:flex;justify-content:space-between;padding:10px 18px 0;}
+.sb span{font-size:11px;color:rgba(255,255,255,0.3);}
+.step{display:none;}.step.active{display:block;}
+
+/* INTRO TRACE */
+.tr-intro{padding:0;}
+.tr-map{width:100%;height:180px;background:#0a1a0a;position:relative;overflow:hidden;}
+.map-grid{position:absolute;inset:0;}
+.mg-h{position:absolute;left:0;right:0;height:0.5px;background:rgba(48,184,112,0.06);}
+.mg-v{position:absolute;top:0;bottom:0;width:0.5px;background:rgba(48,184,112,0.06);}
+.map-road-h{position:absolute;left:0;right:0;background:rgba(48,184,112,0.08);}
+.map-road-v{position:absolute;top:0;bottom:0;background:rgba(48,184,112,0.08);}
+.map-block{position:absolute;background:rgba(48,184,112,0.04);border-radius:2px;}
+.map-pin-you{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+.pin-pulse{width:14px;height:14px;border-radius:50%;background:#B3F70B;position:relative;}
+.pin-ring1{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(179,247,11,0.3);}
+.pin-ring2{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;border:0.5px solid rgba(179,247,11,0.12);}
+.map-dest{position:absolute;top:30%;left:62%;}
+.dest-dot{width:10px;height:10px;border-radius:50%;background:#FF5321;}
+.dest-label{background:#FF5321;border-radius:6px;padding:3px 7px;font-size:9px;color:#fff;font-weight:500;white-space:nowrap;margin-top:3px;}
+.map-dashed-line{position:absolute;top:calc(30% + 5px);left:calc(50% + 7px);width:calc(12% + 4px);height:1px;background:repeating-linear-gradient(90deg,rgba(255,255,255,0.2) 0px,rgba(255,255,255,0.2) 4px,transparent 4px,transparent 8px);}
+.map-distance{position:absolute;top:14px;right:14px;background:rgba(0,0,0,0.5);border-radius:8px;padding:4px 9px;}
+.md-val{font-size:13px;font-weight:500;color:#fff;}
+.md-lbl{font-size:9px;color:rgba(255,255,255,0.35);}
+
+.tr-info{padding:14px 16px 0;}
+.tr-fmt{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.tr-pip{width:7px;height:7px;border-radius:50%;background:#30B870;}
+.tr-lbl{font-size:11px;color:rgba(48,184,112,0.7);font-weight:500;letter-spacing:0.05em;}
+.tr-xp{margin-left:auto;font-size:11px;color:#B3F70B;background:rgba(179,247,11,0.1);padding:3px 8px;border-radius:8px;}
+.tr-title{font-size:17px;font-weight:500;color:#fff;line-height:1.3;margin-bottom:6px;}
+.tr-date-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.tr-date{background:rgba(48,184,112,0.1);border:0.5px solid rgba(48,184,112,0.2);border-radius:8px;padding:5px 10px;}
+.tr-date-day{font-size:16px;font-weight:500;color:#30B870;}
+.tr-date-m{font-size:9px;color:rgba(48,184,112,0.5);letter-spacing:0.06em;}
+.tr-date-info{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.45;}
+.tr-mission{background:rgba(255,255,255,0.04);border-left:2px solid #30B870;padding:10px 12px;border-radius:0 8px 8px 0;margin-bottom:12px;}
+.tr-mission-lbl{font-size:9px;color:rgba(48,184,112,0.5);letter-spacing:0.07em;margin-bottom:4px;}
+.tr-mission-txt{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;}
+.tr-participants{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.tr-avs{display:flex;}
+.tra{width:22px;height:22px;border-radius:50%;border:1.5px solid #080810;font-size:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;margin-left:-5px;}
+.tra:first-child{margin-left:0;}
+.tr-part-txt{font-size:12px;color:rgba(255,255,255,0.3);}
+.tr-part-txt strong{color:rgba(255,255,255,0.55);font-weight:500;}
+.tr-proof-zone{border:0.5px dashed rgba(255,255,255,0.12);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:14px;cursor:pointer;}
+.tr-proof-icon{width:40px;height:40px;border-radius:10px;background:rgba(48,184,112,0.08);border:0.5px solid rgba(48,184,112,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tr-proof-txt{flex:1;}
+.tr-proof-title{font-size:13px;font-weight:500;color:rgba(255,255,255,0.55);}
+.tr-proof-sub{font-size:11px;color:rgba(255,255,255,0.25);margin-top:2px;}
+.tr-cta{width:100%;background:#30B870;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:500;color:#0a2a14;cursor:pointer;margin-bottom:14px;}
+
+/* STEP : ON PLACE */
+.onplace-header{padding:12px 16px 0;display:flex;justify-content:space-between;align-items:center;}
+.op-badge{display:flex;align-items:center;gap:5px;background:rgba(48,184,112,0.12);border:0.5px solid rgba(48,184,112,0.3);border-radius:20px;padding:5px 11px;}
+.op-dot{width:6px;height:6px;border-radius:50%;background:#30B870;}
+.op-txt{font-size:11px;color:#30B870;font-weight:500;}
+.op-xp{font-size:11px;color:#B3F70B;background:rgba(179,247,11,0.1);padding:3px 8px;border-radius:8px;}
+.checkin-map{width:100%;height:140px;background:#0a1a0a;position:relative;overflow:hidden;}
+.checkin-you{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+.checkin-dest{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+.cy-dot{width:16px;height:16px;border-radius:50%;background:#B3F70B;border:2px solid #080810;}
+.cy-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;border:2px solid rgba(179,247,11,0.35);}
+.checkin-label{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:11px;color:rgba(48,184,112,0.6);}
+.op-mission{padding:12px 16px;}
+.op-m-lbl{font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:0.07em;margin-bottom:8px;}
+.op-m-task{background:rgba(255,255,255,0.04);border-radius:10px;padding:11px 13px;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;}
+.op-m-task.done{background:rgba(48,184,112,0.08);border:0.5px solid rgba(48,184,112,0.2);}
+.op-check{width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(255,255,255,0.15);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.op-m-task.done .op-check{background:#30B870;border-color:#30B870;}
+.op-check-mark{width:8px;height:6px;border-left:1.5px solid #0a2a14;border-bottom:1.5px solid #0a2a14;transform:rotate(-45deg) translate(1px,-1px);display:none;}
+.op-m-task.done .op-check-mark{display:block;}
+.op-task-txt{font-size:12px;color:rgba(255,255,255,0.5);}
+.op-m-task.done .op-task-txt{color:rgba(255,255,255,0.7);}
+.op-photo-zone{border:0.5px dashed rgba(48,184,112,0.25);border-radius:12px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;margin:0 16px 14px;cursor:pointer;background:rgba(48,184,112,0.03);}
+.op-cam-icon{width:40px;height:40px;border-radius:50%;background:rgba(48,184,112,0.1);border:1.5px solid rgba(48,184,112,0.3);display:flex;align-items:center;justify-content:center;}
+.op-photo-lbl{font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);}
+.op-photo-sub{font-size:11px;color:rgba(255,255,255,0.2);text-align:center;line-height:1.4;}
+.op-submit{width:calc(100% - 32px);margin:0 16px 14px;background:#30B870;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#0a2a14;cursor:pointer;display:none;}
+
+/* END TRACE */
+.trace-end{padding:20px 16px;}
+.te-hero{text-align:center;margin-bottom:16px;}
+.te-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(48,184,112,0.12);border:0.5px solid rgba(48,184,112,0.3);border-radius:20px;padding:8px 16px;margin-bottom:10px;}
+.te-badge-dot{width:8px;height:8px;border-radius:50%;background:#30B870;}
+.te-badge-txt{font-size:13px;color:#30B870;font-weight:500;}
+.te-xp{font-size:36px;font-weight:500;color:#B3F70B;}
+.te-xp-lbl{font-size:12px;color:rgba(255,255,255,0.3);}
+.te-photo-proof{background:rgba(48,184,112,0.06);border:0.5px solid rgba(48,184,112,0.15);border-radius:14px;overflow:hidden;margin-bottom:12px;}
+.te-photo-area{height:100px;background:#0a1a0a;display:flex;align-items:center;justify-content:center;position:relative;}
+.te-photo-overlay{position:absolute;bottom:8px;right:8px;background:rgba(48,184,112,0.8);border-radius:6px;padding:3px 7px;font-size:9px;color:#fff;font-weight:500;}
+.te-photo-info{padding:10px 12px;}
+.te-pi-txt{font-size:11px;color:rgba(255,255,255,0.4);line-height:1.4;}
+.te-pi-geo{font-size:10px;color:rgba(48,184,112,0.5);margin-top:3px;}
+.te-profile{background:rgba(255,255,255,0.03);border-radius:12px;padding:12px 14px;margin-bottom:12px;}
+.te-p-lbl{font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:0.07em;margin-bottom:8px;}
+.te-dim{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.te-dname{font-size:12px;color:rgba(255,255,255,0.45);flex:1;}
+.te-bar{width:80px;height:3px;background:rgba(255,255,255,0.05);border-radius:2px;}
+.te-fill{height:3px;border-radius:2px;background:#30B870;}
+.te-delta{font-size:11px;color:#B3F70B;}
+.te-signal{background:rgba(48,184,112,0.08);border:0.5px solid rgba(48,184,112,0.18);border-radius:10px;padding:10px 12px;margin-bottom:16px;}
+.te-s-lbl{font-size:9px;color:rgba(48,184,112,0.5);letter-spacing:0.07em;margin-bottom:4px;}
+.te-s-txt{font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5;}
+.te-btns{display:flex;flex-direction:column;gap:8px;}
+.te-btn-m{background:#30B870;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#0a2a14;cursor:pointer;width:100%;}
+.te-btn-s{background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px;font-size:13px;color:rgba(255,255,255,0.4);cursor:pointer;width:100%;}
+</style>
+
+<h2 class="sr-only">Prototype interactif du format TRACE — défi IRL avec carte, mission et preuve de présence</h2>
+
+<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:16px;">
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+
+  <!-- INTRO -->
+  <div class="step active" id="tr_intro">
+    <div class="tr-map">
+      <div class="map-grid">
+        <div class="mg-h" style="top:25%"></div><div class="mg-h" style="top:50%"></div><div class="mg-h" style="top:75%"></div>
+        <div class="mg-v" style="left:25%"></div><div class="mg-v" style="left:50%"></div><div class="mg-v" style="left:75%"></div>
+        <div class="map-road-h" style="top:48%;height:6px"></div>
+        <div class="map-road-h" style="top:23%;height:4px"></div>
+        <div class="map-road-v" style="left:48%;width:5px"></div>
+        <div class="map-road-v" style="left:70%;width:4px"></div>
+        <div class="map-block" style="top:10%;left:5%;width:20%;height:12%"></div>
+        <div class="map-block" style="top:10%;left:30%;width:15%;height:12%"></div>
+        <div class="map-block" style="top:55%;left:5%;width:18%;height:18%"></div>
+        <div class="map-block" style="top:55%;left:75%;width:20%;height:18%"></div>
+        <div class="map-block" style="top:10%;left:75%;width:20%;height:25%"></div>
+      </div>
+      <div class="map-dashed-line"></div>
+      <div class="map-pin-you">
+        <div class="pin-pulse">
+          <div class="pin-ring1"></div>
+          <div class="pin-ring2"></div>
+        </div>
+      </div>
+      <div class="map-dest">
+        <div class="dest-dot"></div>
+        <div class="dest-label">Campus HEC</div>
+      </div>
+      <div class="map-distance">
+        <div class="md-val">42 km</div>
+        <div class="md-lbl">depuis toi</div>
+      </div>
+    </div>
+    <div class="tr-info">
+      <div class="tr-fmt">
+        <div class="tr-pip"></div>
+        <span class="tr-lbl">TRACE · IRL</span>
+        <span class="tr-xp">+25 XP</span>
+      </div>
+      <div class="tr-title">Viens défier le campus HEC</div>
+      <div class="tr-date-row">
+        <div class="tr-date"><div class="tr-date-day">14</div><div class="tr-date-m">MARS</div></div>
+        <div class="tr-date-info">Journée portes ouvertes<br>9h00 — 18h00 · Jouy-en-Josas</div>
+      </div>
+      <div class="tr-mission">
+        <div class="tr-mission-lbl">TA MISSION</div>
+        <div class="tr-mission-txt">Explore le campus. Trouve ce qui t'inspire vraiment. Prouve ta présence avec une photo depuis le lieu.</div>
+      </div>
+      <div class="tr-participants">
+        <div class="tr-avs">
+          <div class="tra" style="background:#FF5321">A</div>
+          <div class="tra" style="background:#7500B8">M</div>
+          <div class="tra" style="background:#378ADD">K</div>
+          <div class="tra" style="background:#D4537E">R</div>
+        </div>
+        <span class="tr-part-txt"><strong>47 inscrits</strong> · 2 contacts y vont</span>
+      </div>
+      <div class="tr-proof-zone">
+        <div class="tr-proof-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="1" y="4" width="16" height="12" rx="2" stroke="#30B870" stroke-width="1.3"/><circle cx="9" cy="10" r="3" stroke="#30B870" stroke-width="1.3"/><path d="M6 4l1.5-2h3L12 4" stroke="#30B870" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        <div class="tr-proof-txt">
+          <div class="tr-proof-title">Photo géolocalisée sur place</div>
+          <div class="tr-proof-sub">Prise depuis le campus le jour J</div>
+        </div>
+      </div>
+      <button class="tr-cta" onclick="go('tr_onplace')">Je m'inscris</button>
+    </div>
+  </div>
+
+  <!-- ON PLACE -->
+  <div class="step" id="tr_onplace">
+    <div class="onplace-header">
+      <div class="op-badge"><div class="op-dot"></div><span class="op-txt">Tu es sur place</span></div>
+      <div class="op-xp">+25 XP</div>
+    </div>
+    <div class="checkin-map">
+      <div class="map-grid">
+        <div class="mg-h" style="top:33%"></div><div class="mg-h" style="top:66%"></div>
+        <div class="mg-v" style="left:33%"></div><div class="mg-v" style="left:66%"></div>
+        <div class="map-road-h" style="top:48%;height:5px"></div>
+        <div class="map-road-v" style="left:48%;width:5px"></div>
+        <div class="map-block" style="top:8%;left:8%;width:22%;height:20%"></div>
+        <div class="map-block" style="top:8%;left:38%;width:20%;height:20%"></div>
+        <div class="map-block" style="top:8%;left:68%;width:22%;height:20%"></div>
+        <div class="map-block" style="top:55%;left:8%;width:18%;height:30%"></div>
+        <div class="map-block" style="top:55%;left:72%;width:18%;height:30%"></div>
+      </div>
+      <div class="checkin-dest">
+        <div class="cy-dot"></div>
+        <div class="cy-ring"></div>
+      </div>
+      <div class="checkin-label">Campus HEC · Jouy-en-Josas</div>
+    </div>
+    <div class="op-mission">
+      <div class="op-m-lbl">TA MISSION DU JOUR</div>
+      <div class="op-m-task done" id="task1" onclick="checkTask(this)">
+        <div class="op-check"><div class="op-check-mark"></div></div>
+        <span class="op-task-txt">Check-in sur place confirmé</span>
+      </div>
+      <div class="op-m-task" id="task2" onclick="checkTask(this)">
+        <div class="op-check"><div class="op-check-mark"></div></div>
+        <span class="op-task-txt">Explorer au moins 2 bâtiments</span>
+      </div>
+      <div class="op-m-task" id="task3" onclick="checkTask(this)">
+        <div class="op-check"><div class="op-check-mark"></div></div>
+        <span class="op-task-txt">Parler à 1 étudiant ou prof</span>
+      </div>
+    </div>
+    <div class="op-photo-zone" onclick="takePhoto()">
+      <div class="op-cam-icon">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="1" y="4" width="16" height="12" rx="2" stroke="#30B870" stroke-width="1.3"/><circle cx="9" cy="10" r="3" stroke="#30B870" stroke-width="1.3"/><path d="M6 4l1.5-2h3L12 4" stroke="#30B870" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="op-photo-lbl" id="photoLbl">Prendre ma photo de preuve</div>
+      <div class="op-photo-sub" id="photoSub">Depuis le campus · géolocalisée automatiquement</div>
+    </div>
+    <button class="op-submit" id="submitBtn" onclick="go('tr_end')">Valider mon TRACE</button>
+  </div>
+
+  <!-- END -->
+  <div class="step" id="tr_end">
+    <div class="trace-end">
+      <div class="te-hero">
+        <div class="te-badge"><div class="te-badge-dot"></div><span class="te-badge-txt">TRACE complété</span></div>
+        <div class="te-xp">+25 XP</div>
+        <div class="te-xp-lbl">+ bonus présence +5 XP</div>
+      </div>
+      <div class="te-photo-proof">
+        <div class="te-photo-area">
+          <div style="position:absolute;inset:0;background:#0a1a0a;display:flex;align-items:center;justify-content:center;">
+            <div style="text-align:center;">
+              <div style="width:40px;height:40px;border-radius:50%;background:rgba(48,184,112,0.15);border:1.5px solid rgba(48,184,112,0.3);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 14l4-4 3 3 4-5 5 6" stroke="#30B870" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5" cy="6" r="2" stroke="#30B870" stroke-width="1.3"/></svg>
+              </div>
+              <div style="font-size:10px;color:rgba(48,184,112,0.5);">Photo validée</div>
+            </div>
+          </div>
+          <div class="te-photo-overlay">Géolocalisé</div>
+        </div>
+        <div class="te-photo-info">
+          <div class="te-pi-txt">Ta photo depuis le campus HEC · 14 mars 2026</div>
+          <div class="te-pi-geo">48.7553° N, 2.1693° E · Campus HEC Paris</div>
+        </div>
+      </div>
+      <div class="te-profile">
+        <div class="te-p-lbl">SIGNAL COMPORTEMENTAL GÉNÉRÉ</div>
+        <div class="te-dim"><span class="te-dname">Mes expériences</span><div class="te-bar"><div class="te-fill" style="width:70%"></div></div><span class="te-delta">+8</span></div>
+        <div class="te-dim"><span class="te-dname">Mon background</span><div class="te-bar"><div class="te-fill" style="width:50%"></div></div><span class="te-delta">+5</span></div>
+        <div class="te-dim"><span class="te-dname">Mon projet</span><div class="te-bar"><div class="te-fill" style="width:35%"></div></div><span class="te-delta">+3</span></div>
+      </div>
+      <div class="te-signal">
+        <div class="te-s-lbl">CE QUE ÇA DIT AUX RECRUTEURS</div>
+        <div class="te-s-txt">Tu as fait 42km un samedi pour explorer un campus. C'est un signal d'initiative que 0 CV ne peut montrer.</div>
+      </div>
+      <div class="te-btns">
+        <button class="te-btn-m" onclick="go('tr_intro')">Trouver un autre TRACE</button>
+        <button class="te-btn-s">Retour au feed</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+}
+var photoTaken=false, tasksChecked=0;
+function checkTask(el){
+  if(!el.classList.contains('done')){
+    el.classList.add('done');
+    tasksChecked++;
+    checkSubmit();
+  }
+}
+function takePhoto(){
+  if(photoTaken)return;
+  photoTaken=true;
+  document.getElementById('photoLbl').textContent='Photo prise';
+  document.getElementById('photoSub').textContent='Géolocalisation confirmée · Campus HEC';
+  document.querySelector('.op-photo-zone').style.borderColor='rgba(48,184,112,0.4)';
+  document.querySelector('.op-photo-zone').style.background='rgba(48,184,112,0.06)';
+  checkSubmit();
+}
+function checkSubmit(){
+  if(photoTaken){
+    document.getElementById('submitBtn').style.display='block';
+  }
+}
+</script>

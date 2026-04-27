@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VOKA — TRIBUNAL</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --purple:#7500B8;--green:#B3F70B;--orange:#FF5321;--blue:#378ADD;--amber:#EF9F27;
+  --bg:#080810;--bg2:#0f0f1e;--bg3:#1a1a2e;
+  --w:#fff;--w7:rgba(255,255,255,0.7);--w6:rgba(255,255,255,0.6);
+  --w4:rgba(255,255,255,0.55);--w2:rgba(255,255,255,0.12);--w1:rgba(255,255,255,0.06);
+}
+body{background:#111;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px;}
+.phone{width:390px;min-height:844px;background:var(--bg);border-radius:48px;overflow:hidden;border:7px solid #1e1e2e;position:relative;display:flex;flex-direction:column;}
+.sb{display:flex;justify-content:space-between;padding:12px 22px 0;font-size:12px;color:var(--w4);flex-shrink:0;}
+.step{display:none;flex-direction:column;flex:1;}
+.step.active{display:flex;}
+
+/* ─── SOUMETTRE ─── */
+.submit-hdr{padding:14px 20px 0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.trib-badge{display:flex;align-items:center;gap:6px;background:rgba(239,159,39,0.12);border:0.5px solid rgba(245,192,64,0.3);border-radius:20px;padding:5px 12px;}
+.tb-dot{width:6px;height:6px;border-radius:50%;background:var(--amber);}
+.tb-txt{font-size:11px;color:#f5c040;font-weight:500;letter-spacing:0.04em;}
+.xp-tag{font-size:11px;color:var(--green);background:rgba(179,247,11,0.1);border:0.5px solid rgba(179,247,11,0.2);padding:4px 10px;border-radius:8px;font-weight:500;}
+
+.submit-hero{padding:16px 20px 0;flex-shrink:0;}
+.sh-title{font-size:22px;font-weight:500;color:var(--w);line-height:1.25;margin-bottom:6px;}
+.sh-sub{font-size:13px;color:var(--w4);line-height:1.55;margin-bottom:16px;}
+
+/* Choix type de soumission */
+.type-tabs{display:flex;gap:6px;padding:0 20px 14px;flex-shrink:0;}
+.type-tab{flex:1;padding:9px 6px;border-radius:10px;font-size:12px;font-weight:500;text-align:center;cursor:pointer;border:0.5px solid var(--w2);color:var(--w4);background:var(--w1);transition:all 0.15s;}
+.type-tab.active{background:rgba(239,159,39,0.12);border-color:rgba(245,192,64,0.35);color:#f5c040;}
+
+/* PITCH preview */
+.pitch-preview{margin:0 20px 12px;background:var(--bg2);border-radius:14px;overflow:hidden;border:0.5px solid var(--w2);flex-shrink:0;}
+.pp-video{height:120px;background:#100808;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.pp-person{position:absolute;bottom:0;left:50%;transform:translateX(-50%);}
+.pp-head{width:40px;height:42px;border-radius:50% 50% 45% 45%;background:#D4A876;margin:0 auto;}
+.pp-body{width:64px;height:64px;background:#1a0a1a;border-radius:50% 50% 0 0;margin:0 auto;}
+.pp-overlay{position:absolute;inset:0;background:rgba(8,8,16,0.5);display:flex;align-items:center;justify-content:center;}
+.pp-play{width:40px;height:40px;border-radius:50%;background:rgba(239,159,39,0.25);border:1.5px solid rgba(245,192,64,0.6);display:flex;align-items:center;justify-content:center;}
+.pp-tri{width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:14px solid rgba(245,192,64,0.9);margin-left:3px;}
+.pp-dur{position:absolute;bottom:7px;right:10px;font-size:10px;color:var(--w6);background:rgba(0,0,0,0.5);padding:1px 6px;border-radius:4px;}
+.pp-info{padding:10px 14px 12px;}
+.pp-name{font-size:14px;font-weight:500;color:var(--w);margin-bottom:4px;}
+.pp-tags{display:flex;gap:5px;flex-wrap:wrap;}
+.pp-tag{font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(239,159,39,0.1);border:0.5px solid rgba(245,192,64,0.2);color:#f5c040;}
+
+/* BUILD card preview */
+.build-preview{margin:0 20px 12px;border-radius:14px;overflow:hidden;border:0.5px solid rgba(117,0,184,0.25);background:rgba(117,0,184,0.06);flex-shrink:0;}
+.bp-header{padding:12px 14px 8px;}
+.bp-lbl{font-size:9px;color:#c98ff0;letter-spacing:0.08em;font-weight:500;margin-bottom:6px;}
+.bp-words{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px;}
+.bp-word{background:rgba(117,0,184,0.18);border:0.5px solid rgba(179,147,230,0.3);border-radius:5px;padding:3px 8px;font-size:12px;color:#c98ff0;font-weight:500;}
+.bp-why{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;font-style:italic;margin-bottom:8px;}
+.bp-footer{background:rgba(0,0,0,0.2);padding:8px 14px;font-size:10px;color:var(--w4);}
+
+/* Question soumission */
+.submit-q{margin:0 20px 10px;font-size:14px;color:var(--w6);line-height:1.55;flex-shrink:0;}
+.submit-prompt{margin:0 20px 14px;background:rgba(239,159,39,0.06);border:0.5px solid rgba(245,192,64,0.15);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--w6);line-height:1.55;flex-shrink:0;}
+.sp-label{font-size:9px;color:#f5c040;letter-spacing:0.07em;font-weight:500;margin-bottom:4px;}
+.sp-txt{font-size:13px;font-weight:500;color:var(--w);}
+
+.submit-btn{margin:0 20px 16px;background:var(--amber);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:500;color:#1a1000;cursor:pointer;width:calc(100% - 40px);flex-shrink:0;}
+
+/* ─── ATTENTE ─── */
+.wait-wrap{padding:24px 20px;display:flex;flex-direction:column;align-items:center;flex:1;}
+.wait-icon-big{font-size:48px;margin-bottom:14px;}
+.wait-title{font-size:20px;font-weight:500;color:var(--w);margin-bottom:6px;text-align:center;}
+.wait-sub{font-size:13px;color:var(--w4);text-align:center;line-height:1.6;margin-bottom:24px;}
+
+/* Compteur live */
+.live-counter{background:var(--bg2);border-radius:16px;padding:18px 20px;width:100%;border:0.5px solid var(--w2);margin-bottom:18px;}
+.lc-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.lc-num{font-size:36px;font-weight:300;color:var(--w);}
+.lc-lbl{font-size:12px;color:rgba(255,255,255,0.55);text-align:right;line-height:1.4;}
+.lc-bar{height:4px;background:var(--w1);border-radius:2px;overflow:hidden;margin-bottom:8px;}
+.lc-fill{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--amber),var(--green));transition:width 0.5s ease;}
+.lc-time{font-size:11px;color:var(--w4);text-align:right;}
+
+/* Flux de votes en direct */
+.votes-flux{width:100%;margin-bottom:16px;}
+.vf-lbl{font-size:10px;color:var(--w4);letter-spacing:0.07em;margin-bottom:8px;font-weight:500;}
+.vf-items{display:flex;flex-direction:column;gap:6px;}
+.vf-item{display:flex;align-items:center;gap:8px;background:var(--w1);border-radius:8px;padding:7px 10px;border:0.5px solid var(--w2);animation:fadeIn 0.4s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+.vfi-av{width:22px;height:22px;border-radius:50%;font-size:9px;font-weight:600;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.vfi-name{font-size:11px;font-weight:500;color:var(--w6);flex:1;}
+.vfi-vote{font-size:11px;font-weight:500;}
+.vote-yes{color:var(--green);}
+.vote-no{color:#ff8060;}
+.vote-wait{color:var(--w4);}
+
+.see-results-btn{width:100%;background:var(--amber);border:none;border-radius:13px;padding:12px;font-size:14px;font-weight:500;color:#1a1000;cursor:pointer;margin-top:auto;}
+
+/* ─── VOTE (quand on est juré) ─── */
+.vote-hdr{padding:14px 20px 0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.vote-timer-pill{display:flex;align-items:center;gap:6px;background:rgba(255,83,33,0.1);border:0.5px solid rgba(255,128,96,0.25);border-radius:20px;padding:5px 12px;}
+.vtp-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.vtp-txt{font-size:11px;color:#ff8060;font-weight:500;}
+.vote-count-pill{font-size:11px;color:var(--w4);background:var(--w1);padding:4px 10px;border-radius:8px;}
+
+.vote-intro{padding:12px 20px 0;flex-shrink:0;}
+.vi-lbl{font-size:10px;color:var(--w4);letter-spacing:0.07em;margin-bottom:4px;}
+.vi-title{font-size:16px;font-weight:500;color:var(--w);margin-bottom:4px;}
+.vi-sub{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;}
+
+/* Contenu soumis pour vote */
+.submitted-content{margin:12px 16px 0;border-radius:14px;overflow:hidden;border:0.5px solid rgba(239,159,39,0.2);background:rgba(239,159,39,0.05);flex-shrink:0;}
+.sc-author{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:0.5px solid var(--w1);}
+.sc-av{width:28px;height:28px;border-radius:50%;background:rgba(117,0,184,0.3);border:1.5px solid var(--purple);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;color:#fff;}
+.sc-name{font-size:12px;font-weight:500;color:var(--w);}
+.sc-level{font-size:10px;color:var(--w4);}
+.sc-body{padding:12px 14px;}
+.sc-pitch-zone{height:100px;background:#100808;border-radius:10px;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:8px;cursor:pointer;}
+.sc-play{width:36px;height:36px;border-radius:50%;background:rgba(239,159,39,0.25);border:1.5px solid rgba(245,192,64,0.5);display:flex;align-items:center;justify-content:center;}
+.sc-tri{width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:12px solid rgba(245,192,64,0.85);margin-left:2px;}
+.sc-dur2{position:absolute;bottom:6px;right:8px;font-size:10px;color:var(--w6);background:rgba(0,0,0,0.5);padding:1px 5px;border-radius:4px;}
+.sc-transcript{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.6;font-style:italic;padding:2px 0 8px;}
+.sc-skills{display:flex;gap:5px;flex-wrap:wrap;}
+.sc-skill{font-size:10px;padding:2px 7px;border-radius:4px;background:var(--w1);color:var(--w4);}
+
+/* Vote bar existant */
+.current-vote-bar{margin:10px 16px 0;background:var(--bg2);border-radius:10px;padding:10px 12px;border:0.5px solid var(--w2);flex-shrink:0;}
+.cvb-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.cvb-lbl{font-size:10px;color:var(--w4);}
+.cvb-counts{display:flex;gap:10px;}
+.cvb-yes{font-size:12px;color:var(--green);font-weight:500;}
+.cvb-no{font-size:12px;color:#ff8060;font-weight:500;}
+.cvb-bar{display:flex;height:5px;border-radius:3px;overflow:hidden;}
+.cvb-yes-fill{height:5px;background:var(--green);transition:width 0.5s ease;}
+.cvb-no-fill{height:5px;background:#ff8060;transition:width 0.5s ease;}
+
+/* Boutons de vote */
+.vote-buttons{display:flex;gap:8px;padding:12px 16px 0;flex-shrink:0;}
+.vote-btn{flex:1;padding:14px 10px;border-radius:14px;font-size:15px;font-weight:500;border:1.5px solid;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all 0.15s;}
+.vote-btn:active{transform:scale(0.97);}
+.vb-yes{background:rgba(179,247,11,0.08);border-color:rgba(179,247,11,0.35);color:var(--green);}
+.vb-no{background:rgba(255,83,33,0.08);border-color:rgba(255,83,33,0.3);color:#ff8060;}
+.vb-icon{font-size:22px;}
+.vb-lbl{font-size:12px;font-weight:500;}
+.vb-sub{font-size:10px;opacity:0.6;}
+.vote-btn.voted-yes{background:rgba(179,247,11,0.15);border-color:rgba(179,247,11,0.5);}
+.vote-btn.voted-no{background:rgba(255,83,33,0.15);border-color:rgba(255,83,33,0.45);}
+
+/* Tag raison */
+.reason-section{margin:10px 16px 0;flex-shrink:0;}
+.rs-lbl{font-size:10px;color:var(--w4);letter-spacing:0.07em;margin-bottom:7px;font-weight:500;}
+.reason-tags{display:flex;gap:5px;flex-wrap:wrap;}
+.reason-tag{font-size:11px;padding:5px 10px;border-radius:7px;background:var(--w1);border:0.5px solid var(--w2);color:var(--w4);cursor:pointer;transition:all 0.15s;}
+.reason-tag.active-yes{background:rgba(179,247,11,0.1);border-color:rgba(179,247,11,0.3);color:var(--green);}
+.reason-tag.active-no{background:rgba(255,83,33,0.1);border-color:rgba(255,83,33,0.25);color:#ff8060;}
+
+.next-vote-btn{margin:10px 16px 0;width:calc(100% - 32px);background:var(--amber);border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#1a1000;cursor:pointer;display:none;flex-shrink:0;}
+
+/* ─── RÉSULTATS ─── */
+.results-hdr{padding:14px 20px 0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.result-wrap{padding:0 20px;display:flex;flex-direction:column;flex:1;}
+
+.verdict-card{border-radius:16px;padding:18px;margin-bottom:14px;text-align:center;}
+.vc-icon{font-size:36px;margin-bottom:8px;}
+.vc-verdict{font-size:22px;font-weight:500;margin-bottom:5px;}
+.vc-sub{font-size:13px;opacity:0.7;line-height:1.5;}
+
+/* Jauge de vote */
+.vote-gauge{background:var(--bg2);border-radius:14px;padding:14px 16px;margin-bottom:12px;border:0.5px solid var(--w2);}
+.vg-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.vg-yes-lbl{font-size:13px;font-weight:500;color:var(--green);}
+.vg-no-lbl{font-size:13px;font-weight:500;color:#ff8060;}
+.vg-pct-yes{font-size:28px;font-weight:300;color:var(--green);}
+.vg-pct-no{font-size:28px;font-weight:300;color:#ff8060;}
+.vg-bar{display:flex;height:10px;border-radius:5px;overflow:hidden;margin-bottom:6px;}
+.vgb-yes{background:var(--green);transition:width 1s ease;}
+.vgb-no{background:#ff8060;transition:width 1s ease;}
+.vg-voters{font-size:11px;color:var(--w4);text-align:center;}
+
+/* Raisons top */
+.top-reasons{background:var(--bg2);border-radius:12px;padding:12px 14px;margin-bottom:12px;border:0.5px solid var(--w2);}
+.tr-lbl{font-size:10px;color:var(--w4);letter-spacing:0.07em;margin-bottom:8px;font-weight:500;}
+.tr-items{display:flex;flex-direction:column;gap:6px;}
+.tr-item{display:flex;align-items:center;gap:8px;}
+.tri-bar{flex:1;height:5px;background:var(--w1);border-radius:3px;overflow:hidden;}
+.tri-fill{height:5px;border-radius:3px;transition:width 0.8s ease;}
+.tri-lbl{font-size:11px;color:var(--w6);width:120px;flex-shrink:0;}
+.tri-pct{font-size:11px;font-weight:500;width:32px;text-align:right;flex-shrink:0;}
+
+/* XP auteur */
+.author-xp{background:rgba(179,247,11,0.07);border:0.5px solid rgba(179,247,11,0.2);border-radius:10px;padding:11px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.axp-icon{font-size:18px;}
+.axp-txt{font-size:12px;color:var(--w6);flex:1;line-height:1.4;}
+.axp-val{font-size:18px;font-weight:500;color:var(--green);}
+
+.end-btns{display:flex;flex-direction:column;gap:7px;margin-top:auto;padding-bottom:4px;}
+.btn-main{border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;cursor:pointer;}
+.btn-sec{background:var(--w1);border:0.5px solid var(--w2);border-radius:13px;padding:11px;font-size:13px;color:var(--w6);cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+
+<!-- ─── SOUMETTRE ─── -->
+<div class="step active" id="s-submit">
+  <div class="submit-hdr">
+    <div class="trib-badge"><div class="tb-dot"></div><span class="tb-txt">TRIBUNAL · 24h</span></div>
+    <div class="xp-tag">+25 XP</div>
+  </div>
+  <div class="submit-hero">
+    <div class="sh-title">Soumettre au jugement de la communauté.</div>
+    <div class="sh-sub">Ton PITCH ou ton BUILD est exposé pendant 24h. La communauté vote. Le résultat apparaît sur ton profil.</div>
+  </div>
+
+  <div class="type-tabs">
+    <div class="type-tab active" onclick="switchTab(this,'pitch')">🎙️ Mon PITCH</div>
+    <div class="type-tab" onclick="switchTab(this,'build')">🏗️ Mon BUILD</div>
+  </div>
+
+  <div id="pitch-content">
+    <div class="pitch-preview">
+      <div class="pp-video">
+        <div class="pp-person">
+          <div class="pp-head"></div>
+          <div class="pp-body"></div>
+        </div>
+        <div class="pp-overlay"><div class="pp-play"><div class="pp-tri"></div></div></div>
+        <div class="pp-dur">0:23</div>
+      </div>
+      <div class="pp-info">
+        <div class="pp-name">Mon talent ? Je transforme l'ambiguïté en clarté.</div>
+        <div class="pp-tags">
+          <span class="pp-tag">Mes forces</span>
+          <span class="pp-tag">Non-falsifiable IA</span>
+          <span class="pp-tag">23 sec</span>
+        </div>
+      </div>
+    </div>
+    <div class="submit-prompt">
+      <div class="sp-label">QUESTION POSÉE AU JURY</div>
+      <div class="sp-txt">Ce pitch révèle-t-il quelque chose d'authentique et de fort sur cette personne ?</div>
+    </div>
+  </div>
+
+  <div id="build-content" style="display:none;">
+    <div class="build-preview">
+      <div class="bp-header">
+        <div class="bp-lbl">BUILD · MON PROJET</div>
+        <div class="bp-words">
+          <div class="bp-word">Créer</div>
+          <div class="bp-word">Impacter</div>
+          <div class="bp-word">Terrain</div>
+        </div>
+        <div class="bp-why">"J'ai besoin de voir le résultat concret de ce que je fais."</div>
+      </div>
+      <div class="bp-footer">Horizon 3-5 ans · Signal : Initiative, Vision, Résultat</div>
+    </div>
+    <div class="submit-prompt">
+      <div class="sp-label">QUESTION POSÉE AU JURY</div>
+      <div class="sp-txt">Ce projet est-il crédible et clairement défini ?</div>
+    </div>
+  </div>
+
+  <div class="submit-q">En soumettant, tu acceptes que la communauté VOKA juge ton contenu pendant 24 heures.</div>
+  <button class="submit-btn" onclick="goStep('s-wait');startVoteSimulation()">Soumettre au TRIBUNAL</button>
+</div>
+
+<!-- ─── ATTENTE ─── -->
+<div class="step" id="s-wait">
+  <div class="wait-wrap">
+    <div class="wait-icon-big">⚖️</div>
+    <div class="wait-title">Ton contenu est devant le jury.</div>
+    <div class="wait-sub">La communauté vote pendant 24h. Tu seras notifié à la clôture du verdict.</div>
+
+    <div class="live-counter">
+      <div class="lc-row">
+        <div class="lc-num" id="voteCount">0</div>
+        <div class="lc-lbl">votes<br>reçus</div>
+      </div>
+      <div class="lc-bar"><div class="lc-fill" id="voteFill" style="width:0%"></div></div>
+      <div class="lc-time" id="voteTime">23h 58min restantes</div>
+    </div>
+
+    <div class="votes-flux">
+      <div class="vf-lbl">VOTES EN DIRECT</div>
+      <div class="vf-items" id="fluxItems"></div>
+    </div>
+
+    <button class="see-results-btn" onclick="goStep('s-vote')">Je veux aussi voter pour quelqu'un →</button>
+  </div>
+</div>
+
+<!-- ─── VOTE (rôle juré) ─── -->
+<div class="step" id="s-vote">
+  <div class="vote-hdr">
+    <div class="vote-timer-pill"><div class="vtp-dot"></div><span class="vtp-txt">EN DIRECT · 847 jurés actifs</span></div>
+    <div class="vote-count-pill" id="voteProgress">1 / 3 soumissions</div>
+  </div>
+
+  <div class="vote-intro">
+    <div class="vi-lbl">TON RÔLE · JURÉ</div>
+    <div class="vi-title">Ce pitch révèle-t-il quelque chose d'authentique ?</div>
+    <div class="vi-sub">Écoute ou lis. Vote sincèrement. Ta raison enrichit le feedback.</div>
+  </div>
+
+  <div class="submitted-content">
+    <div class="sc-author">
+      <div class="sc-av">S</div>
+      <div>
+        <div class="sc-name">Sofia M. · Challenger</div>
+        <div class="sc-level">Île-de-France · Terminale</div>
+      </div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-pitch-zone">
+        <div class="sc-play"><div class="sc-tri"></div></div>
+        <div class="sc-dur2">0:28</div>
+      </div>
+      <div class="sc-transcript">"J'ai toujours su que j'apprenais mieux par l'erreur que par la théorie. Mes profs appelaient ça de l'agitation. Moi j'appelle ça de la curiosité."</div>
+      <div class="sc-skills">
+        <span class="sc-skill">Mes forces</span>
+        <span class="sc-skill">Authenticité</span>
+        <span class="sc-skill">Non-falsifiable IA</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="current-vote-bar">
+    <div class="cvb-row">
+      <span class="cvb-lbl">Votes actuels</span>
+      <div class="cvb-counts">
+        <span class="cvb-yes" id="cvbYes">73% oui</span>
+        <span class="cvb-no" id="cvbNo">27% non</span>
+      </div>
+    </div>
+    <div class="cvb-bar">
+      <div class="cvb-yes-fill" id="cvbYesFill" style="width:73%"></div>
+      <div class="cvb-no-fill" id="cvbNoFill" style="width:27%"></div>
+    </div>
+  </div>
+
+  <div class="vote-buttons">
+    <button class="vote-btn vb-yes" id="btnYes" onclick="castVote('yes')">
+      <span class="vb-icon">👍</span>
+      <span class="vb-lbl">Oui</span>
+      <span class="vb-sub">Authentique et fort</span>
+    </button>
+    <button class="vote-btn vb-no" id="btnNo" onclick="castVote('no')">
+      <span class="vb-icon">👎</span>
+      <span class="vb-lbl">Non</span>
+      <span class="vb-sub">Pas convaincu(e)</span>
+    </button>
+  </div>
+
+  <div class="reason-section" id="reasonSection" style="display:none;">
+    <div class="rs-lbl">POURQUOI ? (optionnel mais précieux)</div>
+    <div class="reason-tags" id="reasonTags"></div>
+  </div>
+
+  <button class="next-vote-btn" id="nextVoteBtn" onclick="nextVote()">Soumission suivante →</button>
+</div>
+
+<!-- ─── RÉSULTATS ─── -->
+<div class="step" id="s-results">
+  <div class="results-hdr">
+    <div class="trib-badge"><div class="tb-dot"></div><span class="tb-txt">VERDICT FINAL</span></div>
+    <div class="xp-tag" id="resXpTag">+25 XP</div>
+  </div>
+
+  <div class="result-wrap">
+    <div class="verdict-card" id="verdictCard">
+      <div class="vc-icon" id="vcIcon">✅</div>
+      <div class="vc-verdict" id="vcVerdict">Validé par la communauté</div>
+      <div class="vc-sub" id="vcSub">Ton pitch a convaincu la majorité des jurés. Il est maintenant visible sur ton profil.</div>
+    </div>
+
+    <div class="vote-gauge">
+      <div class="vg-header">
+        <div>
+          <div class="vg-yes-lbl">Oui</div>
+          <div class="vg-pct-yes" id="resPctYes">73%</div>
+        </div>
+        <div style="text-align:right">
+          <div class="vg-no-lbl">Non</div>
+          <div class="vg-pct-no" id="resPctNo">27%</div>
+        </div>
+      </div>
+      <div class="vg-bar">
+        <div class="vgb-yes" id="resFillYes" style="width:0%"></div>
+        <div class="vgb-no" id="resFillNo" style="width:0%"></div>
+      </div>
+      <div class="vg-voters" id="resVoters">1 247 jurés ont voté</div>
+    </div>
+
+    <div class="top-reasons">
+      <div class="tr-lbl">RAISONS LES PLUS CITÉES</div>
+      <div class="tr-items" id="topReasons"></div>
+    </div>
+
+    <div class="author-xp">
+      <span class="axp-icon">⭐</span>
+      <span class="axp-txt">Ton pitch est validé et visible aux recruteurs VOKA pendant 30 jours.</span>
+      <span class="axp-val" id="resXpVal">+25 XP</span>
+    </div>
+
+    <div class="end-btns">
+      <button class="btn-main" id="endMainBtn" style="background:var(--amber);color:#1a1000;" onclick="goStep('s-submit')">Soumettre un autre contenu</button>
+      <button class="btn-sec" onclick="goStep('s-submit')">Retour au feed</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+var currentVote=null, voteIdx=0;
+var voteSimInt=null, voteCount=0;
+
+function goStep(id){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function switchTab(el, type){
+  document.querySelectorAll('.type-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('pitch-content').style.display=type==='pitch'?'block':'none';
+  document.getElementById('build-content').style.display=type==='build'?'block':'none';
+}
+
+// ─── SIMULATION FLUX DE VOTES ───
+var FLUX_NAMES=['Rayan','Emma','Théo','Inès','Axel','Jade','Luca','Mia','Nour','Léo','Anaïs','Zack'];
+var FLUX_COLORS=['#7500B8','#FF5321','#378ADD','#1D9E75','#D4537E','#EF9F27','#6C3483','#148F77'];
+
+function startVoteSimulation(){
+  voteCount=0;
+  clearInterval(voteSimInt);
+  let target=1247;
+  let increment=()=>{
+    let add=Math.floor(Math.random()*8)+2;
+    voteCount=Math.min(voteCount+add,target);
+    let pct=voteCount/target;
+    document.getElementById('voteCount').textContent=voteCount.toLocaleString('fr');
+    document.getElementById('voteFill').style.width=(pct*100)+'%';
+    let hours=Math.floor(23*(1-pct));
+    let mins=Math.floor(58*(1-pct*0.1));
+    document.getElementById('voteTime').textContent=hours+'h '+mins+'min restantes';
+    addFluxItem();
+    if(voteCount>=target) clearInterval(voteSimInt);
+  };
+  voteSimInt=setInterval(increment,800);
+  setTimeout(()=>showResults(), 12000);
+}
+
+function addFluxItem(){
+  var container=document.getElementById('fluxItems');
+  if(container.children.length>=5) container.removeChild(container.firstChild);
+  var name=FLUX_NAMES[Math.floor(Math.random()*FLUX_NAMES.length)];
+  var color=FLUX_COLORS[Math.floor(Math.random()*FLUX_COLORS.length)];
+  var yes=Math.random()>0.27;
+  var el=document.createElement('div');
+  el.className='vf-item';
+  el.innerHTML=`<div class="vfi-av" style="background:${color}">${name[0]}</div>
+    <span class="vfi-name">${name}</span>
+    <span class="vfi-vote ${yes?'vote-yes':'vote-no'}">${yes?'👍 Oui':'👎 Non'}</span>`;
+  container.appendChild(el);
+}
+
+// ─── VOTE (juré) ───
+var VOTE_SUBMISSIONS=[
+  {
+    name:'Sofia M.',level:'Challenger · Île-de-France',
+    pitch:'"J\'ai toujours su que j\'apprenais mieux par l\'erreur que par la théorie. Mes profs appelaient ça de l\'agitation. Moi j\'appelle ça de la curiosité."',
+    question:'Ce pitch révèle-t-il quelque chose d\'authentique et de fort ?',
+    yesReasons:['Authentique','Unique','Surprenant','Courageux'],
+    noReasons:['Trop vague','Manque de concret','Déjà entendu']
+  },
+  {
+    name:'Karim B.',level:'Explorer · Seine-Saint-Denis',
+    pitch:'"Je suis le genre de personne qui finit ce qu\'il commence, même quand tout le monde a déjà abandonné. Ma plus grande force ? Je m\'ennuie pas facilement."',
+    question:'Ce pitch est-il convaincant et mémorable ?',
+    yesReasons:['Mémorable','Confiant','Concret','Direct'],
+    noReasons:['Manque d\'humilité','Trop court','Pas de preuves']
+  },
+  {
+    name:'Lena V.',level:'Challenger · Lyon',
+    pitch:'"J\'ai grandi dans une famille où l\'argent était une tension permanente. Ça m\'a appris à être créative avec peu. Je transforme des contraintes en solutions."',
+    question:'Ce pitch révèle-t-il une vraie singularité ?',
+    yesReasons:['Émouvant','Singulier','Honnête','Fort'],
+    noReasons:['Trop personnel','Hors sujet pro','Vulnérable']
+  }
+];
+
+function castVote(choice){
+  if(currentVote) return;
+  currentVote=choice;
+  var btnY=document.getElementById('btnYes');
+  var btnN=document.getElementById('btnNo');
+  btnY.classList.remove('voted-yes');
+  btnN.classList.remove('voted-no');
+  btnY.style.opacity=choice==='yes'?'1':'0.4';
+  btnN.style.opacity=choice==='no'?'1':'0.4';
+  if(choice==='yes') btnY.classList.add('voted-yes');
+  else btnN.classList.add('voted-no');
+
+  var sub=VOTE_SUBMISSIONS[voteIdx%VOTE_SUBMISSIONS.length];
+  var reasons=choice==='yes'?sub.yesReasons:sub.noReasons;
+  var rsec=document.getElementById('reasonSection');
+  var rtags=document.getElementById('reasonTags');
+  rsec.style.display='block';
+  rtags.innerHTML=reasons.map(r=>`<div class="reason-tag" onclick="toggleReason(this,'${choice}')">${r}</div>`).join('');
+  document.getElementById('nextVoteBtn').style.display='block';
+
+  // Mise à jour compteur de votes
+  var yPct=choice==='yes'?Math.min(76,74+Math.floor(Math.random()*4)):Math.max(70,73-Math.floor(Math.random()*4));
+  var nPct=100-yPct;
+  document.getElementById('cvbYes').textContent=yPct+'% oui';
+  document.getElementById('cvbNo').textContent=nPct+'% non';
+  document.getElementById('cvbYesFill').style.width=yPct+'%';
+  document.getElementById('cvbNoFill').style.width=nPct+'%';
+}
+
+function toggleReason(el, choice){
+  var cls='active-'+choice;
+  if(el.classList.contains(cls)) el.classList.remove(cls);
+  else el.classList.add(cls);
+}
+
+function nextVote(){
+  voteIdx++;
+  currentVote=null;
+  var total=VOTE_SUBMISSIONS.length;
+  document.getElementById('voteProgress').textContent=(voteIdx+1)+' / '+total+' soumissions';
+
+  if(voteIdx>=total){
+    showResults();
+    return;
+  }
+
+  var sub=VOTE_SUBMISSIONS[voteIdx];
+  document.querySelector('.sc-name').textContent=sub.name+' · Challenger';
+  document.querySelector('.sc-level').textContent=sub.level;
+  document.querySelector('.sc-transcript').textContent='"'+sub.pitch+'"';
+  document.querySelector('.vi-title').textContent=sub.question;
+  document.getElementById('reasonSection').style.display='none';
+  document.getElementById('nextVoteBtn').style.display='none';
+  document.getElementById('btnYes').classList.remove('voted-yes');
+  document.getElementById('btnNo').classList.remove('voted-no');
+  document.getElementById('btnYes').style.opacity='1';
+  document.getElementById('btnNo').style.opacity='1';
+  var yPct=65+Math.floor(Math.random()*20);
+  document.getElementById('cvbYes').textContent=yPct+'% oui';
+  document.getElementById('cvbNo').textContent=(100-yPct)+'% non';
+  document.getElementById('cvbYesFill').style.width=yPct+'%';
+  document.getElementById('cvbNoFill').style.width=(100-yPct)+'%';
+}
+
+function showResults(){
+  clearInterval(voteSimInt);
+  goStep('s-results');
+  var yesPct=73, noPct=27;
+  var won=yesPct>=50;
+
+  var vc=document.getElementById('verdictCard');
+  vc.style.background=won?'rgba(179,247,11,0.07)':'rgba(255,83,33,0.07)';
+  vc.style.border='0.5px solid '+(won?'rgba(179,247,11,0.2)':'rgba(255,83,33,0.2)');
+  document.getElementById('vcIcon').textContent=won?'✅':'❌';
+  document.getElementById('vcVerdict').textContent=won?'Validé par la communauté':'Non retenu';
+  document.getElementById('vcVerdict').style.color=won?'var(--green)':'#ff8060';
+  document.getElementById('vcSub').textContent=won?
+    'Ton pitch a convaincu la majorité des jurés. Il est visible sur ton profil pendant 30 jours.':
+    'La majorité n\'a pas été convaincue. Tu peux soumettre à nouveau dans 48h.';
+
+  document.getElementById('resPctYes').textContent=yesPct+'%';
+  document.getElementById('resPctNo').textContent=noPct+'%';
+  document.getElementById('resVoters').textContent='1 247 jurés ont voté';
+
+  setTimeout(()=>{
+    document.getElementById('resFillYes').style.width=yesPct+'%';
+    document.getElementById('resFillNo').style.width=noPct+'%';
+  },200);
+
+  var reasons=[
+    {lbl:'Authentique et unique',pct:68,color:'var(--green)'},
+    {lbl:'Courageux / honnête',pct:54,color:'#7ab8f0'},
+    {lbl:'Mémorable',pct:41,color:'#c98ff0'},
+    {lbl:'Trop vague',pct:27,color:'#ff8060'},
+  ];
+  document.getElementById('topReasons').innerHTML=reasons.map(r=>`
+    <div class="tr-item">
+      <span class="tri-lbl">${r.lbl}</span>
+      <div class="tri-bar"><div class="tri-fill" style="width:${r.pct}%;background:${r.color}"></div></div>
+      <span class="tri-pct" style="color:${r.color}">${r.pct}%</span>
+    </div>`).join('');
+
+  var xp=won?25:8;
+  document.getElementById('resXpTag').textContent='+'+xp+' XP';
+  document.getElementById('resXpVal').textContent='+'+xp+' XP';
+  document.getElementById('resXpVal').style.color=won?'var(--green)':'#ff8060';
+  document.querySelector('.axp-txt').textContent=won?
+    'Ton pitch est validé et visible aux recruteurs VOKA pendant 30 jours.':
+    'Tu gardes 8 XP pour avoir joué. Retravaille ton pitch et resoumet dans 48h.';
+}
+</script>
+</body>
+</html>

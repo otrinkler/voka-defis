@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VOKA — TERRITOIRE</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --purple:#7500B8;--green:#B3F70B;--orange:#FF5321;--blue:#378ADD;--teal:#1D9E75;--amber:#EF9F27;--pink:#D4537E;
+  --bg:#080810;--bg2:#0f0f1e;--bg3:#1a1a2e;
+  --w:#fff;--w6:rgba(255,255,255,0.6);--w4:rgba(255,255,255,0.4);
+  --w2:rgba(255,255,255,0.12);--w1:rgba(255,255,255,0.06);
+}
+body{background:#111;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px;}
+.phone{width:390px;min-height:844px;background:var(--bg);border-radius:48px;overflow:hidden;border:7px solid #1e1e2e;position:relative;display:flex;flex-direction:column;}
+.sb{display:flex;justify-content:space-between;padding:12px 22px 0;font-size:12px;color:var(--w4);flex-shrink:0;}
+.step{display:none;flex-direction:column;flex:1;}
+.step.active{display:flex;}
+
+/* ── TABS ── */
+.view-tabs{display:flex;gap:5px;padding:10px 16px 0;flex-shrink:0;}
+.vt{flex:1;padding:7px 4px;border-radius:9px;font-size:10px;font-weight:500;text-align:center;cursor:pointer;border:0.5px solid var(--w2);color:var(--w4);background:var(--w1);transition:all 0.15s;}
+.vt.on{color:#fff;border-color:transparent;}
+
+/* ═══════ VUE CARTE ═══════ */
+.map-container{flex:1;position:relative;overflow:hidden;}
+
+/* Fond carte sombre stylisée */
+.map-bg{position:absolute;inset:0;background:#0d1117;}
+.map-grid{position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,rgba(255,255,255,0.02) 0,rgba(255,255,255,0.02) 1px,transparent 1px,transparent 48px),
+  repeating-linear-gradient(90deg,rgba(255,255,255,0.02) 0,rgba(255,255,255,0.02) 1px,transparent 1px,transparent 48px);}
+
+/* Rues simulées */
+.map-street{position:absolute;background:rgba(255,255,255,0.06);border-radius:2px;}
+
+/* Canvas carte */
+.map-canvas{position:absolute;inset:0;}
+
+/* Zones de défis */
+.zone{position:absolute;border-radius:50%;cursor:pointer;transform:translate(-50%,-50%);}
+.zone-ring{position:absolute;inset:0;border-radius:50%;border:2px solid;animation:zoneRing 2.5s ease-in-out infinite;}
+.zone-inner{position:absolute;border-radius:50%;}
+.zone-dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.zone-label{position:absolute;top:50%;left:50%;transform:translate(-50%,calc(-50% + 32px));white-space:nowrap;font-size:10px;font-weight:500;background:rgba(8,8,16,0.85);padding:2px 7px;border-radius:4px;border:0.5px solid;}
+@keyframes zoneRing{0%,100%{transform:scale(1);opacity:0.6;}50%{transform:scale(1.08);opacity:1;}}
+.zone.inactive .zone-ring{animation:none;opacity:0.25;}
+.zone.inactive .zone-dot{opacity:0.4;}
+
+/* Pin position utilisateur */
+.user-pin{position:absolute;transform:translate(-50%,-50%);z-index:10;}
+.up-pulse{width:48px;height:48px;border-radius:50%;background:rgba(55,138,221,0.15);border:1px solid rgba(55,138,221,0.3);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);animation:upPulse 2s ease-in-out infinite;}
+@keyframes upPulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.8;}50%{transform:translate(-50%,-50%) scale(1.3);opacity:0.3;}}
+.up-dot{width:14px;height:14px;border-radius:50%;background:var(--blue);border:2.5px solid var(--w);position:relative;z-index:1;}
+
+/* Connecteur zone active */
+.active-connector{position:absolute;border:1.5px dashed rgba(179,247,11,0.4);border-radius:2px;pointer-events:none;}
+
+/* Top bar carte */
+.map-top{position:absolute;top:0;left:0;right:0;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to bottom,rgba(8,8,16,0.9) 0%,transparent 100%);z-index:20;}
+.mt-left{display:flex;flex-direction:column;gap:3px;}
+.mt-title{font-size:14px;font-weight:500;color:var(--w);}
+.mt-sub{font-size:11px;color:rgba(255,255,255,0.6);}
+.mt-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.mt-gps{display:flex;align-items:center;gap:4px;background:rgba(55,138,221,0.12);border:0.5px solid rgba(122,184,240,0.25);border-radius:8px;padding:4px 9px;}
+.mt-gps-dot{width:5px;height:5px;border-radius:50%;background:var(--blue);animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.mt-gps-txt{font-size:10px;color:#7ab8f0;font-weight:500;}
+.mt-filter{font-size:10px;color:rgba(255,255,255,0.6);background:var(--w1);border:0.5px solid var(--w2);padding:3px 8px;border-radius:6px;cursor:pointer;}
+
+/* Barre bottom carte */
+.map-bottom{position:absolute;bottom:0;left:0;right:0;z-index:20;background:linear-gradient(to top,rgba(8,8,16,0.95) 60%,transparent 100%);padding:12px 16px 20px;}
+.mb-stats{display:flex;gap:10px;margin-bottom:10px;}
+.mb-stat{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,0.65);}
+.mb-stat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.mb-zones-scroll{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.mb-zones-scroll::-webkit-scrollbar{display:none;}
+.mb-zone-chip{flex-shrink:0;display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:9px;cursor:pointer;border:0.5px solid;transition:all 0.15s;}
+.mb-zone-chip.near{border-width:1.5px;}
+.mzc-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.mzc-name{font-size:11px;font-weight:500;}
+.mzc-dist{font-size:10px;opacity:0.65;}
+
+/* ═══════ ZONE ACTIVE — DÉTAIL ═══════ */
+.zone-detail{position:absolute;bottom:0;left:0;right:0;z-index:30;background:var(--bg);border-radius:20px 20px 0 0;padding:16px 18px 28px;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);}
+.zone-detail.open{transform:translateY(0);}
+.zd-handle{width:36px;height:4px;border-radius:2px;background:var(--w2);margin:0 auto 14px;}
+.zd-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
+.zd-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.zd-titles{flex:1;}
+.zd-name{font-size:17px;font-weight:500;color:var(--w);margin-bottom:2px;}
+.zd-org{font-size:12px;color:rgba(255,255,255,0.6);}
+.zd-dist-badge{font-size:11px;padding:3px 9px;border-radius:7px;font-weight:500;flex-shrink:0;margin-top:2px;}
+.zd-desc{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.6;margin-bottom:12px;}
+.zd-defis{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.zd-defi{display:flex;align-items:center;gap:9px;background:var(--w1);border-radius:9px;padding:9px 11px;border:0.5px solid var(--w2);}
+.zdd-fmt{font-size:9px;font-weight:600;padding:2px 7px;border-radius:4px;letter-spacing:0.05em;flex-shrink:0;}
+.zdd-name{font-size:12px;color:rgba(255,255,255,0.75);flex:1;}
+.zdd-xp{font-size:11px;font-weight:500;color:var(--green);flex-shrink:0;}
+.zdd-done{font-size:10px;color:rgba(179,247,11,0.7);flex-shrink:0;}
+.zd-checkin-btn{width:100%;border:none;border-radius:13px;padding:13px;font-size:15px;font-weight:500;cursor:pointer;margin-bottom:8px;}
+.zd-close{width:100%;background:transparent;border:0.5px solid var(--w2);border-radius:12px;padding:10px;font-size:13px;color:rgba(255,255,255,0.6);cursor:pointer;}
+
+/* ═══════ CHECK-IN EN COURS ═══════ */
+.checkin-overlay{position:absolute;inset:0;background:rgba(8,8,16,0.97);z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;}
+.co-ring{width:100px;height:100px;border-radius:50%;border:3px solid rgba(29,158,117,0.2);display:flex;align-items:center;justify-content:center;position:relative;}
+.co-ring-spin{position:absolute;inset:0;border-radius:50%;border:3px solid transparent;border-top-color:var(--teal);animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.co-icon{font-size:32px;}
+.co-title{font-size:18px;font-weight:500;color:var(--w);text-align:center;}
+.co-sub{font-size:13px;color:rgba(255,255,255,0.6);text-align:center;line-height:1.5;}
+.co-bar{width:200px;height:4px;background:var(--w2);border-radius:2px;overflow:hidden;}
+.co-fill{height:4px;border-radius:2px;background:var(--teal);width:0%;transition:width 0.1s linear;}
+
+/* ═══════ DÉFI ACTIVÉ ═══════ */
+.defi-screen{flex:1;display:flex;flex-direction:column;}
+.ds-header{padding:12px 16px 0;flex-shrink:0;}
+.dsh-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.dsh-badge{display:flex;align-items:center;gap:5px;border-radius:9px;padding:4px 10px;}
+.dsh-dot{width:5px;height:5px;border-radius:50%;}
+.dsh-txt{font-size:10px;font-weight:500;letter-spacing:0.04em;}
+.dsh-xp{font-size:11px;color:var(--green);background:rgba(179,247,11,0.1);padding:4px 9px;border-radius:8px;font-weight:500;}
+.ds-prog{height:2px;background:var(--w1);border-radius:1px;overflow:hidden;}
+.ds-prog-fill{height:2px;border-radius:1px;transition:width 0.3s;}
+.ds-location-bar{margin:8px 16px 0;display:flex;align-items:center;gap:6px;background:rgba(29,158,117,0.08);border:0.5px solid rgba(109,219,160,0.15);border-radius:8px;padding:6px 10px;flex-shrink:0;}
+.dlb-icon{font-size:12px;}
+.dlb-txt{font-size:11px;color:rgba(109,219,160,0.8);}
+.dlb-badge{font-size:10px;color:var(--green);background:rgba(179,247,11,0.1);padding:1px 6px;border-radius:4px;margin-left:auto;font-weight:500;}
+.ds-question{padding:14px 16px 0;flex-shrink:0;}
+.dsq-num{font-size:10px;color:rgba(255,255,255,0.55);letter-spacing:0.08em;margin-bottom:5px;}
+.dsq-text{font-size:18px;font-weight:500;color:var(--w);line-height:1.32;}
+.ds-opts{display:flex;flex-direction:column;gap:6px;padding:12px 16px 0;flex-shrink:0;}
+.ds-opt{background:var(--w1);border:0.5px solid var(--w2);border-radius:12px;padding:12px 13px;cursor:pointer;display:flex;align-items:center;gap:9px;transition:all 0.12s;}
+.ds-opt:hover{background:rgba(29,158,117,0.06);}
+.ds-opt.chosen{background:rgba(29,158,117,0.1);border-color:rgba(109,219,160,0.3);}
+.ds-opt.correct{background:rgba(179,247,11,0.07);border-color:rgba(179,247,11,0.25);}
+.ds-opt.wrong{background:rgba(255,83,33,0.07);border-color:rgba(255,83,33,0.2);}
+.ds-opt-l{width:24px;height:24px;border-radius:7px;background:var(--w1);font-size:11px;font-weight:500;color:rgba(255,255,255,0.55);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ds-opt.chosen .ds-opt-l{background:rgba(29,158,117,0.2);color:#6ddba0;}
+.ds-opt.correct .ds-opt-l{background:rgba(179,247,11,0.15);color:var(--green);}
+.ds-opt.wrong .ds-opt-l{background:rgba(255,83,33,0.15);color:#ff8060;}
+.ds-opt-txt{font-size:13px;color:rgba(255,255,255,0.7);}
+.ds-opt.chosen .ds-opt-txt,.ds-opt.correct .ds-opt-txt{color:var(--w);}
+.ds-feedback{margin:10px 16px 0;border-radius:11px;padding:11px 13px;display:none;flex-shrink:0;}
+.dsf-lbl{font-size:9px;font-weight:600;letter-spacing:0.07em;margin-bottom:4px;}
+.dsf-txt{font-size:12px;color:rgba(255,255,255,0.7);line-height:1.55;}
+.ds-next{margin:10px 16px 0;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;cursor:pointer;display:none;flex-shrink:0;}
+
+/* ═══════ FIN TERRITOIRE ═══════ */
+.terr-end{flex:1;display:flex;flex-direction:column;padding:22px 20px;}
+.te-map-mini{height:100px;border-radius:14px;overflow:hidden;position:relative;margin-bottom:16px;background:#0d1117;border:0.5px solid var(--w2);}
+.te-map-bg{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,0.02) 0,rgba(255,255,255,0.02) 1px,transparent 1px,transparent 24px),repeating-linear-gradient(90deg,rgba(255,255,255,0.02) 0,rgba(255,255,255,0.02) 1px,transparent 1px,transparent 24px);}
+.te-map-pin{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+.te-map-ring{width:40px;height:40px;border-radius:50%;background:rgba(179,247,11,0.1);border:1.5px solid rgba(179,247,11,0.4);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+.te-map-dot{width:10px;height:10px;border-radius:50%;background:var(--green);border:2px solid var(--bg);}
+.te-map-label{position:absolute;bottom:8px;left:12px;font-size:10px;color:rgba(255,255,255,0.6);}
+.te-zone-badge{position:absolute;top:8px;right:10px;font-size:10px;color:#d4fb6b;background:rgba(179,247,11,0.12);padding:2px 7px;border-radius:5px;font-weight:500;}
+.te-title{font-size:22px;font-weight:500;color:var(--w);margin-bottom:5px;}
+.te-sub{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.6;margin-bottom:18px;}
+.te-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:16px;}
+.te-stat{background:var(--bg2);border-radius:10px;padding:10px 8px;text-align:center;border:0.5px solid var(--w2);}
+.tes-val{font-size:20px;font-weight:500;color:var(--w);}
+.tes-lbl{font-size:10px;color:rgba(255,255,255,0.6);margin-top:2px;line-height:1.3;}
+.te-dims{background:rgba(29,158,117,0.07);border:0.5px solid rgba(109,219,160,0.15);border-radius:12px;padding:12px 14px;margin-bottom:14px;}
+.ted-lbl{font-size:10px;color:#6ddba0;letter-spacing:0.07em;margin-bottom:8px;font-weight:500;}
+.ted-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.ted-row:last-child{margin-bottom:0;}
+.ted-name{font-size:11px;color:rgba(255,255,255,0.65);width:100px;flex-shrink:0;}
+.ted-bar{flex:1;height:4px;background:var(--w1);border-radius:2px;overflow:hidden;}
+.ted-fill{height:4px;border-radius:2px;transition:width 0.8s ease;}
+.ted-delta{font-size:11px;font-weight:500;color:var(--green);width:24px;text-align:right;flex-shrink:0;}
+.te-next-zones{background:var(--bg2);border-radius:12px;padding:12px 14px;border:0.5px solid var(--w2);margin-bottom:16px;}
+.tnz-lbl{font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.07em;margin-bottom:8px;font-weight:500;}
+.tnz-items{display:flex;flex-direction:column;gap:6px;}
+.tnz-item{display:flex;align-items:center;gap:8px;}
+.tnzi-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.tnzi-name{font-size:12px;color:rgba(255,255,255,0.75);flex:1;}
+.tnzi-dist{font-size:11px;color:rgba(255,255,255,0.55);}
+.te-xp{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.tex-val{font-size:34px;font-weight:300;color:var(--green);}
+.tex-lbl{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5;}
+.te-btns{display:flex;flex-direction:column;gap:7px;margin-top:auto;}
+.btn-m{border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;cursor:pointer;}
+.btn-s{background:var(--w1);border:0.5px solid var(--w2);border-radius:13px;padding:11px;font-size:13px;color:rgba(255,255,255,0.65);cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+
+<div class="view-tabs">
+  <div class="vt on" style="background:var(--teal);border-color:var(--teal);" onclick="switchView(this,'carte')">🗺️ Carte</div>
+  <div class="vt" onclick="switchView(this,'defi')">⚡ Défi actif</div>
+  <div class="vt" onclick="switchView(this,'fin')">🏆 Résultat</div>
+</div>
+
+<!-- ═══════ VUE CARTE ═══════ -->
+<div class="step active" id="v-carte">
+  <div class="map-container">
+    <div class="map-bg"></div>
+    <div class="map-grid"></div>
+
+    <!-- Rues simulées -->
+    <div class="map-street" style="top:38%;left:0;right:0;height:18px;transform:rotate(-3deg);"></div>
+    <div class="map-street" style="top:58%;left:0;right:0;height:10px;transform:rotate(1deg);"></div>
+    <div class="map-street" style="top:0;bottom:0;left:28%;width:14px;transform:rotate(2deg);"></div>
+    <div class="map-street" style="top:0;bottom:0;left:64%;width:8px;transform:rotate(-1deg);"></div>
+    <div class="map-street" style="top:22%;left:0;right:0;height:7px;opacity:0.5;"></div>
+    <div class="map-street" style="top:75%;left:0;right:0;height:7px;opacity:0.5;"></div>
+
+    <!-- Zones de défis -->
+    <!-- Zone ENGIE — proche, active -->
+    <div class="zone" id="zone-engie" style="top:42%;left:34%;width:90px;height:90px;" onclick="openZone('engie')">
+      <div class="zone-ring" style="border-color:rgba(29,158,117,0.7);"></div>
+      <div class="zone-inner" style="position:absolute;inset:12px;border-radius:50%;background:rgba(29,158,117,0.1);"></div>
+      <div class="zone-dot" style="width:28px;height:28px;background:rgba(29,158,117,0.25);border:2px solid var(--teal);">
+        <span style="font-size:13px;">⚡</span>
+      </div>
+      <div class="zone-label" style="color:rgba(109,219,160,0.9);border-color:rgba(109,219,160,0.25);background:rgba(8,8,16,0.9);">ENGIE · 180m</div>
+    </div>
+
+    <!-- Zone Campus HEC — moyen -->
+    <div class="zone" id="zone-hec" style="top:22%;left:70%;width:76px;height:76px;" onclick="openZone('hec')">
+      <div class="zone-ring" style="border-color:rgba(117,0,184,0.6);"></div>
+      <div class="zone-inner" style="position:absolute;inset:10px;border-radius:50%;background:rgba(117,0,184,0.08);"></div>
+      <div class="zone-dot" style="width:24px;height:24px;background:rgba(117,0,184,0.2);border:2px solid var(--purple);">
+        <span style="font-size:11px;">🎓</span>
+      </div>
+      <div class="zone-label" style="color:#c98ff0;border-color:rgba(179,147,230,0.2);background:rgba(8,8,16,0.9);">HEC · 650m</div>
+    </div>
+
+    <!-- Zone Armée de Terre — loin -->
+    <div class="zone inactive" id="zone-armee" style="top:68%;left:65%;width:64px;height:64px;" onclick="openZone('armee')">
+      <div class="zone-ring" style="border-color:rgba(239,159,39,0.4);"></div>
+      <div class="zone-inner" style="position:absolute;inset:8px;border-radius:50%;background:rgba(239,159,39,0.05);"></div>
+      <div class="zone-dot" style="width:20px;height:20px;background:rgba(239,159,39,0.15);border:2px solid var(--amber);">
+        <span style="font-size:10px;">🪖</span>
+      </div>
+      <div class="zone-label" style="color:#f5c040;border-color:rgba(245,192,64,0.2);background:rgba(8,8,16,0.9);">Armée · 2.1km</div>
+    </div>
+
+    <!-- Zone La Défense -->
+    <div class="zone inactive" id="zone-defense" style="top:28%;left:18%;width:56px;height:56px;" onclick="openZone('defense')">
+      <div class="zone-ring" style="border-color:rgba(55,138,221,0.4);"></div>
+      <div class="zone-inner" style="position:absolute;inset:8px;border-radius:50%;background:rgba(55,138,221,0.05);"></div>
+      <div class="zone-dot" style="width:18px;height:18px;background:rgba(55,138,221,0.15);border:2px solid var(--blue);">
+        <span style="font-size:9px;">🏙️</span>
+      </div>
+      <div class="zone-label" style="color:#7ab8f0;border-color:rgba(122,184,240,0.2);background:rgba(8,8,16,0.9);">La Défense · 3.4km</div>
+    </div>
+
+    <!-- Zone Colas -->
+    <div class="zone inactive" id="zone-colas" style="top:72%;left:22%;width:52px;height:52px;" onclick="openZone('colas')">
+      <div class="zone-ring" style="border-color:rgba(212,83,126,0.4);"></div>
+      <div class="zone-inner" style="position:absolute;inset:7px;border-radius:50%;background:rgba(212,83,126,0.05);"></div>
+      <div class="zone-dot" style="width:16px;height:16px;background:rgba(212,83,126,0.15);border:2px solid var(--pink);">
+        <span style="font-size:8px;">🏗️</span>
+      </div>
+      <div class="zone-label" style="color:#f090b0;border-color:rgba(240,144,176,0.2);background:rgba(8,8,16,0.9);">Colas · 5.2km</div>
+    </div>
+
+    <!-- Pin utilisateur -->
+    <div class="user-pin" style="top:48%;left:42%;">
+      <div class="up-pulse"></div>
+      <div class="up-dot"></div>
+    </div>
+
+    <!-- Top bar -->
+    <div class="map-top">
+      <div class="mt-left">
+        <div class="mt-title">Mon territoire</div>
+        <div class="mt-sub">5 zones · 1 activable maintenant</div>
+      </div>
+      <div class="mt-right">
+        <div class="mt-gps"><div class="mt-gps-dot"></div><span class="mt-gps-txt">GPS actif</span></div>
+        <div class="mt-filter">Filtrer ▾</div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="map-bottom">
+      <div class="mb-stats">
+        <div class="mb-stat"><div class="mb-stat-dot" style="background:var(--teal)"></div>1 zone activable</div>
+        <div class="mb-stat"><div class="mb-stat-dot" style="background:rgba(255,255,255,0.25)"></div>4 à explorer</div>
+        <div class="mb-stat"><div class="mb-stat-dot" style="background:var(--green)"></div>3 défis complétés</div>
+      </div>
+      <div class="mb-zones-scroll">
+        <div class="mb-zone-chip near" style="background:rgba(29,158,117,0.1);border-color:rgba(109,219,160,0.35);" onclick="openZone('engie')">
+          <div class="mzc-dot" style="background:var(--teal)"></div>
+          <span class="mzc-name" style="color:#6ddba0">ENGIE</span>
+          <span class="mzc-dist" style="color:rgba(109,219,160,0.6)">180m</span>
+        </div>
+        <div class="mb-zone-chip" style="background:rgba(117,0,184,0.08);border-color:rgba(179,147,230,0.2);" onclick="openZone('hec')">
+          <div class="mzc-dot" style="background:var(--purple)"></div>
+          <span class="mzc-name" style="color:#c98ff0">HEC Paris</span>
+          <span class="mzc-dist" style="color:rgba(179,147,230,0.5)">650m</span>
+        </div>
+        <div class="mb-zone-chip" style="background:rgba(239,159,39,0.07);border-color:rgba(245,192,64,0.15);" onclick="openZone('armee')">
+          <div class="mzc-dot" style="background:var(--amber)"></div>
+          <span class="mzc-name" style="color:#f5c040">Armée</span>
+          <span class="mzc-dist" style="color:rgba(245,192,64,0.5)">2.1km</span>
+        </div>
+        <div class="mb-zone-chip" style="background:rgba(55,138,221,0.07);border-color:rgba(122,184,240,0.15);" onclick="openZone('defense')">
+          <div class="mzc-dot" style="background:var(--blue)"></div>
+          <span class="mzc-name" style="color:#7ab8f0">La Défense</span>
+          <span class="mzc-dist" style="color:rgba(122,184,240,0.5)">3.4km</span>
+        </div>
+        <div class="mb-zone-chip" style="background:rgba(212,83,126,0.07);border-color:rgba(240,144,176,0.15);" onclick="openZone('colas')">
+          <div class="mzc-dot" style="background:var(--pink)"></div>
+          <span class="mzc-name" style="color:#f090b0">Colas</span>
+          <span class="mzc-dist" style="color:rgba(240,144,176,0.5)">5.2km</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drawer zone detail -->
+    <div class="zone-detail" id="zoneDetail">
+      <div class="zd-handle"></div>
+      <div class="zd-header">
+        <div class="zd-icon" id="zdIcon">⚡</div>
+        <div class="zd-titles">
+          <div class="zd-name" id="zdName">ENGIE</div>
+          <div class="zd-org" id="zdOrg">Siège social · 180m de toi</div>
+        </div>
+        <div class="zd-dist-badge" id="zdDistBadge">180m</div>
+      </div>
+      <div class="zd-desc" id="zdDesc">Zone activable maintenant. 3 défis ENGIE t'attendent ici. Tu obtiendras un signal comportemental enrichi sur ton affinité avec leurs métiers de l'énergie.</div>
+      <div class="zd-defis" id="zdDefis"></div>
+      <button class="zd-checkin-btn" id="zdCheckinBtn" onclick="startCheckin()">Check-in et lancer le défi</button>
+      <button class="zd-close" onclick="closeZone()">Fermer</button>
+    </div>
+
+    <!-- Check-in overlay -->
+    <div class="checkin-overlay" id="checkinOverlay">
+      <div class="co-ring">
+        <div class="co-ring-spin"></div>
+        <div class="co-icon">📍</div>
+      </div>
+      <div class="co-title">Validation GPS</div>
+      <div class="co-sub">Vérification de ta position dans la zone ENGIE...</div>
+      <div class="co-bar"><div class="co-fill" id="coFill"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ VUE DÉFI ACTIF ═══════ -->
+<div class="step" id="v-defi">
+  <div class="defi-screen">
+    <div class="ds-header">
+      <div class="dsh-top">
+        <div class="dsh-badge" style="background:rgba(29,158,117,0.1);border:0.5px solid rgba(109,219,160,0.2);">
+          <div class="dsh-dot" style="background:var(--teal)"></div>
+          <span class="dsh-txt" style="color:#6ddba0;">TERRITOIRE · ENGIE</span>
+        </div>
+        <div class="dsh-xp">+20 XP</div>
+      </div>
+      <div class="ds-prog"><div class="ds-prog-fill" id="dsProg" style="width:33%;background:var(--teal)"></div></div>
+    </div>
+    <div class="ds-location-bar">
+      <div class="dlb-icon">📍</div>
+      <span class="dlb-txt">Zone ENGIE · Siège social · Courbevoie</span>
+      <span class="dlb-badge">Géolocalisé ✓</span>
+    </div>
+    <div class="ds-question">
+      <div class="dsq-num" id="dsQNum">QUESTION 1 / 3</div>
+      <div class="dsq-text" id="dsQText">Tu marches dans le quartier. Tu passes devant le siège ENGIE. Ton premier sentiment ?</div>
+    </div>
+    <div class="ds-opts" id="dsOpts"></div>
+    <div class="ds-feedback" id="dsFeedback">
+      <div class="dsf-lbl" id="dsFbLbl">CE QUE ÇA DIT</div>
+      <div class="dsf-txt" id="dsFbTxt"></div>
+    </div>
+    <button class="ds-next" id="dsNextBtn" onclick="dsNext()"></button>
+  </div>
+</div>
+
+<!-- ═══════ VUE FIN ═══════ -->
+<div class="step" id="v-fin">
+  <div class="terr-end">
+    <div class="te-map-mini">
+      <div class="te-map-bg"></div>
+      <div class="te-map-ring"></div>
+      <div class="te-map-pin"><div class="te-map-dot"></div></div>
+      <div class="te-map-label">Zone ENGIE · Courbevoie</div>
+      <div class="te-zone-badge">Check-in validé ✓</div>
+    </div>
+    <div class="te-title">Zone ENGIE débloquée.</div>
+    <div class="te-sub">Tu as complété les 3 défis de cette zone. Ton profil territoire s'enrichit.</div>
+    <div class="te-stats">
+      <div class="te-stat"><div class="tes-val" style="color:var(--green)">+20</div><div class="tes-lbl">XP gagnés</div></div>
+      <div class="te-stat"><div class="tes-val">4</div><div class="tes-lbl">Zones visitées</div></div>
+      <div class="te-stat"><div class="tes-val" style="color:#c98ff0">2</div><div class="tes-lbl">Entreprises</div></div>
+    </div>
+    <div class="te-dims" id="teDims"></div>
+    <div class="te-next-zones">
+      <div class="tnz-lbl">PROCHAINES ZONES À EXPLORER</div>
+      <div class="tnz-items">
+        <div class="tnz-item">
+          <div class="tnzi-dot" style="background:var(--purple)"></div>
+          <span class="tnzi-name">HEC Paris · 3 défis</span>
+          <span class="tnzi-dist">650m</span>
+        </div>
+        <div class="tnz-item">
+          <div class="tnzi-dot" style="background:var(--amber)"></div>
+          <span class="tnzi-name">Armée de Terre · 4 défis</span>
+          <span class="tnzi-dist">2.1km</span>
+        </div>
+        <div class="tnz-item">
+          <div class="tnzi-dot" style="background:var(--blue)"></div>
+          <span class="tnzi-name">La Défense · 5 défis</span>
+          <span class="tnzi-dist">3.4km</span>
+        </div>
+      </div>
+    </div>
+    <div class="te-xp">
+      <span class="tex-val">+20 XP</span>
+      <span class="tex-lbl">gagnés<br>sur cette zone</span>
+    </div>
+    <div class="te-btns">
+      <button class="btn-m" style="background:var(--teal);color:#fff;" onclick="switchView(document.querySelector('.vt'),'carte')">Explorer d'autres zones</button>
+      <button class="btn-s" onclick="switchView(document.querySelector('.vt'),'carte')">Retour au feed</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+var ZONES={
+  engie:{icon:'⚡',name:'ENGIE',org:'Siège social · 180m de toi',dist:'180m',near:true,
+    color:['rgba(29,158,117,0.1)','rgba(109,219,160,0.25)','#6ddba0'],
+    desc:'Zone activable maintenant. 3 défis ENGIE t\'attendent ici. Signal comportemental enrichi sur ton affinité avec les métiers de l\'énergie.',
+    defis:[
+      {fmt:'CHOOSE',name:'Affinité métiers énergie',xp:'+8 XP',done:false},
+      {fmt:'VERSUS',name:'Startup vs grand groupe',xp:'+7 XP',done:false},
+      {fmt:'TRACE',name:'Photo du site industriel',xp:'+5 XP',done:false},
+    ]},
+  hec:{icon:'🎓',name:'HEC Paris',org:'Campus · 650m de toi',dist:'650m',near:false,
+    color:['rgba(117,0,184,0.1)','rgba(179,147,230,0.25)','#c98ff0'],
+    desc:'Zone à 650m. Accès au défi HEC Talents dès ton arrivée sur le campus. Signal fort sur ton projet professionnel.',
+    defis:[
+      {fmt:'BUILD',name:'Mon projet d\'études',xp:'+12 XP',done:false},
+      {fmt:'PITCH',name:'Pourquoi les grandes écoles',xp:'+8 XP',done:false},
+    ]},
+  armee:{icon:'🪖',name:'Armée de Terre',org:'Caserne · 2.1km',dist:'2.1km',near:false,
+    color:['rgba(239,159,39,0.08)','rgba(245,192,64,0.2)','#f5c040'],
+    desc:'Zone à 2.1km. 4 défis sur les métiers de l\'armée, les valeurs et les engagements. Hors de portée GPS — déplace-toi pour l\'activer.',
+    defis:[
+      {fmt:'CHOOSE',name:'Valeurs militaires',xp:'+8 XP',done:false},
+      {fmt:'VERSUS',name:'Terrain vs bureau',xp:'+7 XP',done:false},
+      {fmt:'WATCH',name:'Témoignage sergent',xp:'+6 XP',done:false},
+      {fmt:'TRACE',name:'Photo site d\'entraînement',xp:'+5 XP',done:false},
+    ]},
+  defense:{icon:'🏙️',name:'La Défense',org:'Quartier d\'affaires · 3.4km',dist:'3.4km',near:false,
+    color:['rgba(55,138,221,0.08)','rgba(122,184,240,0.2)','#7ab8f0'],
+    desc:'Zone à 3.4km. 5 entreprises, 18 défis disponibles dans le quartier d\'affaires. Le plus grand cluster de défis VOKA d\'Île-de-France.',
+    defis:[
+      {fmt:'SNAP',name:'Culture grands groupes',xp:'+5 XP',done:false},
+      {fmt:'CHRONO',name:'Quiz finance & stratégie',xp:'+10 XP',done:false},
+      {fmt:'BUILD',name:'Mon projet finance',xp:'+12 XP',done:false},
+    ]},
+  colas:{icon:'🏗️',name:'Colas',org:'Direction régionale · 5.2km',dist:'5.2km',near:false,
+    color:['rgba(212,83,126,0.08)','rgba(240,144,176,0.2)','#f090b0'],
+    desc:'Zone à 5.2km. Défis terrain BTP et construction. Idéal si tu envisages les métiers du bâtiment ou de l\'infrastructure.',
+    defis:[
+      {fmt:'TRACE',name:'Repérage chantier',xp:'+8 XP',done:false},
+      {fmt:'VERSUS',name:'Chantier vs bureau Colas',xp:'+7 XP',done:false},
+    ]},
+};
+
+var DEFI_QUESTIONS=[
+  {txt:"Tu marches dans le quartier. Tu passes devant le siège ENGIE. Ton premier sentiment ?",
+   opts:["Impressionné — j'aimerais y travailler","Neutre — c'est un immeuble comme un autre","Curieux — je me demande ce qui se passe là-dedans","Intimidé — trop grand pour moi"],
+   correct:-1,
+   feedback:["Signal fort sur ton ambition. L'attirance pour les grands sites industriels est un marqueur clair d'affinité culturelle.","Signal d'indépendance. Tu évalues les environnements de travail à l'aune d'autres critères que la taille.","Signal de curiosité intrinsèque. C'est exactement le profil qu'ENGIE cherche dans ses programmes juniors.","Signal de réalisme sain. Ce sentiment disparaît souvent lors d'un premier contact avec les équipes."],
+   fbColor:['rgba(29,158,117,0.08)','rgba(109,219,160,0.15)','#6ddba0']},
+  {txt:"Une mission dans ce secteur t'intéresserait si elle concernait quoi en priorité ?",
+   opts:["La transition énergétique","La gestion des réseaux","L'innovation technologique","La relation avec les collectivités"],
+   correct:-1,
+   feedback:["Signal d'engagement macro. Tu cherches du sens dans l'impact systémique — valeur centrale chez ENGIE Transitions.","Signal opérationnel. Tu penses infrastructure et fiabilité. Profil idéal pour les équipes réseau.","Signal R&D. Tu veux créer, pas seulement gérer. ENGIE investit 500M€/an en R&D — tu y as ta place.","Signal territorial. Tu penses local avant global — fort alignement avec les activités de distribution régionale."],
+   fbColor:['rgba(29,158,117,0.08)','rgba(109,219,160,0.15)','#6ddba0']},
+  {txt:"Si tu devais décrire ENGIE en un mot après ce passage dans leur quartier ?",
+   opts:["Puissant","Responsable","Innovant","Accessible"],
+   correct:-1,
+   feedback:["Tu perçois la force industrielle avant tout. Signal d'attraction pour les environnements à fort impact.","Tu perçois l'engagement environnemental. Signal d'alignement avec les valeurs RSE du groupe.","Tu perçois le mouvement et la transformation. Signal d'intérêt pour les métiers de demain.","Tu perçois l'ouverture. Signal d'aisance dans les grands groupes malgré leur taille."],
+   fbColor:['rgba(29,158,117,0.08)','rgba(109,219,160,0.15)','#6ddba0']},
+];
+
+var activeZone=null, dsQIdx=0, dsAnswered=false;
+
+function switchView(el,view){
+  document.querySelectorAll('.vt').forEach(t=>{t.classList.remove('on');t.style.background='';t.style.borderColor='';t.style.color='';});
+  var colors={'carte':['var(--teal)','var(--teal)','#fff'],'defi':['var(--orange)','var(--orange)','#fff'],'fin':['var(--green)','var(--green)','#0a1200']};
+  var c=colors[view]||['var(--teal)','var(--teal)','#fff'];
+  // Trouver le bon tab
+  var tabs=document.querySelectorAll('.vt');
+  var idx={'carte':0,'defi':1,'fin':2}[view]||0;
+  tabs[idx].classList.add('on');
+  tabs[idx].style.background=c[0]; tabs[idx].style.borderColor=c[1]; tabs[idx].style.color=c[2];
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('v-'+view).classList.add('active');
+  if(view==='fin') initFinDims();
+}
+
+function openZone(id){
+  activeZone=id;
+  var z=ZONES[id];
+  document.getElementById('zdIcon').textContent=z.icon;
+  document.getElementById('zdIcon').style.background=z.color[0];
+  document.getElementById('zdIcon').style.border='0.5px solid '+z.color[1];
+  document.getElementById('zdName').textContent=z.name;
+  document.getElementById('zdOrg').textContent=z.org;
+  var distBadge=document.getElementById('zdDistBadge');
+  distBadge.textContent=z.dist;
+  distBadge.style.background=z.color[0];
+  distBadge.style.color=z.color[2];
+  distBadge.style.border='0.5px solid '+z.color[1];
+  document.getElementById('zdDesc').textContent=z.desc;
+  document.getElementById('zdDefis').innerHTML=z.defis.map(d=>`
+    <div class="zd-defi">
+      <span class="zdd-fmt" style="background:${d.done?'rgba(179,247,11,0.1)':'rgba(255,255,255,0.06)'};color:${d.done?'#d4fb6b':'rgba(255,255,255,0.55)'}">${d.fmt}</span>
+      <span class="zdd-name">${d.name}</span>
+      <span class="${d.done?'zdd-done':'zdd-xp'}">${d.done?'✓ Fait':d.xp}</span>
+    </div>`).join('');
+  var btn=document.getElementById('zdCheckinBtn');
+  if(z.near){
+    btn.style.background='var(--teal)'; btn.style.color='#fff'; btn.disabled=false;
+    btn.textContent='Check-in et lancer le défi';
+  } else {
+    btn.style.background='rgba(255,255,255,0.05)'; btn.style.color='rgba(255,255,255,0.35)'; btn.disabled=true;
+    btn.textContent='Hors de portée GPS · '+z.dist+' de toi';
+  }
+  document.getElementById('zoneDetail').classList.add('open');
+}
+
+function closeZone(){
+  document.getElementById('zoneDetail').classList.remove('open');
+  activeZone=null;
+}
+
+var checkinInt=null;
+function startCheckin(){
+  closeZone();
+  var overlay=document.getElementById('checkinOverlay');
+  overlay.style.display='flex';
+  var fill=document.getElementById('coFill');
+  var pct=0;
+  clearInterval(checkinInt);
+  checkinInt=setInterval(()=>{
+    pct+=2.5;
+    fill.style.width=Math.min(pct,100)+'%';
+    if(pct>=100){
+      clearInterval(checkinInt);
+      overlay.style.display='none';
+      // Lancer le défi
+      switchView(null,'defi');
+      loadDsQuestion();
+    }
+  },40);
+}
+
+function loadDsQuestion(){
+  dsAnswered=false;
+  var q=DEFI_QUESTIONS[dsQIdx];
+  document.getElementById('dsQNum').textContent='QUESTION '+(dsQIdx+1)+' / '+DEFI_QUESTIONS.length;
+  document.getElementById('dsQText').textContent=q.txt;
+  document.getElementById('dsProg').style.width=((dsQIdx+0.3)/DEFI_QUESTIONS.length*100)+'%';
+  document.getElementById('dsFeedback').style.display='none';
+  document.getElementById('dsNextBtn').style.display='none';
+  var cont=document.getElementById('dsOpts');
+  cont.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    var el=document.createElement('div');
+    el.className='ds-opt';
+    el.innerHTML=`<div class="ds-opt-l">${['A','B','C','D'][i]}</div><span class="ds-opt-txt">${opt}</span>`;
+    el.onclick=()=>dsAnswer(el,i);
+    cont.appendChild(el);
+  });
+}
+
+function dsAnswer(el,idx){
+  if(dsAnswered) return;
+  dsAnswered=true;
+  var q=DEFI_QUESTIONS[dsQIdx];
+  document.querySelectorAll('#dsOpts .ds-opt').forEach(o=>o.onclick=null);
+  el.classList.add('chosen');
+  var fb=document.getElementById('dsFeedback');
+  fb.style.display='block';
+  fb.style.background=q.fbColor[0];
+  fb.style.borderColor=q.fbColor[1];
+  document.getElementById('dsFbLbl').style.color=q.fbColor[2];
+  document.getElementById('dsFbTxt').textContent=q.feedback[idx];
+  var btn=document.getElementById('dsNextBtn');
+  btn.style.display='block';
+  btn.style.background='var(--teal)';
+  btn.style.color='#fff';
+  btn.textContent=dsQIdx<DEFI_QUESTIONS.length-1?'Question suivante':'Voir mon résultat';
+}
+
+function dsNext(){
+  dsQIdx++;
+  if(dsQIdx>=DEFI_QUESTIONS.length){
+    switchView(null,'fin');
+  } else {
+    loadDsQuestion();
+  }
+}
+
+function initFinDims(){
+  var dims=[
+    {name:'Mes expériences',pct:74,color:'#1D9E75',delta:'+8'},
+    {name:'Mes envies',pct:68,color:'#D4537E',delta:'+6'},
+    {name:'Mon background',pct:61,color:'#EF9F27',delta:'+4'},
+  ];
+  document.getElementById('teDims').innerHTML='<div class="ted-lbl">TON PROFIL MIS À JOUR</div>'+dims.map(d=>`
+    <div class="ted-row">
+      <span class="ted-name">${d.name}</span>
+      <div class="ted-bar"><div class="ted-fill" style="width:${d.pct}%;background:${d.color}"></div></div>
+      <span class="ted-delta">${d.delta}</span>
+    </div>`).join('');
+}
+</script>
+</body>
+</html>

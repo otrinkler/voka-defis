@@ -1,0 +1,296 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-sans);}
+.wrap{width:100%;max-width:360px;margin:0 auto;}
+.section-lbl{font-size:10px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:0.08em;margin:14px 0 8px;padding:0 2px;}
+.tabs{display:flex;gap:6px;margin-bottom:12px;}
+.tab{flex:1;padding:7px;font-size:12px;font-weight:500;border:0.5px solid var(--color-border-tertiary);border-radius:10px;background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer;text-align:center;}
+.tab.on{background:#7500B8;color:#fff;border-color:#7500B8;}
+
+/* VUE ANIMATEUR (grand écran / tablet) */
+.screen-animateur{background:#0a0a12;border-radius:16px;overflow:hidden;padding:0;}
+.sa-header{padding:14px 16px 12px;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;}
+.sa-h-left{display:flex;align-items:center;gap:8px;}
+.logo-sm{font-size:12px;font-weight:500;color:#7500B8;background:rgba(117,0,184,0.15);padding:3px 8px;border-radius:6px;}
+.sa-event{font-size:13px;font-weight:500;color:#fff;}
+.sa-live{display:flex;align-items:center;gap:5px;background:rgba(255,83,33,0.15);border-radius:8px;padding:4px 9px;}
+.sa-live-dot{width:6px;height:6px;border-radius:50%;background:#FF5321;}
+.sa-live-txt{font-size:11px;color:#FF5321;font-weight:500;}
+.sa-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px 16px;border-bottom:0.5px solid rgba(255,255,255,0.05);}
+.sa-stat{background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px;}
+.sa-stat-val{font-size:18px;font-weight:500;color:#fff;}
+.sa-stat-lbl{font-size:10px;color:rgba(255,255,255,0.3);margin-top:1px;}
+.sa-stat-val.green{color:#B3F70B;}
+.sa-stat-val.orange{color:#FF5321;}
+.sa-current{padding:12px 16px;}
+.sa-phase-lbl{font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:0.07em;margin-bottom:8px;}
+.sa-question-box{background:rgba(117,0,184,0.1);border:0.5px solid rgba(117,0,184,0.25);border-radius:10px;padding:12px 14px;margin-bottom:10px;}
+.sa-q-txt{font-size:14px;font-weight:500;color:#fff;line-height:1.35;}
+.sa-results-live{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.sa-result-row{display:flex;align-items:center;gap:8px;}
+.sa-opt-lbl{font-size:12px;color:rgba(255,255,255,0.5);width:70px;flex-shrink:0;line-height:1.3;}
+.sa-bar-wrap{flex:1;height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;}
+.sa-bar-fill{height:8px;border-radius:4px;transition:width 0.8s cubic-bezier(0.4,0,0.2,1);}
+.sa-pct{font-size:12px;font-weight:500;width:32px;text-align:right;flex-shrink:0;}
+.sa-controls{display:flex;gap:8px;padding:0 16px 14px;}
+.sa-ctrl-btn{flex:1;padding:9px;border-radius:9px;font-size:12px;font-weight:500;cursor:pointer;border:none;text-align:center;}
+.sa-ctrl-prev{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.4);}
+.sa-ctrl-next{background:#7500B8;color:#fff;}
+.sa-ctrl-reveal{background:#B3F70B;color:#0a1200;}
+
+/* VUE PARTICIPANT (mobile) */
+.screen-participant{background:#0a0a12;border-radius:16px;overflow:hidden;}
+.sp-header{padding:12px 16px 0;display:flex;justify-content:space-between;align-items:center;}
+.sp-event-lbl{font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:0.06em;}
+.sp-xp{font-size:11px;color:#B3F70B;background:rgba(179,247,11,0.1);padding:3px 8px;border-radius:8px;}
+.sp-phase{padding:10px 16px 0;display:flex;align-items:center;gap:6px;}
+.sp-phase-dot{width:6px;height:6px;border-radius:50%;background:#7500B8;}
+.sp-phase-txt{font-size:11px;color:rgba(117,0,184,0.7);font-weight:500;letter-spacing:0.04em;}
+.sp-phase-num{margin-left:auto;font-size:11px;color:rgba(255,255,255,0.2);}
+.sp-prog{height:2px;background:rgba(255,255,255,0.06);margin:8px 16px 0;}
+.sp-prog-fill{height:2px;border-radius:1px;background:#7500B8;}
+.sp-question{padding:14px 16px 12px;font-size:16px;font-weight:500;color:#fff;line-height:1.35;}
+.sp-opts{display:flex;flex-direction:column;gap:7px;padding:0 16px 12px;}
+.sp-opt{background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:11px;padding:12px 14px;cursor:pointer;transition:all 0.12s;display:flex;align-items:center;gap:10px;}
+.sp-opt:hover{background:rgba(255,255,255,0.08);}
+.sp-opt.chosen{background:rgba(117,0,184,0.15);border-color:rgba(117,0,184,0.4);}
+.sp-opt.chosen .sp-opt-letter{background:rgba(117,0,184,0.3);color:#fff;}
+.sp-opt-letter{width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,0.06);font-size:11px;font-weight:500;color:rgba(255,255,255,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sp-opt-text{font-size:13px;color:rgba(255,255,255,0.7);}
+.sp-opt.chosen .sp-opt-text{color:#fff;}
+.sp-waiting{padding:12px 16px;text-align:center;}
+.sp-wait-txt{font-size:12px;color:rgba(255,255,255,0.25);margin-bottom:8px;}
+.sp-wait-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+.sp-wait-fill{height:3px;background:#7500B8;border-radius:2px;width:0%;transition:width 0.1s linear;}
+.sp-reveal{padding:12px 16px;display:none;}
+.sp-reveal-txt{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.5;background:rgba(117,0,184,0.08);border-radius:9px;padding:10px 12px;}
+.sp-score-update{display:flex;align-items:center;justify-content:space-between;padding:0 16px 14px;}
+.sp-score-lbl{font-size:11px;color:rgba(255,255,255,0.25);}
+.sp-score-val{font-size:14px;font-weight:500;color:#B3F70B;}
+
+/* VUE GRAND ECRAN simulation */
+.screen-live{background:#080810;border-radius:16px;overflow:hidden;}
+.sl-top{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:0.5px solid rgba(255,255,255,0.05);}
+.sl-title{font-size:14px;font-weight:500;color:#fff;}
+.sl-counter{font-size:13px;color:#B3F70B;font-weight:500;}
+.sl-question-zone{padding:16px;}
+.sl-q{font-size:15px;font-weight:500;color:#fff;line-height:1.35;text-align:center;margin-bottom:16px;}
+.sl-bars{display:flex;flex-direction:column;gap:8px;}
+.sl-bar-row{display:flex;align-items:center;gap:10px;}
+.sl-opt{font-size:12px;color:rgba(255,255,255,0.5);width:80px;flex-shrink:0;text-align:right;}
+.sl-track{flex:1;height:12px;background:rgba(255,255,255,0.05);border-radius:6px;overflow:hidden;}
+.sl-fill{height:12px;border-radius:6px;transition:width 1s cubic-bezier(0.4,0,0.2,1);}
+.sl-pct{font-size:13px;font-weight:500;width:36px;text-align:left;flex-shrink:0;}
+.sl-pulse-row{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 0 14px;}
+.sl-pulse-dot{width:6px;height:6px;border-radius:50%;}
+.sl-pulse-txt{font-size:11px;color:rgba(255,255,255,0.25);}
+.sl-new-votes{font-size:11px;color:#B3F70B;font-weight:500;}
+</style>
+
+<h2 class="sr-only">Format PULSE — défi événementiel pour foule avec vue animateur, participant et grand écran</h2>
+
+<div class="wrap">
+  <p class="section-lbl">Choisir la vue</p>
+  <div class="tabs">
+    <div class="tab on" onclick="showView('animateur',this)">Animateur</div>
+    <div class="tab" onclick="showView('participant',this)">Participant</div>
+    <div class="tab" onclick="showView('ecran',this)">Grand écran</div>
+  </div>
+
+  <!-- ANIMATEUR -->
+  <div id="v-animateur" class="screen-animateur">
+    <div class="sa-header">
+      <div class="sa-h-left">
+        <span class="logo-sm">VOKA</span>
+        <span class="sa-event">Choose Your Future 2026</span>
+      </div>
+      <div class="sa-live"><div class="sa-live-dot"></div><span class="sa-live-txt">LIVE</span></div>
+    </div>
+    <div class="sa-stats">
+      <div class="sa-stat"><div class="sa-stat-val green" id="liveCount">847</div><div class="sa-stat-lbl">Participants actifs</div></div>
+      <div class="sa-stat"><div class="sa-stat-val" id="responseRate">94%</div><div class="sa-stat-lbl">Taux de réponse</div></div>
+      <div class="sa-stat"><div class="sa-stat-val orange" id="newProfiles">612</div><div class="sa-stat-lbl">Nouveaux profils créés</div></div>
+      <div class="sa-stat"><div class="sa-stat-val" id="questionNum">3 / 7</div><div class="sa-stat-lbl">Question en cours</div></div>
+    </div>
+    <div class="sa-current">
+      <div class="sa-phase-lbl">QUESTION EN COURS</div>
+      <div class="sa-question-box">
+        <div class="sa-q-txt" id="animQ">Dans ton travail idéal, tu préfères avoir un cadre clair ou une liberté totale ?</div>
+      </div>
+      <div class="sa-results-live" id="animResults">
+        <div class="sa-result-row">
+          <span class="sa-opt-lbl">Cadre clair</span>
+          <div class="sa-bar-wrap"><div class="sa-bar-fill" id="bar1" style="width:58%;background:#7500B8"></div></div>
+          <span class="sa-pct" id="pct1" style="color:#7500B8">58%</span>
+        </div>
+        <div class="sa-result-row">
+          <span class="sa-opt-lbl">Liberté totale</span>
+          <div class="sa-bar-wrap"><div class="sa-bar-fill" id="bar2" style="width:42%;background:#FF5321"></div></div>
+          <span class="sa-pct" id="pct2" style="color:#FF5321">42%</span>
+        </div>
+      </div>
+    </div>
+    <div class="sa-controls">
+      <button class="sa-ctrl-btn sa-ctrl-prev" onclick="prevQ()">Précédent</button>
+      <button class="sa-ctrl-btn sa-ctrl-reveal" onclick="revealQ()">Révéler</button>
+      <button class="sa-ctrl-btn sa-ctrl-next" onclick="nextQ()">Suivant</button>
+    </div>
+  </div>
+
+  <!-- PARTICIPANT -->
+  <div id="v-participant" style="display:none;">
+    <div class="screen-participant">
+      <div class="sp-header">
+        <span class="sp-event-lbl">CHOOSE YOUR FUTURE 2026</span>
+        <span class="sp-xp">+5 XP / réponse</span>
+      </div>
+      <div class="sp-phase">
+        <div class="sp-phase-dot"></div>
+        <span class="sp-phase-txt">PULSE · EN DIRECT</span>
+        <span class="sp-phase-num" id="spQNum">Question 3 / 7</span>
+      </div>
+      <div class="sp-prog"><div class="sp-prog-fill" id="spProg" style="width:43%"></div></div>
+      <div class="sp-question" id="spQ">Dans ton travail idéal, tu préfères avoir un cadre clair ou une liberté totale ?</div>
+      <div class="sp-opts" id="spOpts">
+        <div class="sp-opt" onclick="chooseOpt(this,'A')">
+          <div class="sp-opt-letter">A</div>
+          <span class="sp-opt-text">Un cadre clair, des objectifs définis</span>
+        </div>
+        <div class="sp-opt" onclick="chooseOpt(this,'B')">
+          <div class="sp-opt-letter">B</div>
+          <span class="sp-opt-text">Une liberté totale, je m'organise seul</span>
+        </div>
+      </div>
+      <div class="sp-waiting" id="spWaiting" style="display:none;">
+        <div class="sp-wait-txt">Réponse envoyée. En attente des autres...</div>
+        <div class="sp-wait-bar"><div class="sp-wait-fill" id="spWaitFill"></div></div>
+      </div>
+      <div class="sp-reveal" id="spReveal">
+        <div class="sp-reveal-txt" id="spRevealTxt"></div>
+      </div>
+      <div class="sp-score-update">
+        <span class="sp-score-lbl">Ton score</span>
+        <span class="sp-score-val" id="spScore">+15 XP</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRAND ECRAN -->
+  <div id="v-ecran" style="display:none;">
+    <div class="screen-live">
+      <div class="sl-top">
+        <span class="sl-title">Choose Your Future 2026</span>
+        <span class="sl-counter"><span id="liveVotes">847</span> votes en direct</span>
+      </div>
+      <div class="sl-question-zone">
+        <div class="sl-q" id="screenQ">Dans ton travail idéal, tu préfères avoir un cadre clair ou une liberté totale ?</div>
+        <div class="sl-bars" id="screenBars">
+          <div class="sl-bar-row">
+            <span class="sl-opt">Cadre clair</span>
+            <div class="sl-track"><div class="sl-fill" id="scBar1" style="width:58%;background:#7500B8"></div></div>
+            <span class="sl-pct" id="scPct1" style="color:#7500B8">58%</span>
+          </div>
+          <div class="sl-bar-row">
+            <span class="sl-opt">Liberté totale</span>
+            <div class="sl-track"><div class="sl-fill" id="scBar2" style="width:42%;background:#FF5321"></div></div>
+            <span class="sl-pct" id="scPct2" style="color:#FF5321">42%</span>
+          </div>
+        </div>
+      </div>
+      <div class="sl-pulse-row">
+        <div class="sl-pulse-dot" style="background:#B3F70B"></div>
+        <span class="sl-pulse-txt">Réponses reçues en temps réel</span>
+        <span class="sl-new-votes" id="newVotesLbl">+12 / sec</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var questions=[
+  {q:"Startup chaotique ou grande boite stable ?",a:"Startup",b:"Grande boite",pa:43,pb:57,insight:"43% choisissent l'aventure startup. Utile pour cibler les profils entrepreneuriaux dans la salle."},
+  {q:"Tu apprends mieux en faisant ou en comprenant d'abord ?",a:"En faisant",b:"En comprenant",pa:61,pb:39,insight:"61% sont des apprenants par l'action. Signal fort sur le style pédagogique de l'audience."},
+  {q:"Dans ton travail idéal, tu préfères avoir un cadre clair ou une liberté totale ?",a:"Cadre clair",b:"Liberté totale",pa:58,pb:42,insight:"58% préfèrent un cadre. Corrélé avec une préférence pour les grandes structures. Signal culturel précieux."},
+  {q:"Résoudre un problème seul ou en équipe ?",a:"Seul",b:"En équipe",pa:35,pb:65,insight:"65% sont collaboratifs. Signal sur la dynamique de groupe dans cette salle spécifique."},
+  {q:"Impact local ou impact global ?",a:"Local",b:"Global",pa:48,pb:52,insight:"Quasi-équilibre. Rare. Montre une diversité de vision dans l'audience — à mentionner en live."}
+];
+var qIdx=2;
+
+function showView(id,el){
+  ['v-animateur','v-participant','v-ecran'].forEach(function(v){document.getElementById(v).style.display='none';});
+  document.getElementById('v-'+id).style.display='block';
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  el.classList.add('on');
+}
+
+function updateAll(){
+  var q=questions[qIdx];
+  document.getElementById('animQ').textContent=q.q;
+  document.getElementById('bar1').style.width=q.pa+'%';
+  document.getElementById('bar2').style.width=q.pb+'%';
+  document.getElementById('pct1').textContent=q.pa+'%';
+  document.getElementById('pct2').textContent=q.pb+'%';
+  document.getElementById('questionNum').textContent=(qIdx+1)+' / '+questions.length;
+  document.getElementById('spQ').textContent=q.q;
+  document.getElementById('spQNum').textContent='Question '+(qIdx+1)+' / '+questions.length;
+  document.getElementById('spProg').style.width=Math.round((qIdx+1)/questions.length*100)+'%';
+  document.getElementById('screenQ').textContent=q.q;
+  document.getElementById('scBar1').style.width=q.pa+'%';
+  document.getElementById('scBar2').style.width=q.pb+'%';
+  document.getElementById('scPct1').textContent=q.pa+'%';
+  document.getElementById('scPct2').textContent=q.pb+'%';
+  var opts=document.getElementById('spOpts');
+  opts.style.display='flex';
+  opts.querySelectorAll('.sp-opt').forEach(function(o){o.classList.remove('chosen');});
+  opts.querySelectorAll('.sp-opt-text')[0].textContent=q.a;
+  opts.querySelectorAll('.sp-opt-text')[1].textContent=q.b;
+  document.getElementById('spWaiting').style.display='none';
+  document.getElementById('spReveal').style.display='none';
+  document.getElementById('spWaitFill').style.width='0%';
+}
+
+function nextQ(){if(qIdx<questions.length-1){qIdx++;updateAll();}}
+function prevQ(){if(qIdx>0){qIdx--;updateAll();}}
+
+function revealQ(){
+  var q=questions[qIdx];
+  document.getElementById('spReveal').style.display='block';
+  document.getElementById('spRevealTxt').textContent=q.insight;
+}
+
+var waitInt=null;
+function chooseOpt(el,letter){
+  el.parentNode.querySelectorAll('.sp-opt').forEach(function(o){o.classList.remove('chosen');o.style.pointerEvents='none';});
+  el.classList.add('chosen');
+  el.parentNode.style.display='none';
+  document.getElementById('spWaiting').style.display='block';
+  var fill=document.getElementById('spWaitFill');
+  var prog=0;
+  clearInterval(waitInt);
+  waitInt=setInterval(function(){
+    prog+=2;
+    fill.style.width=prog+'%';
+    if(prog>=100){
+      clearInterval(waitInt);
+      document.getElementById('spWaiting').style.display='none';
+      var q=questions[qIdx];
+      document.getElementById('spReveal').style.display='block';
+      document.getElementById('spRevealTxt').textContent=q.insight;
+      document.getElementById('spScore').textContent='+'+((qIdx+1)*5)+' XP';
+    }
+  },50);
+}
+
+var liveInt=setInterval(function(){
+  var base=847+Math.floor(Math.random()*20)-5;
+  var el=document.getElementById('liveCount');
+  if(el)el.textContent=base;
+  var vEl=document.getElementById('liveVotes');
+  if(vEl)vEl.textContent=base;
+  var r=Math.floor(Math.random()*8)+8;
+  var nEl=document.getElementById('newVotesLbl');
+  if(nEl)nEl.textContent='+'+r+' / sec';
+},2000);
+
+updateAll();
+</script>

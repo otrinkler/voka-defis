@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VOKA — MISSION</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --purple:#7500B8;--green:#B3F70B;--orange:#FF5321;--amber:#EF9F27;--blue:#378ADD;--teal:#1D9E75;--pink:#D4537E;
+  --bg:#080810;--bg2:#0f0f1e;
+  --w:#fff;--w6:rgba(255,255,255,0.6);--w5:rgba(255,255,255,0.5);--w4:rgba(255,255,255,0.4);
+  --w2:rgba(255,255,255,0.12);--w1:rgba(255,255,255,0.06);
+}
+body{background:#111;display:flex;justify-content:center;padding:20px;}
+.phone{width:390px;min-height:844px;background:var(--bg);border-radius:48px;overflow:hidden;border:7px solid #1e1e2e;display:flex;flex-direction:column;position:relative;}
+.sb{display:flex;justify-content:space-between;padding:12px 22px 0;font-size:12px;color:var(--w4);flex-shrink:0;}
+.view{display:none;flex-direction:column;flex:1;}
+.view.on{display:flex;}
+
+/* ═══ INTRO ═══ */
+.hero{height:210px;position:relative;overflow:hidden;flex-shrink:0;}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(160deg,#0a0e1a 0%,#0e0a14 100%);}
+.hero-glow{position:absolute;border-radius:50%;filter:blur(30px);}
+.hero-scene{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;gap:20px;padding-bottom:12px;}
+.hs-person{display:flex;flex-direction:column;align-items:center;}
+.hs-head{border-radius:50%;}
+.hs-body{border-radius:8px 8px 0 0;margin-top:-2px;}
+.hs-label{position:absolute;font-size:9px;color:rgba(255,255,255,0.45);background:rgba(0,0,0,0.55);padding:1px 6px;border-radius:3px;white-space:nowrap;}
+.hs-connector{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;}
+.hsc-line{width:40px;height:1px;background:rgba(55,138,221,0.35);}
+.hero-grad{position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,var(--bg) 0%,transparent 100%);}
+.hero-tag{position:absolute;top:14px;left:16px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,0.65);border:0.5px solid rgba(55,138,221,0.4);border-radius:10px;padding:5px 12px;}
+.ht-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);}
+.ht-txt{font-size:10px;color:#7ab8f0;font-weight:500;letter-spacing:0.04em;}
+.hero-xp{position:absolute;top:14px;right:16px;font-size:11px;color:var(--green);background:rgba(179,247,11,0.1);border:0.5px solid rgba(179,247,11,0.2);padding:4px 10px;border-radius:8px;font-weight:500;}
+
+.intro-scroll{flex:1;padding:14px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;}
+.i-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(55,138,221,0.1);border:0.5px solid rgba(122,184,240,0.2);border-radius:6px;padding:3px 9px;}
+.i-tag-txt{font-size:10px;color:#7ab8f0;font-weight:500;letter-spacing:0.04em;}
+.i-title{font-size:20px;font-weight:500;color:var(--w);line-height:1.3;}
+.i-sub{font-size:13px;color:var(--w6);line-height:1.6;}
+.how-steps{display:flex;flex-direction:column;gap:7px;}
+.hs-step{display:flex;gap:10px;align-items:flex-start;background:var(--w1);border:0.5px solid var(--w2);border-radius:10px;padding:10px 12px;}
+.hss-num{width:22px;height:22px;border-radius:50%;background:rgba(55,138,221,0.2);border:0.5px solid rgba(122,184,240,0.3);font-size:10px;font-weight:600;color:#7ab8f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.hss-body{}
+.hss-title{font-size:12px;font-weight:500;color:var(--w);margin-bottom:2px;}
+.hss-sub{font-size:11px;color:var(--w5);line-height:1.4;}
+.start-btn{margin:0 20px 20px;background:var(--blue);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:500;color:#fff;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:8px;}
+
+/* ═══ PROFIL PRO ═══ */
+#v-pro{background:var(--bg);}
+.pro-hero{height:180px;position:relative;overflow:hidden;flex-shrink:0;background:linear-gradient(160deg,#0a0e1a 0%,#080f14 100%);}
+.pro-portrait{position:absolute;bottom:0;right:20px;display:flex;flex-direction:column;align-items:center;}
+.pp-head{width:56px;height:58px;border-radius:50%;background:#8B6040;}
+.pp-body{width:76px;height:70px;background:#0e1828;border-radius:8px 8px 0 0;margin-top:-2px;}
+.pro-hero-grad{position:absolute;bottom:0;left:0;right:0;height:70px;background:linear-gradient(to top,var(--bg) 0%,transparent 100%);}
+.pro-hero-info{position:absolute;bottom:18px;left:20px;}
+.phi-name{font-size:16px;font-weight:500;color:var(--w);margin-bottom:2px;}
+.phi-role{font-size:11px;color:rgba(255,255,255,0.55);}
+.pro-scroll{flex:1;padding:14px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
+.pro-bio{font-size:13px;color:var(--w6);line-height:1.65;}
+.pro-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.pro-tag{font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(55,138,221,0.1);border:0.5px solid rgba(122,184,240,0.2);color:#7ab8f0;font-weight:500;}
+.mission-preview{background:rgba(55,138,221,0.07);border:0.5px solid rgba(122,184,240,0.18);border-radius:13px;padding:13px 14px;}
+.mp-lbl{font-size:10px;color:#7ab8f0;letter-spacing:0.07em;font-weight:500;margin-bottom:6px;}
+.mp-title{font-size:15px;font-weight:500;color:var(--w);margin-bottom:5px;line-height:1.3;}
+.mp-sub{font-size:12px;color:var(--w6);line-height:1.55;}
+.mp-metas{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+.mp-meta{font-size:11px;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:4px;}
+.duree-note{display:flex;align-items:center;gap:8px;background:rgba(239,159,39,0.07);border:0.5px solid rgba(245,192,64,0.18);border-radius:10px;padding:10px 12px;}
+.dn-txt{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;flex:1;}
+.dn-txt b{color:#f5c040;}
+.accept-btn{margin:0 20px 20px;background:var(--blue);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:500;color:#fff;cursor:pointer;flex-shrink:0;}
+.decline-btn{margin:-12px 20px 16px;background:transparent;border:none;font-size:13px;color:var(--w4);cursor:pointer;flex-shrink:0;text-align:center;}
+
+/* ═══ BRIEF ═══ */
+#v-brief{background:var(--bg);}
+.brief-scroll{flex:1;padding:16px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
+.section-lbl{font-size:10px;color:#7ab8f0;letter-spacing:0.08em;font-weight:500;}
+.brief-card{background:rgba(55,138,221,0.07);border:0.5px solid rgba(122,184,240,0.18);border-radius:13px;padding:13px 14px;}
+.bc-title{font-size:17px;font-weight:500;color:var(--w);line-height:1.3;margin-bottom:8px;}
+.bc-body{font-size:13px;color:var(--w6);line-height:1.65;}
+.mission-steps{display:flex;flex-direction:column;gap:7px;}
+.ms-item{display:flex;align-items:flex-start;gap:10px;background:var(--w1);border:0.5px solid var(--w2);border-radius:10px;padding:10px 12px;}
+.ms-num{width:24px;height:24px;border-radius:50%;font-size:11px;font-weight:600;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ms-body{}
+.ms-title{font-size:12px;font-weight:500;color:var(--w);margin-bottom:2px;}
+.ms-sub{font-size:11px;color:var(--w5);line-height:1.4;}
+.ms-item.done .ms-title{color:rgba(255,255,255,0.45);}
+.ms-item.done .ms-sub{color:rgba(255,255,255,0.3);}
+.ms-check{font-size:12px;margin-left:auto;flex-shrink:0;color:var(--green);}
+.deliverable-box{background:rgba(179,247,11,0.06);border:0.5px solid rgba(179,247,11,0.15);border-radius:10px;padding:11px 13px;}
+.db-lbl{font-size:10px;color:#d4fb6b;letter-spacing:0.07em;font-weight:500;margin-bottom:5px;}
+.db-txt{font-size:13px;color:var(--w);font-weight:500;line-height:1.4;}
+.db-sub{font-size:12px;color:var(--w5);margin-top:3px;}
+.brief-btn{margin:0 20px 20px;background:var(--blue);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:500;color:#fff;cursor:pointer;flex-shrink:0;}
+
+/* ═══ MISSION EN COURS ═══ */
+#v-mission{background:var(--bg);}
+.mission-hdr{background:var(--bg);padding:12px 16px 0;flex-shrink:0;}
+.mh-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.mh-step-pill{display:flex;align-items:center;gap:5px;background:rgba(55,138,221,0.1);border:0.5px solid rgba(122,184,240,0.2);border-radius:8px;padding:4px 10px;}
+.mhsp-dot{width:5px;height:5px;border-radius:50%;background:var(--blue);animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.mhsp-txt{font-size:10px;color:#7ab8f0;font-weight:500;}
+.mission-timer{display:flex;align-items:center;gap:5px;background:rgba(239,159,39,0.08);border:0.5px solid rgba(245,192,64,0.2);border-radius:20px;padding:4px 10px;}
+.mt-svg{width:18px;height:18px;transform:rotate(-90deg);}
+.mt-track{fill:none;stroke:rgba(0,0,0,0.1);stroke-width:2.5;}
+.mt-fill{fill:none;stroke:var(--amber);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:50.3;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke 0.3s;}
+.mt-val{font-size:12px;font-weight:500;color:#111;}
+.mission-prog{height:2px;background:rgba(0,0,0,0.07);border-radius:1px;overflow:hidden;}
+.mission-prog-fill{height:2px;background:var(--blue);transition:width 0.4s;}
+
+/* Profil mini du pro */
+.pro-mini{background:#fff;padding:8px 16px;display:flex;align-items:center;gap:9px;flex-shrink:0;border-bottom:0.5px solid rgba(0,0,0,0.07);}
+.pm-av{width:30px;height:30px;border-radius:50%;background:rgba(55,138,221,0.2);border:1.5px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--blue);flex-shrink:0;}
+.pm-name{font-size:12px;font-weight:500;color:#111;flex:1;}
+.pm-status{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--teal);}
+.pm-status-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);animation:pulse 1.2s infinite;}
+
+/* Zone mission actuelle */
+.mission-zone{background:#fff;flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* Étape narrative / contexte */
+.step-context{padding:14px 16px 10px;flex-shrink:0;}
+.sctx-step{font-size:10px;color:rgba(0,0,0,0.4);letter-spacing:0.07em;font-weight:500;margin-bottom:6px;}
+.sctx-title{font-size:17px;font-weight:500;color:#111;line-height:1.32;margin-bottom:6px;}
+.sctx-context{font-size:12px;color:rgba(0,0,0,0.55);line-height:1.55;padding:9px 11px;background:rgba(55,138,221,0.05);border-radius:8px;border-left:2px solid rgba(55,138,221,0.35);}
+
+/* Message du pro */
+.pro-message{padding:10px 16px;flex-shrink:0;}
+.pro-msg-bubble{background:#f0f4ff;border-radius:4px 14px 14px 14px;padding:11px 14px;font-size:13px;line-height:1.55;color:#111;position:relative;}
+.pro-msg-who{font-size:10px;color:rgba(0,0,0,0.4);margin-bottom:4px;}
+
+/* Zone de réponse / action */
+.action-zone{flex:1;padding:10px 16px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;}
+.az-prompt{font-size:12px;color:rgba(0,0,0,0.5);font-weight:500;margin-bottom:4px;}
+
+/* Choix de réponse */
+.resp-opts{display:flex;flex-direction:column;gap:6px;}
+.resp-opt{background:#f5f5f8;border:0.5px solid rgba(0,0,0,0.1);border-radius:11px;padding:11px 13px;cursor:pointer;font-size:13px;color:#222;transition:all 0.12s;text-align:left;display:flex;align-items:center;gap:8px;}
+.resp-opt:hover{background:#eef2ff;border-color:rgba(55,138,221,0.3);}
+.resp-opt.chosen{background:rgba(55,138,221,0.1);border-color:rgba(55,138,221,0.35);color:#0a0e2a;}
+.resp-opt-l{width:22px;height:22px;border-radius:6px;background:rgba(0,0,0,0.06);font-size:10px;font-weight:500;color:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.resp-opt.chosen .resp-opt-l{background:rgba(55,138,221,0.2);color:var(--blue);}
+
+/* Feedback du pro après réponse */
+.pro-feedback{background:#f0f9f5;border:0.5px solid rgba(29,158,117,0.25);border-radius:14px;padding:12px 14px;display:none;flex-shrink:0;margin:0 16px;}
+.pf-who{font-size:10px;color:var(--teal);margin-bottom:4px;}
+.pf-txt{font-size:13px;color:#111;line-height:1.55;}
+.pf-signal{display:flex;align-items:center;gap:6px;margin-top:8px;padding:6px 9px;background:rgba(29,158,117,0.08);border-radius:7px;}
+.pfs-lbl{font-size:9px;color:var(--teal);font-weight:600;letter-spacing:0.05em;}
+.pfs-txt{font-size:11px;color:#0a1a10;font-weight:500;}
+
+.next-step-btn{margin:10px 16px 12px;background:var(--blue);border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;display:none;flex-shrink:0;}
+
+/* ═══ LIVRABLE ═══ */
+#v-livrable{background:var(--bg);}
+.liv-scroll{flex:1;padding:16px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
+.liv-intro{font-size:13px;color:var(--w6);line-height:1.65;}
+.liv-card{background:rgba(179,247,11,0.06);border:0.5px solid rgba(179,247,11,0.18);border-radius:13px;padding:13px 14px;}
+.lc-lbl{font-size:10px;color:#d4fb6b;letter-spacing:0.07em;font-weight:500;margin-bottom:7px;}
+.lc-title{font-size:15px;font-weight:500;color:var(--w);margin-bottom:5px;}
+.lc-areas{display:flex;flex-direction:column;gap:7px;margin-top:8px;}
+.lc-area{background:var(--w1);border:0.5px solid var(--w2);border-radius:9px;padding:10px 12px;cursor:pointer;}
+.lca-lbl{font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:0.06em;margin-bottom:4px;font-weight:500;}
+.lca-opts{display:flex;flex-direction:column;gap:4px;}
+.lca-opt{font-size:12px;color:var(--w5);padding:5px 8px;border-radius:6px;cursor:pointer;transition:all 0.12s;}
+.lca-opt:hover{background:rgba(179,247,11,0.08);color:var(--w);}
+.lca-opt.sel{background:rgba(179,247,11,0.1);border:0.5px solid rgba(179,247,11,0.25);color:var(--w);}
+.voice-livrable{background:rgba(55,138,221,0.07);border:0.5px solid rgba(122,184,240,0.18);border-radius:12px;padding:12px 14px;}
+.vl-lbl{font-size:10px;color:#7ab8f0;letter-spacing:0.07em;font-weight:500;margin-bottom:6px;}
+.vl-note{font-size:12px;color:var(--w6);line-height:1.55;margin-bottom:10px;}
+.vl-rec-btn{width:100%;background:rgba(55,138,221,0.15);border:1px solid rgba(55,138,221,0.35);border-radius:11px;padding:12px;font-size:13px;font-weight:500;color:#7ab8f0;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;}
+.vl-rec-btn.done{background:rgba(179,247,11,0.1);border-color:rgba(179,247,11,0.3);color:#d4fb6b;}
+.liv-submit{margin:0 20px 20px;background:var(--green);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:500;color:#0a1200;cursor:pointer;flex-shrink:0;display:none;}
+
+/* ═══ RÉSULTAT ═══ */
+#v-end{background:var(--bg);}
+.end-scroll{flex:1;padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;}
+.end-pro-row{display:flex;align-items:center;gap:10px;}
+.epr-av{width:44px;height:44px;border-radius:50%;background:rgba(55,138,221,0.2);border:2px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--blue);flex-shrink:0;}
+.epr-info{}
+.epr-name{font-size:14px;font-weight:500;color:var(--w);}
+.epr-role{font-size:11px;color:rgba(255,255,255,0.55);}
+.end-h1{font-size:21px;font-weight:500;color:var(--w);line-height:1.25;}
+.end-sub{font-size:13px;color:var(--w6);line-height:1.6;}
+.eval-card{background:var(--bg2);border-radius:13px;padding:13px 14px;border:0.5px solid var(--w2);}
+.ev-lbl{font-size:10px;color:#7ab8f0;letter-spacing:0.07em;font-weight:500;margin-bottom:10px;}
+.ev-stars{display:flex;align-items:center;gap:4px;margin-bottom:6px;}
+.ev-star{font-size:20px;}
+.ev-rating{font-size:24px;font-weight:300;color:var(--green);}
+.ev-comment{font-size:13px;color:var(--w6);line-height:1.55;font-style:italic;border-left:2px solid rgba(55,138,221,0.35);padding-left:10px;}
+.ev-comment-who{font-size:10px;color:rgba(255,255,255,0.4);margin-top:4px;}
+.signals-card{background:rgba(55,138,221,0.07);border:0.5px solid rgba(122,184,240,0.15);border-radius:12px;padding:12px 14px;}
+.sc-lbl{font-size:10px;color:#7ab8f0;letter-spacing:0.07em;font-weight:500;margin-bottom:8px;}
+.signal-item{display:flex;gap:8px;margin-bottom:7px;}
+.signal-item:last-child{margin-bottom:0;}
+.si-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.si-txt{font-size:12px;color:var(--w6);line-height:1.5;}
+.si-txt b{color:var(--w);}
+.dims-card{background:rgba(117,0,184,0.07);border:0.5px solid rgba(179,147,230,0.14);border-radius:12px;padding:12px 14px;}
+.dc-lbl{font-size:10px;color:#c98ff0;letter-spacing:0.07em;font-weight:500;margin-bottom:8px;}
+.dim-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.dim-row:last-child{margin-bottom:0;}
+.dim-name{font-size:11px;color:rgba(255,255,255,0.65);width:120px;flex-shrink:0;}
+.dim-bar{flex:1;height:4px;background:var(--w1);border-radius:2px;overflow:hidden;}
+.dim-fill{height:4px;border-radius:2px;}
+.dim-delta{font-size:11px;font-weight:500;color:var(--green);width:24px;text-align:right;flex-shrink:0;}
+.xp-row{display:flex;align-items:center;gap:10px;}
+.xp-val{font-size:34px;font-weight:300;color:var(--green);}
+.xp-lbl{font-size:13px;color:var(--w5);line-height:1.5;}
+.end-btns{padding:0 20px 24px;display:flex;flex-direction:column;gap:7px;flex-shrink:0;}
+.btn-m{background:var(--blue);border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;}
+.btn-s{background:var(--w1);border:0.5px solid var(--w2);border-radius:13px;padding:11px;font-size:13px;color:rgba(255,255,255,0.65);cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+<div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+
+<!-- ═══ INTRO ═══ -->
+<div class="view on" id="v-intro">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-glow" style="width:120px;height:120px;background:var(--blue);top:10%;left:15%;opacity:0.18;"></div>
+    <div class="hero-glow" style="width:90px;height:90px;background:var(--purple);top:20%;right:10%;opacity:0.14;"></div>
+    <div class="hero-scene">
+      <div class="hs-person" style="position:relative;">
+        <div class="hs-head" style="width:36px;height:38px;background:#D4A876;"></div>
+        <div class="hs-body" style="width:52px;height:50px;background:#0e1828;"></div>
+        <div class="hs-label" style="bottom:4px;left:50%;transform:translateX(-50%);">Toi</div>
+      </div>
+      <div class="hs-connector">
+        <div class="hsc-line"></div>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 3l5 4-5 4" stroke="rgba(55,138,221,0.5)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="hsc-line"></div>
+      </div>
+      <div class="hs-person" style="position:relative;">
+        <div class="hs-head" style="width:42px;height:44px;background:#8B6040;"></div>
+        <div class="hs-body" style="width:58px;height:58px;background:#1a0e28;"></div>
+        <div class="hs-label" style="bottom:4px;left:50%;transform:translateX(-50%);">Pro</div>
+      </div>
+    </div>
+    <div class="hero-grad"></div>
+    <div class="hero-tag"><div class="ht-dot"></div><span class="ht-txt">MISSION · 30–60 min</span></div>
+    <div class="hero-xp">+40 XP</div>
+  </div>
+  <div class="intro-scroll">
+    <div class="i-tag"><span class="i-tag-txt">MES EXPÉRIENCES · MES FORCES · MON PROJET</span></div>
+    <div class="i-title">1h avec un pro. Une mission réelle à résoudre ensemble.</div>
+    <div class="i-sub">Tu n'es pas là pour observer. Tu es là pour travailler. L'app te donne un brief, structure la session, et extrait un signal comportemental de ce que tu fais vraiment.</div>
+    <div class="how-steps">
+      <div class="hs-step">
+        <div class="hss-num">1</div>
+        <div class="hss-body"><div class="hss-title">Tu reçois un brief et un pro</div><div class="hss-sub">Un vrai professionnel, une vraie situation. La mission est concrète et délimitée dans le temps.</div></div>
+      </div>
+      <div class="hs-step">
+        <div class="hss-num">2</div>
+        <div class="hss-body"><div class="hss-title">3 étapes guidées par l'app</div><div class="hss-sub">Diagnostic, proposition, présentation. L'app structure sans rigidifier — la vraie conversation reste libre.</div></div>
+      </div>
+      <div class="hs-step">
+        <div class="hss-num">3</div>
+        <div class="hss-body"><div class="hss-title">Livrable + évaluation croisée</div><div class="hss-sub">Tu produis quelque chose de concret. Le pro t'évalue. Tu t'auto-évalues. L'IA croise les deux.</div></div>
+      </div>
+    </div>
+  </div>
+  <button class="start-btn" onclick="show('v-pro')">Voir ma mission →</button>
+</div>
+
+<!-- ═══ PROFIL PRO ═══ -->
+<div class="view" id="v-pro">
+  <div class="pro-hero">
+    <div class="pro-portrait">
+      <div class="pp-head"></div>
+      <div class="pp-body"></div>
+    </div>
+    <div class="pro-hero-grad"></div>
+    <div class="pro-hero-info">
+      <div class="phi-name">Marc Lefèvre</div>
+      <div class="phi-role">Directeur Marketing · Colas Group · 15 ans d'expérience</div>
+    </div>
+  </div>
+  <div class="pro-scroll">
+    <div class="pro-bio">"J'ai passé 15 ans à construire des marques dans des secteurs peu sexy — le BTP, l'infrastructure, le génie civil. Mon obsession : rendre visible ce qui est invisible. C'est ce que je vais te faire travailler aujourd'hui."</div>
+    <div class="pro-tags">
+      <div class="pro-tag">Marketing B2B</div>
+      <div class="pro-tag">Marque employeur</div>
+      <div class="pro-tag">BTP & infrastructure</div>
+      <div class="pro-tag">Stratégie contenu</div>
+    </div>
+    <div class="mission-preview">
+      <div class="mp-lbl">TA MISSION AUJOURD'HUI</div>
+      <div class="mp-title">Construire un argument pour que Colas attire des profils tech dans une industrie perçue comme vieillissante.</div>
+      <div class="mp-sub">Marc te donne accès à ses données internes et à son analyse. Tu dois produire une recommandation concrète en 1h.</div>
+      <div class="mp-metas">
+        <div class="mp-meta">⏱️ 45–60 min</div>
+        <div class="mp-meta">📍 Distanciel ou présentiel</div>
+        <div class="mp-meta">📄 1 livrable écrit</div>
+      </div>
+    </div>
+    <div class="duree-note">
+      <span style="font-size:18px;">💡</span>
+      <span class="dn-txt">Cette session est <b>réelle</b>. Marc a accepté de te rencontrer. Prends le brief au sérieux — c'est une chance de travailler sur un vrai problème avec un vrai décideur.</span>
+    </div>
+  </div>
+  <button class="accept-btn" onclick="show('v-brief')">Accepter cette mission →</button>
+  <button class="decline-btn" onclick="show('v-intro')">Voir une autre mission</button>
+</div>
+
+<!-- ═══ BRIEF ═══ -->
+<div class="view" id="v-brief">
+  <div class="brief-scroll">
+    <div class="section-lbl">LE BRIEF DE MARC</div>
+    <div class="brief-card">
+      <div class="bc-title">Comment Colas peut-il attirer des ingénieurs logiciel dans une industrie béton et bitume ?</div>
+      <div class="bc-body">Colas digitalise ses chantiers — drones, BIM, jumeaux numériques, capteurs IoT. Mais 80% des profils tech ne savent pas que Colas recrute dans ces domaines. Le problème n'est pas l'offre, c'est la perception. Ta mission : trouver l'argument le plus convaincant et le format le plus juste pour le dire.</div>
+    </div>
+    <div class="section-lbl">LES 3 ÉTAPES DE LA SESSION</div>
+    <div class="mission-steps">
+      <div class="ms-item" style="border-color:rgba(55,138,221,0.3);">
+        <div class="ms-num" style="background:var(--blue);">1</div>
+        <div class="ms-body">
+          <div class="ms-title">Diagnostic (15 min)</div>
+          <div class="ms-sub">Tu analyses le problème avec Marc. Il te donne des données. Tu poses des questions.</div>
+        </div>
+      </div>
+      <div class="ms-item">
+        <div class="ms-num" style="background:rgba(255,255,255,0.15);">2</div>
+        <div class="ms-body">
+          <div class="ms-title">Proposition (20 min)</div>
+          <div class="ms-sub">Tu construis ta recommandation. Marc réagit. Tu affines.</div>
+        </div>
+      </div>
+      <div class="ms-item">
+        <div class="ms-num" style="background:rgba(255,255,255,0.15);">3</div>
+        <div class="ms-body">
+          <div class="ms-title">Présentation (10 min)</div>
+          <div class="ms-sub">Tu pitches ta recommandation finale. Marc évalue.</div>
+        </div>
+      </div>
+    </div>
+    <div class="deliverable-box">
+      <div class="db-lbl">TON LIVRABLE</div>
+      <div class="db-txt">Une recommandation en 3 points : l'argument principal, le format, et la preuve qui le rend crédible.</div>
+      <div class="db-sub">Format libre — texte, oral, ou les deux.</div>
+    </div>
+  </div>
+  <button class="brief-btn" onclick="startMission()">Commencer l'étape 1 →</button>
+</div>
+
+<!-- ═══ MISSION EN COURS ═══ -->
+<div class="view" id="v-mission">
+  <div class="mission-hdr">
+    <div class="mh-top">
+      <div class="mh-step-pill"><div class="mhsp-dot"></div><span class="mhsp-txt" id="stepLabel">Étape 1 — Diagnostic</span></div>
+      <div class="mission-timer">
+        <svg class="mt-svg" viewBox="0 0 18 18"><circle class="mt-track" cx="9" cy="9" r="8"/><circle class="mt-fill" id="mtFill" cx="9" cy="9" r="8"/></svg>
+        <span class="mt-val" id="mtVal">45:00</span>
+      </div>
+    </div>
+    <div class="mission-prog"><div class="mission-prog-fill" id="missionProg" style="width:0%"></div></div>
+  </div>
+  <div class="pro-mini">
+    <div class="pm-av">M</div>
+    <div class="pm-name">Marc Lefèvre · Colas</div>
+    <div class="pm-status"><div class="pm-status-dot"></div>En ligne</div>
+  </div>
+  <div class="mission-zone">
+    <div class="step-context" id="stepContext">
+      <div class="sctx-step" id="sctxStep">ÉTAPE 1 / 3 — DIAGNOSTIC</div>
+      <div class="sctx-title" id="sctxTitle">Comprendre le problème avant de le résoudre.</div>
+      <div class="sctx-context" id="sctxCtx">Marc t'a présenté la situation. Avant de proposer quoi que ce soit, tu dois poser les bonnes questions.</div>
+    </div>
+    <div class="pro-message" id="proMsgZone">
+      <div class="pro-msg-who">Marc Lefèvre</div>
+      <div class="pro-msg-bubble" id="proMsgBubble">On recrute 200 ingénieurs data et logiciel par an. On n'a aucun problème d'offre. Le problème c'est que les meilleurs CVs ne nous arrivent même pas — ils vont chez les GAFAM ou les startups sans jamais penser à Colas. Comment tu attaques ça ?</div>
+    </div>
+    <div class="action-zone" id="actionZone">
+      <div class="az-prompt" id="azPrompt">Ta réponse à Marc :</div>
+      <div class="resp-opts" id="respOpts"></div>
+    </div>
+    <div class="pro-feedback" id="proFeedback">
+      <div class="pf-who">Marc Lefèvre</div>
+      <div class="pf-txt" id="pfTxt"></div>
+      <div class="pf-signal">
+        <span class="pfs-lbl">SIGNAL</span>
+        <span class="pfs-txt" id="pfSignal"></span>
+      </div>
+    </div>
+    <button class="next-step-btn" id="nextStepBtn" onclick="nextStep()"></button>
+  </div>
+</div>
+
+<!-- ═══ LIVRABLE ═══ -->
+<div class="view" id="v-livrable">
+  <div class="liv-scroll">
+    <div class="section-lbl">TON LIVRABLE FINAL</div>
+    <div class="liv-intro">Marc t'a demandé une recommandation en 3 points. Construis-la ci-dessous, puis enregistre ton pitch oral de 60 secondes.</div>
+    <div class="liv-card">
+      <div class="lc-lbl">TA RECOMMANDATION</div>
+      <div class="lc-title">Comment Colas attire des profils tech</div>
+      <div class="lc-areas">
+        <div class="lc-area">
+          <div class="lca-lbl">1. L'ARGUMENT PRINCIPAL</div>
+          <div class="lca-opts" id="laOpts1">
+            <div class="lca-opt" onclick="pickLiv(this,0,0)">Montrer les projets tech concrets, pas les valeurs de l'entreprise</div>
+            <div class="lca-opt" onclick="pickLiv(this,0,1)">Mettre en avant le salaire et la stabilité vs startup</div>
+            <div class="lca-opt" onclick="pickLiv(this,0,2)">Recruter via les contributions open source et hackathons</div>
+          </div>
+        </div>
+        <div class="lc-area">
+          <div class="lca-lbl">2. LE FORMAT</div>
+          <div class="lca-opts" id="laOpts2">
+            <div class="lca-opt" onclick="pickLiv(this,1,0)">Série de contenus "un jour dans la vie d'un ingénieur Colas"</div>
+            <div class="lca-opt" onclick="pickLiv(this,1,1)">Campagne LinkedIn ciblée sur les profils data/ML</div>
+            <div class="lca-opt" onclick="pickLiv(this,1,2)">Partenariats avec des écoles d'ingénieurs et bootcamps</div>
+          </div>
+        </div>
+        <div class="lc-area">
+          <div class="lca-lbl">3. LA PREUVE DE CRÉDIBILITÉ</div>
+          <div class="lca-opts" id="laOpts3">
+            <div class="lca-opt" onclick="pickLiv(this,2,0)">Témoignages vidéo d'ingénieurs tech déjà chez Colas</div>
+            <div class="lca-opt" onclick="pickLiv(this,2,1)">Chiffres concrets : nombre de projets tech, budget R&D</div>
+            <div class="lca-opt" onclick="pickLiv(this,2,2)">Accès à des projets inédits non disponibles en startup</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="voice-livrable">
+      <div class="vl-lbl">TON PITCH ORAL · 60 SECONDES</div>
+      <div class="vl-note">Enregistre ton pitch de ta recommandation comme si tu la présentais à Marc en réunion. L'IA analyse ta clarté et ta conviction.</div>
+      <button class="vl-rec-btn" id="vlRecBtn" onclick="toggleLivRec()">
+        <span id="vlRecIcon">🎙️</span>
+        <span id="vlRecTxt">Enregistrer mon pitch</span>
+      </button>
+    </div>
+  </div>
+  <button class="liv-submit" id="livSubmit" onclick="show('v-end');buildEnd()">Soumettre à Marc →</button>
+</div>
+
+<!-- ═══ RÉSULTAT ═══ -->
+<div class="view" id="v-end">
+  <div class="end-scroll">
+    <div class="end-pro-row">
+      <div class="epr-av">M</div>
+      <div class="epr-info">
+        <div class="epr-name">Marc Lefèvre · Colas</div>
+        <div class="epr-role">Mission complétée · Évaluation reçue</div>
+      </div>
+    </div>
+    <div class="end-h1" id="endH1">Mission accomplie.</div>
+    <div class="end-sub" id="endSub">Tu as travaillé 48 minutes avec Marc. Il a évalué ton livrable et ton comportement pendant la session.</div>
+    <div class="eval-card">
+      <div class="ev-lbl">ÉVALUATION DE MARC LEFÈVRE</div>
+      <div class="ev-stars" id="evStars"></div>
+      <div class="ev-comment" id="evComment">"Tu as su poser les bonnes questions avant de proposer. C'est rare. Ta recommandation est solide — pas révolutionnaire, mais applicable demain matin. Je retiens ton profil."</div>
+      <div class="ev-comment-who">Marc Lefèvre · Directeur Marketing Colas</div>
+    </div>
+    <div class="signals-card">
+      <div class="sc-lbl">SIGNAUX COMPORTEMENTAUX DÉTECTÉS</div>
+      <div id="signalsZone"></div>
+    </div>
+    <div class="dims-card">
+      <div class="dc-lbl">TON PROFIL MIS À JOUR</div>
+      <div class="dim-row"><span class="dim-name">Mes expériences</span><div class="dim-bar"><div class="dim-fill" style="width:84%;background:#1D9E75"></div></div><span class="dim-delta">+12</span></div>
+      <div class="dim-row"><span class="dim-name">Mes forces</span><div class="dim-bar"><div class="dim-fill" style="width:76%;background:#378ADD"></div></div><span class="dim-delta">+9</span></div>
+      <div class="dim-row"><span class="dim-name">Mon projet</span><div class="dim-bar"><div class="dim-fill" style="width:68%;background:#7500B8"></div></div><span class="dim-delta">+7</span></div>
+      <div class="dim-row"><span class="dim-name">Mes envies</span><div class="dim-bar"><div class="dim-fill" style="width:61%;background:#D4537E"></div></div><span class="dim-delta">+5</span></div>
+    </div>
+    <div class="xp-row">
+      <span class="xp-val">+40 XP</span>
+      <span class="xp-lbl">gagnés<br>sur cette MISSION</span>
+    </div>
+  </div>
+  <div class="end-btns">
+    <button class="btn-m" onclick="show('v-intro')">Nouvelle MISSION</button>
+    <button class="btn-s" onclick="show('v-intro')">Retour au feed</button>
+  </div>
+</div>
+
+</div>
+<script>
+/* ─── DATA ─── */
+var STEPS = [
+  {
+    label:'Étape 1 — Diagnostic',
+    stepTxt:'ÉTAPE 1 / 3 — DIAGNOSTIC',
+    title:'Comprendre le problème avant de le résoudre.',
+    ctx:'Marc t\'a présenté la situation. Avant de proposer quoi que ce soit, tu dois poser les bonnes questions.',
+    proMsg:'On recrute 200 ingénieurs data et logiciel par an. On n\'a aucun problème d\'offre. Le problème c\'est que les meilleurs CVs ne nous arrivent même pas — ils vont chez les GAFAM ou les startups sans jamais penser à Colas. Comment tu attaques ça ?',
+    prompt:'Ta première réaction face à ce problème :',
+    opts:[
+      'Quel est le profil type que vous ciblez — généraliste ou très spécialisé ?',
+      'Est-ce que vous avez déjà testé une campagne de recrutement sur ce segment ?',
+      'Le problème c\'est que Colas n\'est pas dans leur univers mental. Avant de parler format, il faut savoir ce qui crée de la désirabilité pour eux.',
+      'Combien mettez-vous de budget sur ce recrutement aujourd\'hui ?',
+    ],
+    feedbacks:[
+      {txt:'Bonne question — ça montre que tu ne sautes pas aux solutions. On cible plutôt des profils spécialisés ML et IoT, mais on a du mal à se différencier.', signal:'Rigueur diagnostique — tu poses des questions avant de proposer.'},
+      {txt:'Oui, on a essayé LinkedIn ads. Taux de clic décent, mais les candidats qualifiés ne convertissent pas. L\'image de marque bloque en amont.', signal:'Orientation données — tu cherches à valider l\'hypothèse avant de formuler.'},
+      {txt:'Exactement. C\'est le bon angle. La désirabilité, pas la visibilité. Continue — qu\'est-ce qui crée de la désirabilité pour un ingénieur ML ?', signal:'Pensée stratégique — tu identifies la cause racine, pas le symptôme.'},
+      {txt:'Le budget n\'est pas le problème ici — on a les moyens. C\'est la stratégie qui manque. Essaie de creuser le problème de perception plutôt.', signal:'Question utile mais pas encore au niveau du problème central.'},
+    ],
+  },
+  {
+    label:'Étape 2 — Proposition',
+    stepTxt:'ÉTAPE 2 / 3 — PROPOSITION',
+    title:'Construire une recommandation concrète.',
+    ctx:'Marc a réagi à ton diagnostic. Il t\'a donné des données sur ce qui a déjà été testé. C\'est ton tour de proposer.',
+    proMsg:'Bon, j\'ai testé les campagnes classiques. Ça ne marche pas. Les ingénieurs qu\'on veut ne regardent pas les offres d\'emploi — ils découvrent les entreprises par d\'autres chemins. Qu\'est-ce que tu me proposes ?',
+    prompt:'Ta recommandation principale :',
+    opts:[
+      'Aller là où ils sont : contribuer à des projets open source liés à vos domaines et laisser Colas visible dans ce contexte.',
+      'Créer du contenu authentique — des ingénieurs Colas qui parlent de leurs projets tech sur YouTube ou Twitch.',
+      'Sponsoriser des hackathons spécialisés en données de mobilité ou infrastructure — vous avez les cas d\'usage, eux ont le talent.',
+      'Rebrander la marque employeur avec un nom différent du groupe pour le segment tech.',
+    ],
+    feedbacks:[
+      {txt:'Intéressant — on n\'y a jamais pensé sous cet angle. Le risque c\'est que ça prend du temps. Mais l\'effet de crédibilité serait fort. Tu peux développer ?', signal:'Créativité stratégique — solution non évidente, bien argumentée.'},
+      {txt:'On y pense, mais l\'authenticité est difficile à industrialiser. Comment tu gères le fait que les ingénieurs ne sont pas des créateurs de contenu naturellement ?', signal:'Proposition concrète avec conscience des obstacles.'},
+      {txt:'C\'est exactement dans cette direction qu\'on doit aller. Les hackathons créent un contexte de preuve, pas juste de visibilité. C\'est ce que les ingénieurs valorisent.', signal:'Alignement fort avec la réalité terrain — tu penses preuve avant message.'},
+      {txt:'Je comprends l\'idée mais c\'est risqué — ça fragmente la marque. Et les candidats finissent par découvrir que c\'est Colas. Mieux vaut assumer et travailler la perception.', signal:'Proposition audacieuse — pertinente mais sous-estimée dans sa complexité.'},
+    ],
+  },
+  {
+    label:'Étape 3 — Présentation',
+    stepTxt:'ÉTAPE 3 / 3 — PRÉSENTATION',
+    title:'Pitcher ta recommandation en 2 minutes.',
+    ctx:'Marc a réagi à ta proposition. Tu as 2 minutes pour lui présenter ta recommandation finale de manière convaincante.',
+    proMsg:'On approche de la fin. Je veux entendre ta synthèse — en 2 minutes, comme si tu me la présentais à un comité de direction. Argument, format, preuve.',
+    prompt:'Ton pitch final :',
+    opts:[
+      '"Colas a un problème de présence, pas de notoriété. Ma recommandation : hackathons + open source + témoignages vidéo authentiques. Coût 3x moindre qu\'une campagne paid, impact 5x plus durable."',
+      '"Le cœur du problème c\'est la désirabilité. Vous avez les projets — montrez-les. 3 vidéos d\'ingénieurs sur des projets IoT chantier, distribuées là où ils sont. Simple, mesurable, reproductible."',
+      '"Je recommande une approche en 3 phases : 6 mois de content authentique, 6 mois de partenariats écoles/hackathons, puis campagne paid une fois la désirabilité créée. Sans la première phase les deux autres ne fonctionnent pas."',
+      '"La solution la plus rapide : cibler les profils en reconversion depuis d\'autres secteurs. Ils ont les compétences tech mais cherchent plus de stabilité. Colas est idéalement positionné pour eux."',
+    ],
+    feedbacks:[
+      {txt:'Chiffres directs, format efficace. J\'aurais aimé plus sur le "comment" du open source — c\'est le point faible. Mais la direction est bonne.', signal:'Synthèse structurée — tu condenses sans perdre l\'essentiel.'},
+      {txt:'C\'est le pitch que j\'aurais fait moi-même. Simple, ancré dans ce qu\'on a déjà, mesurable. Tu as bien compris le problème.', signal:'Clarté et conviction — tu pitches avec assurance et précision.'},
+      {txt:'La vision en phases est bonne — ça montre que tu penses implémentation, pas juste stratégie. Le 6+6 est discutable mais l\'approche est solide.', signal:'Pensée systémique — tu anticipes l\'exécution, pas juste la recommandation.'},
+      {txt:'Angle intelligent et sous-estimé. Ce n\'était pas dans le brief initial — c\'est une vraie trouvaille. Je vais en parler à mon équipe RH.', signal:'Créativité hors-cadre — tu identifies des opportunités non formulées.'},
+    ],
+  },
+];
+
+/* ─── ÉTAT ─── */
+var stepIdx=0, timerInt=null, timeLeft=2700, chosenSignals=[], livAnswers=[null,null,null];
+var livRecDone=false, livRecInt=null, livRecTime=0;
+
+/* ─── NAV ─── */
+function show(id){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on');});
+  document.getElementById(id).classList.add('on');
+}
+
+/* ─── MISSION ─── */
+function startMission(){
+  stepIdx=0; chosenSignals=[]; timeLeft=2700; livAnswers=[null,null,null];
+  show('v-mission');
+  clearInterval(timerInt);
+  updateTimer();
+  timerInt=setInterval(function(){
+    timeLeft--; if(timeLeft<=0){clearInterval(timerInt);} updateTimer();
+  },1000);
+  loadStep(0);
+}
+
+function updateTimer(){
+  var m=Math.floor(timeLeft/60),s=timeLeft%60;
+  document.getElementById('mtVal').textContent=m+':'+(s<10?'0':'')+s;
+  var pct=timeLeft/2700;
+  var off=50.3*(1-pct);
+  var col=timeLeft>900?'var(--amber)':timeLeft>300?'#EF9F27':'#FF5321';
+  document.getElementById('mtFill').style.strokeDashoffset=off;
+  document.getElementById('mtFill').style.stroke=col;
+  document.getElementById('missionProg').style.width=((1-pct)*100)+'%';
+}
+
+function loadStep(idx){
+  var s=STEPS[idx];
+  document.getElementById('stepLabel').textContent=s.label;
+  document.getElementById('sctxStep').textContent=s.stepTxt;
+  document.getElementById('sctxTitle').textContent=s.title;
+  document.getElementById('sctxCtx').textContent=s.ctx;
+  document.getElementById('proMsgBubble').textContent=s.proMsg;
+  document.getElementById('azPrompt').textContent=s.prompt;
+  document.getElementById('proFeedback').style.display='none';
+  document.getElementById('nextStepBtn').style.display='none';
+  var cont=document.getElementById('respOpts');
+  cont.innerHTML='';
+  s.opts.forEach(function(opt,i){
+    var el=document.createElement('div');
+    el.className='resp-opt';
+    el.innerHTML='<div class="resp-opt-l">'+['A','B','C','D'][i]+'</div>'+opt;
+    el.addEventListener('click',function(){pickResp(el,i,s);});
+    cont.appendChild(el);
+  });
+}
+
+function pickResp(el,idx,step){
+  document.querySelectorAll('.resp-opt').forEach(function(o){o.style.pointerEvents='none';});
+  el.classList.add('chosen');
+  var fb=step.feedbacks[idx];
+  chosenSignals.push(fb.signal);
+  document.getElementById('pfTxt').textContent=fb.txt;
+  document.getElementById('pfSignal').textContent=fb.signal;
+  document.getElementById('proFeedback').style.display='block';
+  var btn=document.getElementById('nextStepBtn');
+  btn.style.display='block';
+  btn.textContent=stepIdx<STEPS.length-1?'Étape suivante →':'Construire mon livrable →';
+}
+
+function nextStep(){
+  stepIdx++;
+  if(stepIdx>=STEPS.length){ clearInterval(timerInt); show('v-livrable'); }
+  else{ loadStep(stepIdx); }
+}
+
+/* ─── LIVRABLE ─── */
+function pickLiv(el,areaIdx,optIdx){
+  var containerId='laOpts'+(areaIdx+1);
+  document.querySelectorAll('#'+containerId+' .lca-opt').forEach(function(o){o.classList.remove('sel');});
+  el.classList.add('sel');
+  livAnswers[areaIdx]=optIdx;
+  checkLivComplete();
+}
+
+function checkLivComplete(){
+  if(livAnswers.every(function(a){return a!==null;}) && livRecDone){
+    document.getElementById('livSubmit').style.display='block';
+  }
+}
+
+function toggleLivRec(){
+  if(livRecDone) return;
+  if(!livRecInt){
+    livRecTime=0;
+    var btn=document.getElementById('vlRecBtn');
+    document.getElementById('vlRecIcon').textContent='⏹';
+    document.getElementById('vlRecTxt').textContent='Enregistrement... 0s';
+    btn.style.background='rgba(255,83,33,0.15)';
+    btn.style.borderColor='rgba(255,83,33,0.35)';
+    btn.style.color='#ff8060';
+    livRecInt=setInterval(function(){
+      livRecTime++;
+      document.getElementById('vlRecTxt').textContent='Enregistrement... '+livRecTime+'s';
+      if(livRecTime>=60){stopLivRec();}
+    },1000);
+  } else {
+    stopLivRec();
+  }
+}
+
+function stopLivRec(){
+  clearInterval(livRecInt); livRecInt=null; livRecDone=true;
+  var btn=document.getElementById('vlRecBtn');
+  btn.className='vl-rec-btn done';
+  document.getElementById('vlRecIcon').textContent='✓';
+  document.getElementById('vlRecTxt').textContent='Pitch enregistré — '+livRecTime+'s';
+  checkLivComplete();
+}
+
+/* ─── FIN ─── */
+function buildEnd(){
+  // Étoiles
+  var stars='⭐⭐⭐⭐';
+  document.getElementById('evStars').innerHTML=stars.split('').map(function(s){
+    return '<span class="ev-star">'+s+'</span>';
+  }).join('')+'<span class="ev-rating" style="margin-left:8px;">4.0 / 5</span>';
+  // Signaux
+  var signalColors=['#7ab8f0','#6ddba0','#f5c040'];
+  var html='';
+  chosenSignals.forEach(function(s,i){
+    html+='<div class="signal-item"><div class="si-dot" style="background:'+signalColors[i%signalColors.length]+'"></div><div class="si-txt">'+s+'</div></div>';
+  });
+  document.getElementById('signalsZone').innerHTML=html||'<div class="signal-item"><div class="si-dot" style="background:#7ab8f0"></div><div class="si-txt">Mission complétée</div></div>';
+}
+</script>
+</body>
+</html>

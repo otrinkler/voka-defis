@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOKA — Feed Desktop</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+body{background:#050508;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px;}
+.app{display:flex;background:#080810;border-radius:16px;overflow:hidden;width:100%;max-width:1100px;height:660px;}
+
+/* SIDEBAR */
+.sidebar{width:60px;flex-shrink:0;border-right:0.5px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;align-items:center;padding:18px 0;gap:5px;}
+.logo{width:34px;height:34px;border-radius:9px;background:#7500B8;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:14px;font-weight:600;color:#fff;}
+.ni{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:background 0.15s;}
+.ni:hover{background:rgba(255,255,255,0.07);}
+.ni.on{background:rgba(117,0,184,0.3);}
+.ni svg{width:17px;height:17px;}
+.nbadge{position:absolute;top:8px;right:8px;width:6px;height:6px;border-radius:50%;background:#FF5321;}
+.sidebar-bot{margin-top:auto;}
+.uav{width:32px;height:32px;border-radius:50%;background:#7500B8;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:600;cursor:pointer;}
+
+/* MAIN */
+.main{flex:1;min-width:0;display:flex;flex-direction:column;}
+.topbar{display:flex;align-items:center;padding:0 16px;height:50px;border-bottom:0.5px solid rgba(255,255,255,0.05);flex-shrink:0;gap:2px;}
+.ttab{padding:6px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:rgba(255,255,255,0.28);background:none;border:none;transition:all 0.15s;}
+.ttab:hover{color:rgba(255,255,255,0.5);}
+.ttab.on{color:#fff;background:rgba(255,255,255,0.07);}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.streak-b{display:flex;align-items:center;gap:5px;background:rgba(179,247,11,0.07);border:0.5px solid rgba(179,247,11,0.18);border-radius:20px;padding:4px 10px;}
+.streak-t{font-size:12px;color:#B3F70B;font-weight:500;}
+.xpw{display:flex;align-items:center;gap:6px;}
+.xpt{height:3px;width:64px;background:rgba(255,255,255,0.07);border-radius:2px;}
+.xpf{height:3px;width:34%;background:#7500B8;border-radius:2px;}
+.xpl{font-size:11px;color:rgba(255,255,255,0.2);}
+
+.feed-body{flex:1;display:flex;min-height:0;overflow:hidden;}
+.grid{flex:1;padding:14px;display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr);gap:10px;overflow-y:auto;}
+
+/* CARDS */
+.card{border-radius:12px;overflow:hidden;cursor:pointer;position:relative;transition:transform 0.15s,outline 0.1s;}
+.card:hover{transform:scale(1.02);}
+.card.sel{outline:2px solid #B3F70B;}
+.card-img{width:100%;height:100%;position:relative;overflow:hidden;}
+.card-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s;}
+.card:hover .card-img img{transform:scale(1.04);}
+.grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,5,10,0.98) 0%,rgba(5,5,10,0.5) 45%,rgba(5,5,10,0.05) 100%);}
+.card-body{position:absolute;bottom:0;left:0;right:0;padding:10px 12px;}
+.fmt-row{display:flex;align-items:center;gap:5px;margin-bottom:4px;}
+.fpip{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.flbl{font-size:10px;color:rgba(255,255,255,0.5);font-weight:600;letter-spacing:0.04em;}
+.cttl{font-size:13px;font-weight:600;color:#fff;line-height:1.3;margin-bottom:6px;}
+.crow{display:flex;align-items:center;justify-content:space-between;}
+.xpp{background:rgba(0,0,0,0.6);border-radius:5px;padding:3px 7px;font-size:10px;color:rgba(255,255,255,0.65);}
+.soc{display:flex;align-items:center;gap:5px;}
+.savs{display:flex;}
+.sav{width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(5,5,10,0.9);font-size:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;margin-left:-4px;}
+.sav:first-child{margin-left:0;}
+.stxt{font-size:10px;color:rgba(255,255,255,0.32);}
+.cprog{height:2px;position:absolute;bottom:0;left:0;right:0;}
+.play-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-65%);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.55);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.play-tri{width:0;height:0;border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:15px solid rgba(255,255,255,0.85);margin-left:3px;}
+.vid-prog{position:absolute;left:10px;right:10px;height:2px;background:rgba(255,255,255,0.12);border-radius:1px;}
+.vid-prog-fill{height:2px;border-radius:1px;}
+.rec-overlay{position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:5px;}
+.rec-dot{width:8px;height:8px;border-radius:50%;background:#FF5321;}
+.rec-txt{font-size:9px;color:rgba(255,83,33,0.8);font-weight:600;letter-spacing:0.05em;}
+.blind-cover{position:absolute;inset:0;background:#050505;display:flex;align-items:center;justify-content:center;}
+.blind-q{font-size:72px;color:rgba(255,255,255,0.05);font-weight:700;user-select:none;}
+
+/* PANEL */
+.panel{width:250px;flex-shrink:0;border-left:0.5px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;}
+.panel-img{width:100%;height:130px;position:relative;overflow:hidden;flex-shrink:0;}
+.panel-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.panel-img .blind-cover-sm{position:absolute;inset:0;background:#050505;display:flex;align-items:center;justify-content:center;}
+.pgrad{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(8,8,16,0) 10%,rgba(8,8,16,1) 100%);}
+.panel-body{flex:1;padding:0 14px 12px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;}
+.pfmt{display:flex;align-items:center;gap:6px;padding-top:12px;}
+.pfmt-dot{width:8px;height:8px;border-radius:50%;}
+.pfmt-txt{font-size:11px;font-weight:700;letter-spacing:0.06em;}
+.ptitle{font-size:14px;font-weight:600;color:#fff;line-height:1.3;}
+.pdesc{font-size:11px;color:rgba(255,255,255,0.32);line-height:1.6;}
+.pstats{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.pstat{background:rgba(255,255,255,0.04);border-radius:8px;padding:7px 9px;}
+.pstat-v{font-size:15px;font-weight:600;color:#fff;}
+.pstat-l{font-size:10px;color:rgba(255,255,255,0.22);margin-top:2px;}
+.pskill{background:rgba(117,0,184,0.1);border-radius:9px;padding:9px 11px;border:0.5px solid rgba(117,0,184,0.2);}
+.pskill-l{font-size:9px;color:rgba(117,0,184,0.6);letter-spacing:0.08em;margin-bottom:3px;font-weight:600;}
+.pskill-n{font-size:13px;color:#fff;font-weight:600;}
+.pskill-d{font-size:10px;color:rgba(255,255,255,0.3);margin-top:3px;line-height:1.45;}
+.psp{display:flex;flex-direction:column;gap:5px;}
+.psp-t{font-size:11px;color:rgba(255,255,255,0.25);}
+.psp-bar{height:3px;background:rgba(255,255,255,0.05);border-radius:2px;}
+.psp-fill{height:3px;border-radius:2px;}
+.panel-foot{padding:12px 14px;border-top:0.5px solid rgba(255,255,255,0.05);flex-shrink:0;}
+.lbtn{width:100%;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:600;color:#fff;cursor:pointer;transition:opacity 0.12s;}
+.lbtn:hover{opacity:0.82;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">V</div>
+    <div class="ni on" title="Feed défis">
+      <svg viewBox="0 0 17 17" fill="none"><rect x="1" y="1" width="6.5" height="6.5" rx="1.5" fill="white"/><rect x="9.5" y="1" width="6.5" height="6.5" rx="1.5" fill="white" opacity=".3"/><rect x="1" y="9.5" width="6.5" height="6.5" rx="1.5" fill="white" opacity=".3"/><rect x="9.5" y="9.5" width="6.5" height="6.5" rx="1.5" fill="white" opacity=".3"/></svg>
+    </div>
+    <div class="ni" title="Mon profil" style="position:relative">
+      <svg viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="6" r="3" stroke="white" stroke-width="1.4" opacity=".35"/><path d="M2 15c0-3.3 2.9-5 6.5-5s6.5 1.7 6.5 5" stroke="white" stroke-width="1.4" stroke-linecap="round" opacity=".35"/></svg>
+      <div class="nbadge"></div>
+    </div>
+    <div class="ni" title="Carte">
+      <svg viewBox="0 0 17 17" fill="none"><path d="M8.5 2C5.5 2 3 4.5 3 7.5c0 4 5.5 9.5 5.5 9.5S14 11.5 14 7.5C14 4.5 11.5 2 8.5 2z" stroke="white" stroke-width="1.4" opacity=".35"/><circle cx="8.5" cy="7.5" r="2" fill="white" opacity=".35"/></svg>
+    </div>
+    <div class="ni" title="Classement">
+      <svg viewBox="0 0 17 17" fill="none"><path d="M8.5 1.5l2 4 4.5.65-3.25 3.15.77 4.45L8.5 11.5l-4.02 2.25.77-4.45L2 6.15 6.5 5.5z" stroke="white" stroke-width="1.3" opacity=".35"/></svg>
+    </div>
+    <div class="sidebar-bot"><div class="uav">OT</div></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="ttab on">Pour toi</div>
+      <div class="ttab">Métiers</div>
+      <div class="ttab">Friends</div>
+      <div class="ttab">Events GO</div>
+      <div class="tb-right">
+        <div class="streak-b"><span class="streak-t">🔥 7j</span></div>
+        <div class="xpw">
+          <div class="xpt"><div class="xpf"></div></div>
+          <span class="xpl">340 / 500 XP</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="feed-body">
+      <div class="grid">
+
+        <!-- CHOOSE -->
+        <div class="card sel" onclick="pick(this,'choose')">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=85" alt="Groupe de jeunes">
+            <div class="grad"></div>
+            <div class="card-body">
+              <div class="fmt-row"><div class="fpip" style="background:#7500B8"></div><span class="flbl">CHOOSE · 1mn</span></div>
+              <div class="cttl">Tu choisis ta voie, pas l'étiquette qu'on te colle.</div>
+              <div class="crow">
+                <div class="xpp">+10 XP</div>
+                <div class="soc">
+                  <div class="savs"><div class="sav" style="background:#FF5321">Y</div><div class="sav" style="background:#7500B8">M</div><div class="sav" style="background:#1A7A4A">J</div></div>
+                  <span class="stxt">+12 ce matin</span>
+                </div>
+              </div>
+            </div>
+            <div class="cprog" style="background:#7500B8;width:0%"></div>
+          </div>
+        </div>
+
+        <!-- GO -->
+        <div class="card" onclick="pick(this,'go')">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=600&q=85" alt="Campus HEC">
+            <div class="grad"></div>
+            <div class="card-body">
+              <div class="fmt-row"><div class="fpip" style="background:#30B870"></div><span class="flbl">GO · 14 mars · HEC</span></div>
+              <div class="cttl">Viens défier le campus HEC</div>
+              <div class="crow">
+                <div class="xpp">+25 XP</div>
+                <div class="soc">
+                  <div class="savs"><div class="sav" style="background:#7500B8">K</div><div class="sav" style="background:#D4537E">R</div></div>
+                  <span class="stxt">47 inscrits</span>
+                </div>
+              </div>
+            </div>
+            <div class="cprog" style="background:#30B870;width:15%"></div>
+          </div>
+        </div>
+
+        <!-- WATCH -->
+        <div class="card" onclick="pick(this,'watch')">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=85" alt="Interview">
+            <div class="grad"></div>
+            <div class="play-overlay"><div class="play-tri"></div></div>
+            <div class="vid-prog" style="bottom:38px"><div class="vid-prog-fill" style="width:38%;background:#378ADD"></div></div>
+            <div class="card-body">
+              <div class="fmt-row"><div class="fpip" style="background:#378ADD"></div><span class="flbl">WATCH · ENGIE · 2mn</span></div>
+              <div class="cttl">L'ingénieur énergie de 2030, c'est quoi vraiment ?</div>
+              <div class="crow"><div class="xpp">+15 XP</div><span class="stxt">284 vues cette semaine</span></div>
+            </div>
+            <div class="cprog" style="background:#378ADD;width:0%"></div>
+          </div>
+        </div>
+
+        <!-- BOOST -->
+        <div class="card" onclick="pick(this,'boost')">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=85" alt="Equipe en travail">
+            <div class="grad"></div>
+            <div class="card-body">
+              <div class="fmt-row"><div class="fpip" style="background:#EF9F27"></div><span class="flbl">BOOST · 7mn · Défi semaine</span></div>
+              <div class="cttl">Crée ton plan de carrière en 5 minutes.</div>
+              <div class="crow">
+                <div class="xpp">+40 XP</div>
+                <div class="soc">
+                  <div class="savs"><div class="sav" style="background:#7500B8">L</div><div class="sav" style="background:#1A7A4A">T</div><div class="sav" style="background:#D4537E">M</div></div>
+                  <span class="stxt">+31</span>
+                </div>
+              </div>
+            </div>
+            <div class="cprog" style="background:#EF9F27;width:0%"></div>
+          </div>
+        </div>
+
+        <!-- SHARE -->
+        <div class="card" onclick="pick(this,'share')">
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=600&q=85" alt="Jeune qui se filme">
+            <div class="grad"></div>
+            <div class="rec-overlay"><div class="rec-dot"></div><span class="rec-txt">REC</span></div>
+            <div class="card-body">
+              <div class="fmt-row"><div class="fpip" style="background:#D4537E"></div><span class="flbl">SHARE · 30s · Pitch</span></div>
+              <div class="cttl">Balance ton talent. Sans filtre.</div>
+              <div class="crow"><div class="xpp">+20 XP</div><span class="stxt">1 contact a partagé</span></div>
+            </div>
+            <div class="cprog" style="background:#D4537E;width:0%"></div>
+          </div>
+        </div>
+
+        <!-- BLIND -->
+        <div class="card" onclick="pick(this,'blind')">
+          <div class="card-img">
+            <div class="blind-cover"><span class="blind-q">?</span></div>
+            <div class="grad"></div>
+            <div class="card-body">
+              <div class="fmt-row"><div class="fpip" style="background:#444"></div><span class="flbl">BLIND · surprise</span></div>
+              <div class="cttl" style="color:rgba(255,255,255,0.3)">Contenu inconnu jusqu'au lancement.</div>
+              <div class="crow"><div class="xpp">+15 XP</div></div>
+            </div>
+            <div class="cprog" style="background:#444;width:0%"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL -->
+  <div class="panel" id="dp">
+    <div class="panel-img">
+      <img id="dpImgEl" src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=85" alt="">
+      <div class="pgrad"></div>
+    </div>
+    <div class="panel-body">
+      <div class="pfmt"><div class="pfmt-dot" id="dpDot" style="background:#7500B8"></div><span class="pfmt-txt" id="dpFmt" style="color:#7500B8">CHOOSE</span></div>
+      <div class="ptitle" id="dpTitle">Tu choisis ta voie, pas l'étiquette qu'on te colle.</div>
+      <div class="pdesc" id="dpDesc">3 questions sur stéréotypes, contraintes économiques et géographiques. Choisis ce qui te ressemble. Pas de bonne réponse.</div>
+      <div class="pstats">
+        <div class="pstat"><div class="pstat-v" id="dpDur">1mn</div><div class="pstat-l">Durée</div></div>
+        <div class="pstat"><div class="pstat-v" id="dpXp">+10 XP</div><div class="pstat-l">Récompense</div></div>
+        <div class="pstat"><div class="pstat-v">847</div><div class="pstat-l">Complétions</div></div>
+        <div class="pstat"><div class="pstat-v">4.8</div><div class="pstat-l">Note</div></div>
+      </div>
+      <div class="pskill">
+        <div class="pskill-l">ACT SKILL MESURÉE</div>
+        <div class="pskill-n" id="dpSkill">Mon background</div>
+        <div class="pskill-d" id="dpSkillD">Capacité à dépasser les freins liés à ton contexte de départ.</div>
+      </div>
+      <div class="psp">
+        <div class="psp-t" id="dpSpT">64% ont répondu pareil que toi</div>
+        <div class="psp-bar"><div class="psp-fill" id="dpSpF" style="width:64%;background:#7500B8"></div></div>
+      </div>
+    </div>
+    <div class="panel-foot">
+      <button class="lbtn" id="dpBtn" style="background:#7500B8">Lancer le défi</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var D={
+  choose:{img:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=85',dot:'#7500B8',fmt:'CHOOSE',title:"Tu choisis ta voie, pas l'étiquette qu'on te colle.",desc:'3 questions sur stéréotypes, contraintes économiques et géographiques. Choisis ce qui te ressemble. Pas de bonne réponse.',dur:'1mn',xp:'+10 XP',skill:'Mon background',sd:'Capacité à dépasser les freins liés à ton contexte de départ.',sp:'64% ont répondu pareil que toi',spw:'64%',btn:'Lancer le défi'},
+  go:{img:'https://images.unsplash.com/photo-1562774053-701939374585?w=500&q=85',dot:'#30B870',fmt:'GO',title:'Viens défier le campus HEC',desc:"14 mars 2026. Explore le campus, trouve ce qui t'inspire. Prouve ta présence avec une photo.",dur:'4h',xp:'+25 XP',skill:'Mes expériences',sd:"Capacité à s'engager dans des environnements inconnus.",sp:'47 inscrits · 2 contacts y vont',spw:'47%',btn:"M'inscrire au GO"},
+  watch:{img:'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=85',dot:'#378ADD',fmt:'WATCH',title:"L'ingénieur énergie de 2030, c'est quoi vraiment ?",desc:"Vidéo ENGIE 1mn34. Une question s'affiche en overlay après la lecture. Pas de retour en arrière.",dur:'2mn',xp:'+15 XP',skill:'Mes envies',sd:"Clarté sur les secteurs et métiers qui t'attirent vraiment.",sp:'71% ont répondu pareil que toi',spw:'71%',btn:'Lancer le WATCH'},
+  boost:{img:'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=500&q=85',dot:'#EF9F27',fmt:'BOOST',title:'Crée ton plan de carrière en 5 minutes.',desc:"3 étapes, 7 minutes. Le résultat s'intègre définitivement dans ta carte Projet ACT SKILLS.",dur:'7mn',xp:'+40 XP',skill:'Mon projet',sd:'Vision de ta trajectoire professionnelle à moyen terme.',sp:'Défi de la semaine · 31 complétions',spw:'80%',btn:'Lancer le BOOST'},
+  share:{img:'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=500&q=85',dot:'#D4537E',fmt:'SHARE',title:'Balance ton talent. Sans filtre.',desc:"30 secondes d'enregistrement. Ce que tu dis nourrit ta dimension Forces dans ton profil recruteur.",dur:'30s',xp:'+20 XP',skill:'Mes forces',sd:'Compétences distinctives visibles en situation concrète.',sp:'58% ont partagé',spw:'58%',btn:'Lancer le SHARE'},
+  blind:{img:null,dot:'#555',fmt:'BLIND',title:'Contenu inconnu.',desc:'Format, durée, sujet : tout est caché. Tu sauras en lançant.',dur:'?',xp:'+15 XP',skill:'Variable',sd:'Le BLIND teste plusieurs dimensions à la fois.',sp:'Tu verras après',spw:'50%',btn:'Tenter le BLIND'}
+};
+function pick(el,key){
+  document.querySelectorAll('.card').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel');
+  var d=D[key];
+  var imgEl=document.getElementById('dpImgEl');
+  var panel=document.querySelector('.panel-img');
+  if(d.img){
+    imgEl.src=d.img;
+    imgEl.style.display='block';
+    var existing=panel.querySelector('.blind-cover-sm');
+    if(existing)existing.remove();
+  } else {
+    imgEl.style.display='none';
+    if(!panel.querySelector('.blind-cover-sm')){
+      var bc=document.createElement('div');
+      bc.className='blind-cover-sm';
+      bc.innerHTML='<span style="font-size:48px;color:rgba(255,255,255,0.06);font-weight:700;">?</span>';
+      panel.insertBefore(bc,panel.querySelector('.pgrad'));
+    }
+  }
+  document.getElementById('dpDot').style.background=d.dot;
+  document.getElementById('dpFmt').style.color=d.dot;
+  document.getElementById('dpFmt').textContent=d.fmt;
+  document.getElementById('dpTitle').textContent=d.title;
+  document.getElementById('dpDesc').textContent=d.desc;
+  document.getElementById('dpDur').textContent=d.dur;
+  document.getElementById('dpXp').textContent=d.xp;
+  document.getElementById('dpSkill').textContent=d.skill;
+  document.getElementById('dpSkillD').textContent=d.sd;
+  document.getElementById('dpSpT').textContent=d.sp;
+  document.getElementById('dpSpF').style.width=d.spw;
+  document.getElementById('dpSpF').style.background=d.dot;
+  var btn=document.getElementById('dpBtn');
+  btn.textContent=d.btn;
+  btn.style.background=d.dot;
+}
+</script>
+</body>
+</html>

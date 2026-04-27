@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VOKA — DUEL</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --purple:#7500B8;--green:#B3F70B;--orange:#FF5321;
+  --bg:#080810;--bg2:#0f0f1e;--bg3:#1a1a2e;
+  --w:#fff;--w6:rgba(255,255,255,0.6);--w4:rgba(255,255,255,0.55);
+  --w2:rgba(255,255,255,0.12);--w1:rgba(255,255,255,0.06);
+}
+body{background:#111;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px;}
+.phone{width:390px;min-height:844px;background:var(--bg);border-radius:48px;overflow:hidden;border:7px solid #1e1e2e;position:relative;display:flex;flex-direction:column;}
+.sb{display:flex;justify-content:space-between;padding:12px 22px 0;font-size:12px;color:var(--w4);flex-shrink:0;}
+
+/* STEPS */
+.step{display:none;flex-direction:column;flex:1;}
+.step.active{display:flex;}
+
+/* ─── LOBBY ─── */
+.lobby-header{padding:14px 20px 0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.lobby-fmt{display:flex;align-items:center;gap:6px;background:rgba(255,83,33,0.12);border:0.5px solid rgba(255,128,96,0.3);border-radius:20px;padding:5px 12px;}
+.lf-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);}
+.lf-txt{font-size:11px;color:#ff8060;font-weight:500;letter-spacing:0.04em;}
+.lobby-xp{font-size:11px;color:var(--green);background:rgba(179,247,11,0.1);border:0.5px solid rgba(179,247,11,0.2);padding:4px 10px;border-radius:8px;font-weight:500;}
+
+.vs-zone{padding:20px 20px 0;text-align:center;flex-shrink:0;}
+.vs-title{font-size:24px;font-weight:500;color:var(--w);line-height:1.25;margin-bottom:6px;}
+.vs-sub{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5;margin-bottom:20px;}
+
+/* Avatars VS */
+.avatars-row{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:16px;}
+.av-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.av-circle{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:500;color:#fff;border:2px solid;}
+.av-you{background:rgba(117,0,184,0.3);border-color:var(--purple);}
+.av-opp{background:rgba(255,83,33,0.25);border-color:var(--orange);}
+.av-name{font-size:12px;font-weight:500;}
+.av-name-you{color:#c98ff0;}
+.av-name-opp{color:#ff8060;}
+.av-level{font-size:10px;padding:2px 7px;border-radius:4px;}
+.avl-you{background:rgba(117,0,184,0.15);color:#c98ff0;}
+.avl-opp{background:rgba(255,83,33,0.12);color:#ff8060;}
+.vs-badge{width:44px;height:44px;border-radius:50%;background:var(--bg2);border:2px solid var(--w2);display:flex;align-items:center;justify-content:center;margin:0 12px;flex-shrink:0;}
+.vs-badge-txt{font-size:13px;font-weight:500;color:var(--w4);letter-spacing:0.05em;}
+
+/* Règles */
+.rules-box{margin:0 20px 16px;background:var(--bg2);border-radius:12px;padding:14px;border:0.5px solid var(--w2);}
+.rules-title{font-size:11px;color:var(--w4);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:10px;font-weight:500;}
+.rule-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.rule-row:last-child{margin-bottom:0;}
+.rule-icon{width:26px;height:26px;border-radius:7px;background:rgba(255,83,33,0.1);border:0.5px solid rgba(255,128,96,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.rule-txt{font-size:12px;color:var(--w6);line-height:1.4;}
+
+/* Défi en jeu */
+.challenge-preview{margin:0 20px 16px;background:rgba(117,0,184,0.08);border:0.5px solid rgba(179,147,230,0.2);border-radius:12px;padding:12px 14px;}
+.cp-lbl{font-size:9px;color:#c98ff0;letter-spacing:0.08em;font-weight:500;margin-bottom:5px;}
+.cp-name{font-size:14px;font-weight:500;color:var(--w);}
+.cp-meta{display:flex;gap:6px;margin-top:6px;}
+.cp-pill{font-size:10px;padding:2px 7px;border-radius:4px;background:var(--w1);color:var(--w4);}
+
+.start-duel-btn{margin:0 20px 16px;background:var(--orange);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:500;color:#fff;cursor:pointer;width:calc(100% - 40px);display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;}
+.start-duel-btn:active{opacity:0.85;}
+
+/* Countdown */
+.countdown-overlay{position:absolute;inset:0;background:rgba(8,8,16,0.96);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
+.cd-num{font-size:96px;font-weight:300;color:var(--orange);line-height:1;transition:opacity 0.2s;}
+.cd-label{font-size:14px;color:var(--w4);letter-spacing:0.1em;}
+.cd-vs{font-size:18px;font-weight:500;color:var(--w);display:flex;align-items:center;gap:10px;}
+.cd-name-y{color:#c98ff0;}
+.cd-name-o{color:#ff8060;}
+
+/* ─── IN DUEL ─── */
+.duel-header{padding:12px 16px 0;flex-shrink:0;}
+.duel-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.duel-scores{display:flex;align-items:center;gap:0;background:var(--bg2);border-radius:12px;overflow:hidden;border:0.5px solid var(--w2);}
+.ds-side{padding:8px 16px;display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;}
+.ds-you{border-right:0.5px solid var(--w2);}
+.ds-name{font-size:9px;font-weight:500;letter-spacing:0.06em;}
+.ds-name-y{color:#c98ff0;}
+.ds-name-o{color:#ff8060;}
+.ds-val{font-size:22px;font-weight:500;color:var(--w);}
+.ds-center{padding:8px 12px;display:flex;align-items:center;justify-content:center;}
+.ds-sep{font-size:12px;color:var(--w4);}
+.duel-timer{display:flex;align-items:center;gap:6px;background:rgba(255,83,33,0.1);border:0.5px solid rgba(255,83,33,0.25);border-radius:20px;padding:5px 12px;}
+.dt-svg{width:20px;height:20px;transform:rotate(-90deg);flex-shrink:0;}
+.dt-track{fill:none;stroke:rgba(255,255,255,0.1);stroke-width:2.5;}
+.dt-fill{fill:none;stroke:var(--orange);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:56.5;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke 0.3s;}
+.dt-val{font-size:13px;font-weight:500;color:var(--w);}
+.duel-prog{height:3px;background:var(--w1);border-radius:2px;overflow:hidden;}
+.duel-prog-fill{height:3px;background:linear-gradient(90deg,var(--orange),var(--purple));border-radius:2px;transition:width 0.3s ease;}
+
+.question-zone{padding:14px 16px 0;flex-shrink:0;}
+.qz-num{font-size:10px;color:var(--w4);letter-spacing:0.08em;margin-bottom:6px;}
+.qz-text{font-size:17px;font-weight:500;color:var(--w);line-height:1.35;}
+
+/* Options */
+.opts{display:flex;flex-direction:column;gap:7px;padding:14px 16px 0;flex-shrink:0;}
+.opt{background:var(--w1);border:0.5px solid var(--w2);border-radius:12px;padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all 0.12s;}
+.opt:hover{background:rgba(255,83,33,0.06);}
+.opt.chosen-correct{background:rgba(179,247,11,0.1);border-color:rgba(179,247,11,0.35);}
+.opt.chosen-wrong{background:rgba(255,83,33,0.1);border-color:rgba(255,83,33,0.35);}
+.opt.reveal-correct{background:rgba(179,247,11,0.06);border-color:rgba(179,247,11,0.2);}
+.opt-letter{width:24px;height:24px;border-radius:7px;background:var(--w1);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--w4);flex-shrink:0;}
+.opt.chosen-correct .opt-letter{background:rgba(179,247,11,0.2);color:var(--green);}
+.opt.chosen-wrong .opt-letter{background:rgba(255,83,33,0.2);color:var(--orange);}
+.opt.reveal-correct .opt-letter{background:rgba(179,247,11,0.12);color:#d4fb6b;}
+.opt-text{font-size:13px;color:var(--w6);}
+.opt.chosen-correct .opt-text,.opt.reveal-correct .opt-text{color:var(--w);}
+.opt.chosen-wrong .opt-text{color:#ff8060;}
+
+/* Live feedback duel */
+.live-fb{margin:10px 16px 0;background:var(--bg2);border-radius:10px;padding:10px 12px;border:0.5px solid var(--w2);display:none;flex-shrink:0;}
+.lfb-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.lfb-row:last-child{margin-bottom:0;}
+.lfb-av{width:22px;height:22px;border-radius:50%;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:600;color:#fff;flex-shrink:0;}
+.lfb-name{font-size:11px;font-weight:500;flex:1;}
+.lfb-answer{font-size:11px;color:var(--w4);}
+.lfb-pts{font-size:11px;font-weight:500;}
+.lfb-pts-pos{color:var(--green);}
+.lfb-pts-neg{color:#ff8060;}
+
+.next-q-btn{margin:10px 16px 0;width:calc(100% - 32px);background:var(--orange);border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;display:none;flex-shrink:0;}
+
+/* ─── FIN DUEL ─── */
+.end-bg{position:absolute;inset:0;overflow:hidden;}
+.end-color{position:absolute;inset:0;}
+.end-content{position:relative;z-index:2;padding:32px 24px;display:flex;flex-direction:column;align-items:center;flex:1;}
+.end-result-badge{padding:10px 24px;border-radius:14px;margin-bottom:6px;}
+.erb-txt{font-size:28px;font-weight:500;letter-spacing:0.02em;}
+.end-tagline{font-size:14px;color:var(--w6);margin-bottom:24px;text-align:center;line-height:1.5;}
+.end-scores-card{background:rgba(0,0,0,0.35);border-radius:14px;padding:16px 20px;width:100%;margin-bottom:16px;border:0.5px solid rgba(255,255,255,0.1);}
+.esc-title{font-size:10px;color:var(--w4);letter-spacing:0.08em;text-align:center;margin-bottom:12px;}
+.esc-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.esc-row:last-child{margin-bottom:0;}
+.esc-av{width:36px;height:36px;border-radius:50%;font-size:14px;display:flex;align-items:center;justify-content:center;font-weight:600;color:#fff;flex-shrink:0;}
+.esc-info{flex:1;}
+.esc-name{font-size:13px;font-weight:500;margin-bottom:3px;}
+.esc-bar-wrap{display:flex;align-items:center;gap:6px;}
+.esc-bar{flex:1;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;}
+.esc-fill{height:4px;border-radius:2px;transition:width 0.8s ease;}
+.esc-pts{font-size:13px;font-weight:500;}
+.end-xp-row{display:flex;align-items:center;gap:8px;margin-bottom:20px;}
+.exr-val{font-size:32px;font-weight:500;color:var(--green);}
+.exr-lbl{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.4;}
+.end-btns{display:flex;flex-direction:column;gap:8px;width:100%;margin-top:auto;}
+.end-btn-main{border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;cursor:pointer;width:100%;}
+.end-btn-sec{background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.15);border-radius:13px;padding:11px;font-size:13px;color:var(--w6);cursor:pointer;width:100%;}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+
+  <!-- ─── LOBBY ─── -->
+  <div class="step active" id="s-lobby">
+    <div class="lobby-header">
+      <div class="lobby-fmt"><div class="lf-dot"></div><span class="lf-txt">DUEL · 1v1</span></div>
+      <div class="lobby-xp">×2 XP si tu gagnes</div>
+    </div>
+    <div class="vs-zone">
+      <div class="vs-title">Tu as été défié.</div>
+      <div class="vs-sub">Même défi, même timer. Le meilleur score l'emporte. Ton XP est doublé si tu gagnes.</div>
+      <div class="avatars-row">
+        <div class="av-wrap">
+          <div class="av-circle av-you">T</div>
+          <span class="av-name av-name-you">Toi</span>
+          <span class="av-level avl-you">Challenger</span>
+        </div>
+        <div class="vs-badge"><span class="vs-badge-txt">VS</span></div>
+        <div class="av-wrap">
+          <div class="av-circle av-opp">Y</div>
+          <span class="av-name av-name-opp">Yasmine</span>
+          <span class="av-level avl-opp">Challenger</span>
+        </div>
+      </div>
+    </div>
+    <div class="rules-box">
+      <div class="rules-title">Règles du duel</div>
+      <div class="rule-row">
+        <div class="rule-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#ff8060" stroke-width="1.2"/><path d="M6.5 3.5v3.5l2 1.5" stroke="#ff8060" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+        <span class="rule-txt">60 secondes pour les 4 questions — identiques pour vous deux</span>
+      </div>
+      <div class="rule-row">
+        <div class="rule-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 7.5l3 3 6-6" stroke="#ff8060" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="rule-txt">Bonus vitesse : répondre vite rapporte plus de points</span>
+      </div>
+      <div class="rule-row">
+        <div class="rule-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5l1.5 3 3.5.5-2.5 2.5.6 3.5-3.1-1.6-3.1 1.6.6-3.5L1.5 5l3.5-.5z" stroke="#ff8060" stroke-width="1.2"/></svg></div>
+        <span class="rule-txt">Le gagnant reçoit ses XP en double · le perdant garde 50%</span>
+      </div>
+    </div>
+    <div class="challenge-preview">
+      <div class="cp-lbl">DÉFI EN JEU</div>
+      <div class="cp-name">Connais-tu les métiers de demain ?</div>
+      <div class="cp-meta">
+        <span class="cp-pill">CHRONO</span>
+        <span class="cp-pill">4 questions</span>
+        <span class="cp-pill">Mon background</span>
+      </div>
+    </div>
+    <button class="start-duel-btn" onclick="startCountdown()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M5 3l8 5-8 5V3z" fill="white"/></svg>
+      Accepter le duel
+    </button>
+  </div>
+
+  <!-- ─── COUNTDOWN overlay ─── -->
+  <div class="countdown-overlay" id="countdown" style="display:none;">
+    <div class="cd-vs">
+      <span class="cd-name-y">Toi</span>
+      <span style="color:rgba(255,255,255,0.3)">vs</span>
+      <span class="cd-name-o">Yasmine</span>
+    </div>
+    <div class="cd-num" id="cdNum">3</div>
+    <div class="cd-label">PRÉPARE-TOI</div>
+  </div>
+
+  <!-- ─── IN DUEL ─── -->
+  <div class="step" id="s-duel">
+    <div class="duel-header">
+      <div class="duel-top">
+        <div class="duel-scores">
+          <div class="ds-side ds-you">
+            <span class="ds-name ds-name-y">TOI</span>
+            <span class="ds-val" id="scoreYou">0</span>
+          </div>
+          <div class="ds-center"><span class="ds-sep">:</span></div>
+          <div class="ds-side ds-opp">
+            <span class="ds-name ds-name-o">YASMINE</span>
+            <span class="ds-val" id="scoreOpp">0</span>
+          </div>
+        </div>
+        <div class="duel-timer">
+          <svg class="dt-svg" viewBox="0 0 20 20">
+            <circle class="dt-track" cx="10" cy="10" r="9"/>
+            <circle class="dt-fill" id="timerCircle" cx="10" cy="10" r="9"/>
+          </svg>
+          <span class="dt-val" id="timerVal">60</span>
+        </div>
+      </div>
+      <div class="duel-prog"><div class="duel-prog-fill" id="duelProg" style="width:0%"></div></div>
+    </div>
+    <div class="question-zone">
+      <div class="qz-num" id="qNum">QUESTION 1 / 4</div>
+      <div class="qz-text" id="qText">Quel métier a le plus progressé en offres d'emploi en France en 2025 ?</div>
+    </div>
+    <div class="opts" id="optsContainer"></div>
+    <div class="live-fb" id="liveFb">
+      <div class="lfb-row">
+        <div class="lfb-av" style="background:#7500B8">T</div>
+        <span class="lfb-name av-name-you">Toi</span>
+        <span class="lfb-answer" id="fbYouAnswer">—</span>
+        <span class="lfb-pts lfb-pts-pos" id="fbYouPts">+0 pts</span>
+      </div>
+      <div class="lfb-row">
+        <div class="lfb-av" style="background:#FF5321">Y</div>
+        <span class="lfb-name av-name-opp">Yasmine</span>
+        <span class="lfb-answer" id="fbOppAnswer">—</span>
+        <span class="lfb-pts" id="fbOppPts">+0 pts</span>
+      </div>
+    </div>
+    <button class="next-q-btn" id="nextQBtn" onclick="nextQuestion()"></button>
+  </div>
+
+  <!-- ─── FIN ─── -->
+  <div class="step" id="s-end" style="position:relative;">
+    <div class="end-bg">
+      <div class="end-color" id="endColor"></div>
+    </div>
+    <div class="end-content">
+      <div class="end-result-badge" id="endBadge">
+        <div class="erb-txt" id="endBadgeTxt">VICTOIRE !</div>
+      </div>
+      <div class="end-tagline" id="endTagline"></div>
+      <div class="end-scores-card">
+        <div class="esc-title">RÉSULTAT FINAL</div>
+        <div class="esc-row">
+          <div class="esc-av" style="background:#7500B8">T</div>
+          <div class="esc-info">
+            <div class="esc-name" style="color:#c98ff0">Toi</div>
+            <div class="esc-bar-wrap">
+              <div class="esc-bar"><div class="esc-fill" id="barYou" style="background:#7500B8;width:0%"></div></div>
+              <span class="esc-pts" id="finalYou" style="color:#c98ff0">0</span>
+            </div>
+          </div>
+        </div>
+        <div class="esc-row">
+          <div class="esc-av" style="background:#FF5321">Y</div>
+          <div class="esc-info">
+            <div class="esc-name" style="color:#ff8060">Yasmine</div>
+            <div class="esc-bar-wrap">
+              <div class="esc-bar"><div class="esc-fill" id="barOpp" style="background:#FF5321;width:0%"></div></div>
+              <span class="esc-pts" id="finalOpp" style="color:#ff8060">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="end-xp-row">
+        <span class="exr-val" id="endXp">+0 XP</span>
+        <span class="exr-lbl" id="endXpLbl">gagnés<br>sur ce duel</span>
+      </div>
+      <div class="end-btns">
+        <button class="end-btn-main" id="endMainBtn" onclick="goStep('s-lobby')">Revanche</button>
+        <button class="end-btn-sec" onclick="goStep('s-lobby')">Retour au feed</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var QUESTIONS=[
+  {
+    text:"Quel métier a le plus progressé en offres d'emploi en France en 2025 ?",
+    opts:["Comptable","Ingénieur data / IA","Commercial terrain","Juriste d'entreprise"],
+    correct:1
+  },
+  {
+    text:"En 2030, quelle compétence sera la plus valorisée selon les DRH ?",
+    opts:["Maîtrise d'Excel","Langues étrangères","Adaptabilité et résilience","Diplôme Bac+5"],
+    correct:2
+  },
+  {
+    text:"Combien de postes à pourvoir en France par an d'ici 2030 selon la DARES ?",
+    opts:["200 000","800 000","1,5 million","50 000"],
+    correct:1
+  },
+  {
+    text:"Quel % des jeunes trouve l'orientation déconnectée de la réalité ?",
+    opts:["40%","60%","80%","95%"],
+    correct:2
+  }
+];
+
+var qIdx=0, timeLeft=60, timerInt=null;
+var scoreYou=0, scoreOpp=0;
+var OPP_DELAYS=[4,7,3,8]; // secondes avant que Yasmine réponde
+var OPP_CORRECT=[true,false,true,true];
+var answered=false, oppAnswered=false;
+
+function goStep(id){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startCountdown(){
+  document.getElementById('countdown').style.display='flex';
+  let n=3;
+  document.getElementById('cdNum').textContent=n;
+  let cd=setInterval(()=>{
+    n--;
+    if(n===0){
+      document.getElementById('cdNum').textContent='GO !';
+      document.getElementById('cdNum').style.color='var(--green)';
+      setTimeout(()=>{
+        document.getElementById('countdown').style.display='none';
+        document.getElementById('cdNum').style.color='var(--orange)';
+        goStep('s-duel');
+        startDuel();
+      },700);
+      clearInterval(cd);
+    } else {
+      document.getElementById('cdNum').textContent=n;
+    }
+  },1000);
+}
+
+function startDuel(){
+  qIdx=0; scoreYou=0; scoreOpp=0; timeLeft=60;
+  updateScores();
+  loadQuestion();
+  startTimer();
+}
+
+function loadQuestion(){
+  answered=false; oppAnswered=false;
+  var q=QUESTIONS[qIdx];
+  document.getElementById('qNum').textContent='QUESTION '+(qIdx+1)+' / '+QUESTIONS.length;
+  document.getElementById('qText').textContent=q.text;
+  document.getElementById('duelProg').style.width=((qIdx)/QUESTIONS.length*100)+'%';
+  document.getElementById('liveFb').style.display='none';
+  document.getElementById('nextQBtn').style.display='none';
+
+  var container=document.getElementById('optsContainer');
+  container.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    var el=document.createElement('div');
+    el.className='opt';
+    el.innerHTML=`<div class="opt-letter">${['A','B','C','D'][i]}</div><span class="opt-text">${opt}</span>`;
+    el.onclick=()=>answer(el,i);
+    container.appendChild(el);
+  });
+
+  // Yasmine répond après un délai
+  var delay=OPP_DELAYS[qIdx%OPP_DELAYS.length];
+  setTimeout(()=>{ if(!oppAnswered) oppAnswer(); }, delay*1000);
+}
+
+function answer(el, idx){
+  if(answered) return;
+  answered=true;
+  var q=QUESTIONS[qIdx];
+  var correct=idx===q.correct;
+  var pts=correct?Math.max(5,Math.round(timeLeft/4)):0;
+
+  document.querySelectorAll('.opts .opt').forEach(o=>o.onclick=null);
+  if(correct){
+    el.classList.add('chosen-correct');
+    scoreYou+=pts;
+  } else {
+    el.classList.add('chosen-wrong');
+    document.querySelectorAll('.opts .opt')[q.correct].classList.add('reveal-correct');
+  }
+  updateScores();
+  document.getElementById('fbYouAnswer').textContent=correct?'✓ Correct':'✗ Raté';
+  document.getElementById('fbYouPts').textContent=(pts>0?'+':'')+pts+' pts';
+  document.getElementById('fbYouPts').className='lfb-pts '+(pts>0?'lfb-pts-pos':'lfb-pts-neg');
+  checkShowFeedback();
+}
+
+function oppAnswer(){
+  oppAnswered=true;
+  var q=QUESTIONS[qIdx];
+  var correct=OPP_CORRECT[qIdx%OPP_CORRECT.length];
+  var pts=correct?Math.max(5,Math.round(timeLeft/3.5)):0;
+  if(correct) scoreOpp+=pts;
+  updateScores();
+  document.getElementById('fbOppAnswer').textContent=correct?'✓ Correct':'✗ Raté';
+  document.getElementById('fbOppPts').textContent=(pts>0?'+':'')+pts+' pts';
+  document.getElementById('fbOppPts').className='lfb-pts '+(pts>0?'lfb-pts-pos':'lfb-pts-neg');
+  checkShowFeedback();
+}
+
+function checkShowFeedback(){
+  if(!answered||!oppAnswered) return;
+  document.getElementById('liveFb').style.display='block';
+  var btn=document.getElementById('nextQBtn');
+  btn.style.display='block';
+  btn.textContent=qIdx<QUESTIONS.length-1?'Question suivante →':'Voir le résultat';
+}
+
+function nextQuestion(){
+  qIdx++;
+  if(qIdx>=QUESTIONS.length){
+    clearInterval(timerInt);
+    showEnd();
+  } else {
+    loadQuestion();
+  }
+}
+
+function startTimer(){
+  clearInterval(timerInt);
+  timeLeft=60;
+  updateTimer();
+  timerInt=setInterval(()=>{
+    timeLeft--;
+    if(timeLeft<=0){
+      clearInterval(timerInt);
+      if(!answered) answer({classList:{add:()=>{},remove:()=>{}},onclick:null},-1);
+    }
+    updateTimer();
+  },1000);
+}
+
+function updateTimer(){
+  var pct=timeLeft/60;
+  var offset=56.5*(1-pct);
+  var color=timeLeft>20?'var(--orange)':timeLeft>10?'#EF9F27':'#FF5321';
+  var c=document.getElementById('timerCircle');
+  if(c){c.style.strokeDashoffset=offset;c.style.stroke=color;}
+  var v=document.getElementById('timerVal');
+  if(v){v.textContent=timeLeft;v.style.color=color;}
+}
+
+function updateScores(){
+  document.getElementById('scoreYou').textContent=scoreYou;
+  document.getElementById('scoreOpp').textContent=scoreOpp;
+}
+
+function showEnd(){
+  goStep('s-end');
+  var won=scoreYou>scoreOpp;
+  var draw=scoreYou===scoreOpp;
+  var xp=won?scoreYou*2:draw?Math.round(scoreYou*0.75):Math.round(scoreYou*0.5);
+
+  var badge=document.getElementById('endBadge');
+  var badgeTxt=document.getElementById('endBadgeTxt');
+  var tagline=document.getElementById('endTagline');
+  var endColor=document.getElementById('endColor');
+
+  if(won){
+    badge.style.background='rgba(179,247,11,0.15)';
+    badge.style.border='0.5px solid rgba(179,247,11,0.3)';
+    badgeTxt.style.color='var(--green)';
+    badgeTxt.textContent='VICTOIRE !';
+    tagline.textContent='Tu as battu Yasmine. Tes XP sont doublés.';
+    endColor.style.background='rgba(117,0,184,0.12)';
+  } else if(draw){
+    badge.style.background='rgba(239,159,39,0.12)';
+    badge.style.border='0.5px solid rgba(239,159,39,0.25)';
+    badgeTxt.style.color='#f5c040';
+    badgeTxt.textContent='ÉGALITÉ';
+    tagline.textContent='Match nul. Vous avez chacun 75% de vos XP.';
+    endColor.style.background='rgba(239,159,39,0.06)';
+  } else {
+    badge.style.background='rgba(255,83,33,0.12)';
+    badge.style.border='0.5px solid rgba(255,83,33,0.25)';
+    badgeTxt.style.color='#ff8060';
+    badgeTxt.textContent='DÉFAITE';
+    tagline.textContent='Yasmine t\'a battu cette fois. Tu gardes 50% de tes XP.';
+    endColor.style.background='rgba(255,83,33,0.05)';
+  }
+
+  var maxScore=Math.max(scoreYou,scoreOpp,1);
+  setTimeout(()=>{
+    document.getElementById('barYou').style.width=(scoreYou/maxScore*100)+'%';
+    document.getElementById('barOpp').style.width=(scoreOpp/maxScore*100)+'%';
+  },200);
+  document.getElementById('finalYou').textContent=scoreYou+' pts';
+  document.getElementById('finalOpp').textContent=scoreOpp+' pts';
+  document.getElementById('endXp').textContent='+'+xp+' XP';
+  document.getElementById('endXpLbl').textContent=won?'gagnés (bonus ×2 victoire)':'gagnés sur ce duel';
+  document.getElementById('endXp').style.color=won?'var(--green)':draw?'#f5c040':'#ff8060';
+
+  var mainBtn=document.getElementById('endMainBtn');
+  mainBtn.style.background=won?'var(--green)':draw?'#EF9F27':'var(--orange)';
+  mainBtn.style.color=won?'#0a1200':'#fff';
+}
+</script>
+</body>
+</html>

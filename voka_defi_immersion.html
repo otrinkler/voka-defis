@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VOKA — IMMERSION</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --purple:#7500B8;--green:#B3F70B;--orange:#FF5321;--amber:#EF9F27;--blue:#378ADD;--teal:#1D9E75;
+  --bg:#080810;--bg2:#0f0f1e;
+  --w:#fff;--w6:rgba(255,255,255,0.6);--w4:rgba(255,255,255,0.4);
+  --w2:rgba(255,255,255,0.12);--w1:rgba(255,255,255,0.06);
+}
+body{background:#111;display:flex;justify-content:center;padding:20px;}
+.phone{width:390px;min-height:844px;background:var(--bg);border-radius:48px;overflow:hidden;border:7px solid #1e1e2e;display:flex;flex-direction:column;}
+.sb{display:flex;justify-content:space-between;padding:12px 22px 0;font-size:12px;color:var(--w4);flex-shrink:0;}
+.view{display:none;flex-direction:column;flex:1;}
+.view.on{display:flex;}
+
+/* ═══ INTRO ═══ */
+.hero{height:200px;position:relative;overflow:hidden;flex-shrink:0;background:linear-gradient(160deg,#0d0520 0%,#08100a 100%);}
+.hero-deco{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;gap:12px;padding-bottom:14px;}
+.beam{background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.07);}
+.hero-grad{position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,var(--bg) 0%,transparent 100%);}
+.hero-tag{position:absolute;top:14px;left:16px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,0.6);border:0.5px solid rgba(245,192,64,0.4);border-radius:10px;padding:5px 12px;}
+.ht-dot{width:6px;height:6px;border-radius:50%;background:var(--amber);}
+.ht-txt{font-size:10px;color:#f5c040;font-weight:500;letter-spacing:0.04em;}
+.hero-xp{position:absolute;top:14px;right:16px;font-size:11px;color:var(--green);background:rgba(179,247,11,0.1);border:0.5px solid rgba(179,247,11,0.2);padding:4px 10px;border-radius:8px;font-weight:500;}
+.hero-lbl{position:absolute;bottom:22px;left:16px;font-size:11px;color:rgba(255,255,255,0.5);background:rgba(0,0,0,0.5);padding:3px 9px;border-radius:6px;}
+.intro-body{flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;}
+.i-label{display:inline-flex;align-items:center;gap:5px;background:rgba(239,159,39,0.1);border:0.5px solid rgba(245,192,64,0.25);border-radius:6px;padding:3px 9px;}
+.i-label-txt{font-size:10px;color:#f5c040;font-weight:500;letter-spacing:0.04em;}
+.i-title{font-size:21px;font-weight:500;color:var(--w);line-height:1.28;}
+.i-sub{font-size:13px;color:var(--w6);line-height:1.6;}
+.i-rules{display:flex;flex-direction:column;gap:7px;}
+.i-rule{display:flex;align-items:flex-start;gap:9px;background:var(--w1);border:0.5px solid var(--w2);border-radius:10px;padding:10px 12px;}
+.ir-icon{width:26px;height:26px;border-radius:7px;background:rgba(239,159,39,0.1);border:0.5px solid rgba(245,192,64,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ir-txt{font-size:12px;color:var(--w6);line-height:1.45;flex:1;}
+.ir-txt b{color:var(--w);font-weight:500;}
+.start-btn{margin:0 20px 20px;background:var(--amber);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:500;color:#1a1000;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:8px;}
+
+/* ═══ NARRATION ═══ */
+.narr-scene-box{height:220px;position:relative;overflow:hidden;flex-shrink:0;transition:background 0.8s;}
+.narr-scene-inner{position:absolute;inset:0;}
+.narr-grad{position:absolute;bottom:0;left:0;right:0;height:70px;background:linear-gradient(to top,var(--bg) 0%,transparent 100%);}
+.narr-prog-bar{height:3px;background:var(--w1);flex-shrink:0;}
+.narr-prog-fill{height:3px;background:var(--amber);transition:width 0.4s;}
+.narr-content{flex:1;padding:16px 20px 0;display:flex;flex-direction:column;gap:8px;}
+.narr-who{font-size:10px;font-weight:500;letter-spacing:0.06em;}
+.narr-text{font-size:16px;color:var(--w);line-height:1.5;}
+.narr-dots{display:flex;gap:4px;margin-top:4px;}
+.nd{width:7px;height:7px;border-radius:50%;background:var(--w2);}
+.nd.done{background:var(--amber);}
+.nd.cur{background:var(--amber);opacity:0.55;}
+.narr-btn{margin:12px 20px 20px;background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.15);border-radius:12px;padding:12px;font-size:13px;color:var(--w6);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:6px;}
+
+/* ═══ DÉCISION ═══ */
+.dec-wrap{flex:1;display:flex;flex-direction:column;padding:16px 20px 0;}
+.dec-tag-row{display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-shrink:0;}
+.dec-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(239,159,39,0.12);border:0.5px solid rgba(245,192,64,0.3);border-radius:8px;padding:4px 10px;}
+.dec-tag-dot{width:5px;height:5px;border-radius:50%;background:var(--amber);}
+.dec-tag-txt{font-size:10px;color:#f5c040;font-weight:500;letter-spacing:0.04em;}
+.dec-num{font-size:11px;color:var(--w4);margin-bottom:6px;flex-shrink:0;}
+.dec-ctx{font-size:12px;color:rgba(255,255,255,0.55);font-style:italic;line-height:1.45;margin-bottom:10px;padding:8px 12px;background:var(--w1);border-radius:8px;border-left:2px solid var(--amber);flex-shrink:0;}
+.dec-q{font-size:18px;font-weight:500;color:var(--w);line-height:1.32;margin-bottom:14px;flex-shrink:0;}
+.dec-opts{display:flex;flex-direction:column;gap:7px;flex-shrink:0;}
+.dec-opt{background:var(--w1);border:0.5px solid var(--w2);border-radius:12px;padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background 0.12s,border-color 0.12s;}
+.dec-opt.chosen{background:rgba(239,159,39,0.12);border-color:rgba(245,192,64,0.35);}
+.dec-opt-l{width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,0.06);font-size:11px;font-weight:500;color:rgba(255,255,255,0.55);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.dec-opt.chosen .dec-opt-l{background:rgba(239,159,39,0.2);color:#f5c040;}
+.dec-opt-txt{font-size:13px;color:var(--w6);}
+.dec-opt.chosen .dec-opt-txt{color:var(--w);}
+.dec-signal{border-radius:10px;padding:11px 13px;margin-top:12px;flex-shrink:0;}
+.ds-lbl{font-size:9px;font-weight:600;letter-spacing:0.07em;margin-bottom:4px;}
+.ds-txt{font-size:12px;color:rgba(255,255,255,0.75);line-height:1.55;}
+.dec-next{border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:500;cursor:pointer;margin-top:12px;flex-shrink:0;}
+
+/* ═══ FIN ═══ */
+.end-scroll{flex:1;padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;}
+.end-badge-row{display:flex;align-items:center;gap:10px;}
+.eb-icon{font-size:28px;}
+.eb-title{font-size:14px;font-weight:500;color:var(--w);}
+.eb-sub{font-size:11px;color:rgba(255,255,255,0.55);}
+.end-h1{font-size:22px;font-weight:500;color:var(--w);line-height:1.25;}
+.end-sub-txt{font-size:13px;color:var(--w6);line-height:1.6;}
+.choices-card{background:var(--bg2);border-radius:14px;padding:14px;border:0.5px solid var(--w2);}
+.cc-lbl{font-size:10px;color:rgba(255,255,255,0.55);letter-spacing:0.07em;font-weight:500;margin-bottom:10px;}
+.cc-item{display:flex;gap:10px;margin-bottom:10px;}
+.cc-item:last-child{margin-bottom:0;}
+.cc-num{width:22px;height:22px;border-radius:50%;background:rgba(239,159,39,0.15);border:0.5px solid rgba(245,192,64,0.25);font-size:10px;font-weight:500;color:#f5c040;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.cc-sit{font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:2px;}
+.cc-choice{font-size:12px;color:rgba(255,255,255,0.85);font-weight:500;margin-bottom:3px;}
+.cc-sig{font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;display:inline-block;}
+.dims-card{background:rgba(117,0,184,0.07);border:0.5px solid rgba(179,147,230,0.15);border-radius:12px;padding:12px 14px;}
+.dims-lbl{font-size:10px;color:#c98ff0;letter-spacing:0.07em;font-weight:500;margin-bottom:8px;}
+.dim-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.dim-row:last-child{margin-bottom:0;}
+.dim-name{font-size:11px;color:rgba(255,255,255,0.65);width:120px;flex-shrink:0;}
+.dim-bar{flex:1;height:4px;background:var(--w1);border-radius:2px;overflow:hidden;}
+.dim-fill{height:4px;border-radius:2px;}
+.dim-delta{font-size:11px;font-weight:500;color:var(--green);width:24px;text-align:right;flex-shrink:0;}
+.xp-row{display:flex;align-items:center;gap:10px;}
+.xp-val{font-size:36px;font-weight:300;color:var(--green);}
+.xp-lbl{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5;}
+.end-btns{padding:0 20px 24px;display:flex;flex-direction:column;gap:7px;flex-shrink:0;}
+.btn-m{background:var(--amber);border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;color:#1a1000;cursor:pointer;}
+.btn-s{background:var(--w1);border:0.5px solid var(--w2);border-radius:13px;padding:11px;font-size:13px;color:rgba(255,255,255,0.65);cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+
+<!-- INTRO -->
+<div class="view on" id="v-intro">
+  <div class="hero">
+    <div class="hero-deco">
+      <div class="beam" style="width:7px;height:130px;margin-bottom:18px;"></div>
+      <div class="beam" style="width:55px;height:70px;border-radius:4px 4px 0 0;"></div>
+      <div class="beam" style="width:90px;height:50px;border-radius:4px 4px 0 0;"></div>
+      <div class="beam" style="width:6px;height:110px;margin-bottom:10px;"></div>
+      <div class="beam" style="width:65px;height:60px;border-radius:4px 4px 0 0;"></div>
+      <div class="beam" style="width:7px;height:150px;"></div>
+    </div>
+    <div class="hero-grad"></div>
+    <div class="hero-tag"><div class="ht-dot"></div><span class="ht-txt">IMMERSION · 4 décisions</span></div>
+    <div class="hero-xp">+25 XP</div>
+    <div class="hero-lbl">🏗️ Chantier Colas · Nantes</div>
+  </div>
+  <div class="intro-body">
+    <div class="i-label"><span class="i-label-txt">MES FORCES · MES EXPÉRIENCES</span></div>
+    <div class="i-title">Tu es chef de chantier depuis 3 mois. Ton équipe est en retard.</div>
+    <div class="i-sub">Scène narrative interactive. La scène se fige 4 fois — tu décides. Tes choix révèlent ton style de management naturel.</div>
+    <div class="i-rules">
+      <div class="i-rule">
+        <div class="ir-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 7l3 3 6-5" stroke="#f5c040" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="ir-txt"><b>Pas de bonne réponse</b> — ton instinct révèle ton profil réel</div>
+      </div>
+      <div class="i-rule">
+        <div class="ir-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#f5c040" stroke-width="1.2"/><path d="M6.5 3.5v3.5l2 1.5" stroke="#f5c040" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+        <div class="ir-txt"><b>4 décisions</b> dans des situations réelles sous pression</div>
+      </div>
+      <div class="i-rule">
+        <div class="ir-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 10l3-5 2 2.5 2-3L11.5 9" stroke="#f5c040" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="ir-txt"><b>Non-falsifiable</b> — les décisions en contexte émotionnel sont vraies</div>
+      </div>
+    </div>
+  </div>
+  <button class="start-btn" onclick="start()">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 2l7 5-7 5V2z" fill="#1a1000"/></svg>
+    Entrer dans la scène
+  </button>
+</div>
+
+<!-- NARRATION -->
+<div class="view" id="v-narration">
+  <div class="narr-scene-box" id="narrBox">
+    <div class="narr-scene-inner" id="narrScene"></div>
+    <div class="narr-grad"></div>
+  </div>
+  <div class="narr-prog-bar"><div class="narr-prog-fill" id="narrProg"></div></div>
+  <div class="narr-content">
+    <div class="narr-who" id="narrWho"></div>
+    <div class="narr-text" id="narrText"></div>
+    <div class="narr-dots" id="narrDots"></div>
+  </div>
+  <button class="narr-btn" onclick="next()">
+    Continuer
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="rgba(255,255,255,0.6)" stroke-width="1.4" stroke-linecap="round"/></svg>
+  </button>
+</div>
+
+<!-- DÉCISION -->
+<div class="view" id="v-decision">
+  <div class="dec-wrap">
+    <div class="dec-tag-row">
+      <div class="dec-tag"><div class="dec-tag-dot"></div><span class="dec-tag-txt">DÉCISION · SCÈNE FIGÉE</span></div>
+    </div>
+    <div class="dec-num" id="decNum"></div>
+    <div class="dec-ctx" id="decCtx"></div>
+    <div class="dec-q" id="decQ"></div>
+    <div class="dec-opts" id="decOpts"></div>
+    <div class="dec-signal" id="decSignal" style="display:none;">
+      <div class="ds-lbl" id="dsLbl"></div>
+      <div class="ds-txt" id="dsTxt"></div>
+    </div>
+    <button class="dec-next" id="decNext" style="display:none;" onclick="next()"></button>
+  </div>
+</div>
+
+<!-- FIN -->
+<div class="view" id="v-end">
+  <div class="end-scroll">
+    <div class="end-badge-row">
+      <div class="eb-icon">🏗️</div>
+      <div>
+        <div class="eb-title">Chantier Colas · Nantes</div>
+        <div class="eb-sub">IMMERSION complétée · 4 décisions</div>
+      </div>
+    </div>
+    <div class="end-h1" id="endH1">Ton style naturel : Coordinateur direct.</div>
+    <div class="end-sub-txt">Sous pression, tes choix révèlent comment tu gères l'imprévu, les conflits et la relation avec ton équipe.</div>
+    <div class="choices-card">
+      <div class="cc-lbl">TES 4 DÉCISIONS</div>
+      <div id="ccItems"></div>
+    </div>
+    <div class="dims-card">
+      <div class="dims-lbl">TON PROFIL MIS À JOUR</div>
+      <div class="dim-row"><span class="dim-name">Mes forces</span><div class="dim-bar"><div class="dim-fill" style="width:82%;background:#378ADD"></div></div><span class="dim-delta">+10</span></div>
+      <div class="dim-row"><span class="dim-name">Mes expériences</span><div class="dim-bar"><div class="dim-fill" style="width:74%;background:#1D9E75"></div></div><span class="dim-delta">+8</span></div>
+      <div class="dim-row"><span class="dim-name">Mon background</span><div class="dim-bar"><div class="dim-fill" style="width:63%;background:#EF9F27"></div></div><span class="dim-delta">+5</span></div>
+      <div class="dim-row"><span class="dim-name">Mes talents cachés</span><div class="dim-bar"><div class="dim-fill" style="width:55%;background:#B3F70B"></div></div><span class="dim-delta">+2</span></div>
+    </div>
+    <div class="xp-row">
+      <span class="xp-val">+25 XP</span>
+      <span class="xp-lbl">gagnés<br>sur cette IMMERSION</span>
+    </div>
+  </div>
+  <div class="end-btns">
+    <button class="btn-m" onclick="show('v-intro')">Nouvelle immersion</button>
+    <button class="btn-s" onclick="show('v-intro')">Retour au feed</button>
+  </div>
+</div>
+
+</div>
+<script>
+var BEATS=[
+  {t:'n',bg:'#0a0e0a',who:'NARRATEUR',wc:'rgba(239,159,39,0.7)',txt:"7h30. Tu arrives sur le chantier. Karim, ton chef d'équipe, t'attend à l'entrée. Son regard dit que quelque chose ne va pas.",chars:[{l:'Toi',x:35,hc:'#D4A876',bc:'#2a1a10',s:52},{l:'Karim',x:65,hc:'#8B6040',bc:'#1a2030',s:46}]},
+  {t:'n',bg:'#0a0e0a',who:'KARIM',wc:'#7ab8f0',txt:'"La livraison béton est en retard de 4 heures. Si on ne fait rien maintenant, on perd 2 jours sur le planning."',chars:[{l:'Toi',x:35,hc:'#D4A876',bc:'#2a1a10',s:52},{l:'Karim',x:65,hc:'#8B6040',bc:'#1a2030',s:46}]},
+  {t:'d',di:0,sit:'Retard livraison',ctx:"Karim attend ta réaction. L'équipe observe depuis le fond du chantier.",q:"Ton premier réflexe face au retard ?",opts:["Appeler le fournisseur pour comprendre d'abord","Réorganiser l'équipe pour ne pas perdre de temps","Informer le client sans attendre","Analyser l'impact avant d'agir"],sigs:["Rigueur analytique — tu comprends avant d'agir.","Leadership opérationnel — tu penses solution avant cause.","Sens des responsabilités — tu priorises la transparence.","Sang-froid — tu mesures avant de décider."],sc:['#7ab8f0','#ff8060','#c98ff0','#6ddba0'],sb:['rgba(55,138,221,0.1)','rgba(255,83,33,0.1)','rgba(117,0,184,0.1)','rgba(29,158,117,0.1)']},
+  {t:'n',bg:'#0c100a',who:'NARRATEUR',wc:'rgba(239,159,39,0.7)',txt:"11h. La livraison est arrivée avec 3h de retard. Deux ouvriers se disputent devant tout le monde sur qui doit gérer le déchargement.",chars:[{l:'Ouvrier A',x:28,hc:'#C49A6C',bc:'#1a2010',s:44},{l:'Ouvrier B',x:55,hc:'#8B7355',bc:'#102018',s:44},{l:'Toi',x:80,hc:'#D4A876',bc:'#2a1a10',s:40}]},
+  {t:'d',di:1,sit:"Conflit d'équipe",ctx:"Les deux ouvriers se font face. L'équipe s'est arrêtée de travailler.",q:"Comment tu gères ce conflit ?",opts:["Tu tranches fermement — décision immédiate","Tu écoutes chacun séparément avant de décider","Tu redéfinis les rôles pour éviter la récidive","Tu désamorces avec humour et tu passes à autre chose"],sigs:["Autorité naturelle — tu assumes sans procrastiner.","Intelligence émotionnelle — tu décides après avoir entendu.","Pensée systémique — tu règles le fond, pas la forme.","Leadership culturel — tu maintienis la cohésion par l'ambiance."],sc:['#ff8060','#6ddba0','#7ab8f0','#d4fb6b'],sb:['rgba(255,83,33,0.1)','rgba(29,158,117,0.1)','rgba(55,138,221,0.1)','rgba(179,247,11,0.08)']},
+  {t:'n',bg:'#0e0a0a',who:'NARRATEUR',wc:'rgba(239,159,39,0.7)',txt:"14h. Le client appelle. Il a appris le retard par son propre réseau. Il est mécontent et parle de pénalités contractuelles.",chars:[{l:'Toi',x:50,hc:'#D4A876',bc:'#2a1a10',s:58}]},
+  {t:'d',di:2,sit:'Client mécontent',ctx:"Le client est en ligne. Il est en colère. Tu dois répondre maintenant.",q:"Comment tu gères cet appel ?",opts:["Tu exposes les faits et proposes un plan de rattrapage","Tu t'excuses et demandes du temps pour te retourner","Tu contestes les pénalités et rappelles le contrat","Tu promets de rattraper sans donner de détails"],sigs:["Professionnalisme sous pression — tu contrôles le récit.","Prudence — tu préfères promettre moins pour tenir plus.","Fermeté contractuelle — tu défends sans céder à l'émotion.","Optimisme commercial — tu rassures d'abord."],sc:['#6ddba0','#7ab8f0','#ff8060','#f5c040'],sb:['rgba(29,158,117,0.1)','rgba(55,138,221,0.1)','rgba(255,83,33,0.1)','rgba(239,159,39,0.1)']},
+  {t:'n',bg:'#080810',who:'NARRATEUR',wc:'rgba(239,159,39,0.7)',txt:"17h30. Tu as rattrapé 1h30. L'équipe est fatiguée. Karim attend ton mot de fin de journée.",chars:[{l:'Équipe',x:40,hc:'#A08060',bc:'#1a1a2e',s:56},{l:'Toi',x:70,hc:'#D4A876',bc:'#2a1a10',s:48}]},
+  {t:'d',di:3,sit:'Fin de journée',ctx:"L'équipe te regarde. Karim attend. C'est ta dernière prise de parole.",q:"Ce que tu dis pour finir la journée ?",opts:['"Bien joué à tous. On a tenu malgré les imprévus."','"Demain on reprend tôt, on doit encore rattraper."','"On analyse ce qui s\'est passé pour ne pas recommencer."','"Chacun mérite une prime si on livre à temps."'],sigs:["Leadership positif — tu reconnais l'effort avant les objectifs.","Orientation résultat — tu maintiens la pression, profil exigeant.","Culture apprenante — tu transformes l'erreur en ressource.","Pragmatisme — tu motives par les leviers matériels."],sc:['#d4fb6b','#ff8060','#7ab8f0','#f5c040'],sb:['rgba(179,247,11,0.08)','rgba(255,83,33,0.1)','rgba(55,138,221,0.1)','rgba(239,159,39,0.1)']}
+];
+
+var idx=0, choices=[];
+
+function show(id){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on');});
+  document.getElementById(id).classList.add('on');
+}
+
+function start(){idx=0;choices=[];render();}
+
+function next(){idx++;render();}
+
+function render(){
+  if(idx>=BEATS.length){buildEnd();show('v-end');return;}
+  var b=BEATS[idx];
+  if(b.t==='n') renderNarr(b);
+  else renderDec(b);
+}
+
+function renderNarr(b){
+  show('v-narration');
+  document.getElementById('narrBox').style.background=b.bg;
+  // Personnages
+  var sc=document.getElementById('narrScene');
+  sc.innerHTML='';
+  (b.chars||[]).forEach(function(c){
+    var hs=Math.round(c.s*0.5),bw=Math.round(c.s*0.72),bh=Math.round(c.s*0.58);
+    var el=document.createElement('div');
+    el.style.cssText='position:absolute;bottom:0;left:'+c.x+'%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;';
+    el.innerHTML='<div style="width:'+hs+'px;height:'+hs+'px;border-radius:50%;background:'+c.hc+';"></div>'
+      +'<div style="width:'+bw+'px;height:'+bh+'px;background:'+c.bc+';border-radius:8px 8px 0 0;margin-top:-1px;"></div>'
+      +'<div style="position:absolute;bottom:4px;font-size:9px;color:rgba(255,255,255,0.5);background:rgba(0,0,0,0.55);padding:1px 5px;border-radius:3px;white-space:nowrap;">'+c.l+'</div>';
+    sc.appendChild(el);
+  });
+  // Progress
+  document.getElementById('narrProg').style.width=(idx/(BEATS.length-1)*100)+'%';
+  // Texte
+  document.getElementById('narrWho').textContent=b.who;
+  document.getElementById('narrWho').style.color=b.wc;
+  document.getElementById('narrText').textContent=b.txt;
+  // Dots
+  var dots=document.getElementById('narrDots');
+  dots.innerHTML='';
+  BEATS.forEach(function(_,i){
+    var d=document.createElement('div');
+    d.className='nd'+(i<idx?' done':i===idx?' cur':'');
+    dots.appendChild(d);
+  });
+}
+
+function renderDec(b){
+  show('v-decision');
+  document.getElementById('decNum').textContent='DÉCISION '+(b.di+1)+' / 4';
+  document.getElementById('decCtx').textContent=b.ctx;
+  document.getElementById('decQ').textContent=b.q;
+  document.getElementById('decSignal').style.display='none';
+  document.getElementById('decNext').style.display='none';
+  var cont=document.getElementById('decOpts');
+  cont.innerHTML='';
+  b.opts.forEach(function(opt,i){
+    var el=document.createElement('div');
+    el.className='dec-opt';
+    el.innerHTML='<div class="dec-opt-l">'+['A','B','C','D'][i]+'</div><span class="dec-opt-txt">'+opt+'</span>';
+    el.addEventListener('click',function(){choose(el,i,b);});
+    cont.appendChild(el);
+  });
+}
+
+function choose(el,i,b){
+  document.querySelectorAll('.dec-opt').forEach(function(o){o.style.pointerEvents='none';});
+  el.classList.add('chosen');
+  choices.push({sit:b.sit,choice:b.opts[i],sig:b.sigs[i],sc:b.sc[i],sb:b.sb[i]});
+  var sig=document.getElementById('decSignal');
+  sig.style.display='block';
+  sig.style.background=b.sb[i];
+  sig.style.border='0.5px solid '+b.sc[i]+'55';
+  document.getElementById('dsLbl').style.color=b.sc[i];
+  document.getElementById('dsLbl').textContent='CE QUE ÇA DIT SUR TOI';
+  document.getElementById('dsTxt').textContent=b.sigs[i];
+  var btn=document.getElementById('decNext');
+  btn.style.display='block';
+  btn.style.background=b.di>=3?'var(--green)':'var(--amber)';
+  btn.style.color=b.di>=3?'#0a1200':'#1a1000';
+  btn.textContent=b.di>=3?'Voir mon résultat':'Continuer la scène';
+}
+
+function buildEnd(){
+  var html='';
+  choices.forEach(function(c,i){
+    html+='<div class="cc-item">'
+      +'<div class="cc-num">'+(i+1)+'</div>'
+      +'<div>'
+        +'<div class="cc-sit">'+c.sit+'</div>'
+        +'<div class="cc-choice">"'+c.choice.substring(0,55)+(c.choice.length>55?'...':'') +'"</div>'
+        +'<span class="cc-sig" style="background:'+c.sb+';color:'+c.sc+';border:0.5px solid '+c.sc+'33">'+c.sig.split('—')[0].trim()+'</span>'
+      +'</div>'
+    +'</div>';
+  });
+  document.getElementById('ccItems').innerHTML=html;
+  var titles=['Coordinateur direct','Leader analytique','Manager bienveillant','Stratège opérationnel'];
+  document.getElementById('endH1').textContent='Ton style naturel : '+titles[choices.length%titles.length]+'.';
+}
+</script>
+</body>
+</html>

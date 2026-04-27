@@ -1,0 +1,379 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-sans);}
+.phone{width:300px;margin:0 auto;background:#080810;border-radius:36px;overflow:hidden;border:6px solid #1a1a2e;}
+.sb{display:flex;justify-content:space-between;padding:10px 18px 0;}
+.sb span{font-size:11px;color:rgba(255,255,255,0.3);}
+.step{display:none;}.step.active{display:block;}
+
+/* STEP 1 : le face-à-face */
+.vs-header{padding:12px 16px 10px;display:flex;justify-content:space-between;align-items:center;}
+.vs-fmt{display:flex;align-items:center;gap:5px;}
+.vs-pip{width:6px;height:6px;border-radius:50%;background:#FF5321;}
+.vs-lbl{font-size:10px;color:rgba(255,83,33,0.7);font-weight:500;letter-spacing:0.05em;}
+.vs-xp{font-size:11px;color:#B3F70B;background:rgba(179,247,11,0.1);padding:3px 8px;border-radius:8px;}
+.vs-question{padding:0 16px 12px;font-size:15px;font-weight:500;color:#fff;line-height:1.35;text-align:center;}
+.vs-arena{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:0 16px;border-radius:14px;overflow:hidden;position:relative;}
+.vs-side{padding:14px 10px 12px;cursor:pointer;position:relative;transition:opacity 0.12s;}
+.vs-side:hover{opacity:0.88;}
+.vs-side-a{background:#1a0a28;}
+.vs-side-b{background:#0a1428;}
+.vs-divider{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;width:28px;height:28px;border-radius:50%;background:#080810;display:flex;align-items:center;justify-content:center;}
+.vs-div-txt{font-size:9px;font-weight:500;color:rgba(255,255,255,0.5);letter-spacing:0.05em;}
+.vs-scene{width:100%;height:90px;border-radius:10px;overflow:hidden;position:relative;margin-bottom:8px;}
+.vs-option-lbl{font-size:12px;font-weight:500;color:#fff;text-align:center;line-height:1.3;}
+.vs-option-sub{font-size:10px;color:rgba(255,255,255,0.3);text-align:center;margin-top:3px;}
+.vs-prog{height:2px;background:rgba(255,255,255,0.06);margin:10px 16px 0;}
+.vs-prog-fill{height:2px;background:#FF5321;width:33%;}
+.vs-hint{text-align:center;padding:8px;font-size:10px;color:rgba(255,255,255,0.2);}
+
+/* SCENES A/B */
+.scene-startup{background:#1a0f2e;position:absolute;inset:0;}
+.st-desk-row{position:absolute;bottom:0;left:0;right:0;height:30px;background:#100a1e;}
+.st-screens{position:absolute;bottom:24px;left:4px;right:4px;display:flex;gap:4px;justify-content:center;}
+.st-screen{width:22px;height:16px;background:#0a0518;border-radius:2px;border:1px solid #2a1a3a;}
+.st-people{position:absolute;bottom:28px;left:0;right:0;display:flex;justify-content:space-around;}
+.st-p{display:flex;flex-direction:column;align-items:center;gap:1px;}
+.st-head{width:10px;height:10px;border-radius:50%;}
+.st-body{width:12px;height:12px;border-radius:40% 40% 0 0;}
+.st-chaos{position:absolute;top:6px;right:6px;font-size:7px;color:rgba(117,0,184,0.5);}
+
+.scene-corp{background:#0a1420;position:absolute;inset:0;}
+.co-floor{position:absolute;bottom:0;left:0;right:0;height:20px;background:#06101a;}
+.co-building{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);width:60px;height:60px;background:#0d1e30;}
+.co-windows{position:absolute;inset:6px;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:2px;}
+.co-win{background:rgba(55,138,221,0.12);border-radius:1px;}
+.co-win.lit{background:rgba(55,138,221,0.35);}
+.co-flag{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:2px;height:10px;background:#1a3a5a;}
+
+.scene-solo{background:#0a0f1a;position:absolute;inset:0;}
+.sl-desk{position:absolute;bottom:0;left:0;right:0;height:22px;background:#060a12;}
+.sl-lamp{position:absolute;bottom:20px;right:8px;width:4px;height:22px;background:#1a2a3a;}
+.sl-lamp-head{position:absolute;bottom:38px;right:4px;width:12px;height:6px;background:#1e3a5a;border-radius:50% 50% 0 0;}
+.sl-glow{position:absolute;bottom:18px;right:0;width:40px;height:30px;border-radius:50%;background:rgba(55,138,221,0.06);}
+.sl-person{position:absolute;bottom:20px;left:50%;transform:translateX(-60%);width:22px;height:30px;}
+.sl-head{width:14px;height:14px;border-radius:50%;background:#c8956c;margin:0 auto;}
+.sl-body{width:20px;height:16px;background:#0d1e30;border-radius:40% 40% 0 0;margin:0 auto;}
+.sl-screen-s{position:absolute;bottom:20px;left:4px;width:28px;height:18px;background:#050a14;border-radius:2px;border:1px solid #1a2a3a;}
+
+.scene-team{background:#0f1a0f;position:absolute;inset:0;}
+.tm-table{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);width:56px;height:14px;background:#0a1a0a;border-radius:3px;}
+.tm-people{position:absolute;bottom:28px;left:0;right:0;display:flex;justify-content:space-around;padding:0 4px;}
+.tm-p{display:flex;flex-direction:column;align-items:center;gap:1px;}
+.tm-h{width:10px;height:10px;border-radius:50%;}
+.tm-b{width:12px;height:10px;border-radius:40% 40% 0 0;}
+
+/* FEEDBACK */
+.vs-feedback{padding:16px;}
+.vf-winner{text-align:center;margin-bottom:14px;}
+.vf-chose{font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:6px;}
+.vf-choice-name{font-size:18px;font-weight:500;color:#fff;}
+.vf-bars{background:rgba(255,255,255,0.04);border-radius:12px;padding:12px 14px;margin-bottom:12px;}
+.vf-bar-lbl{font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:0.07em;margin-bottom:8px;}
+.vf-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.vf-row:last-child{margin-bottom:0;}
+.vf-opt-lbl{font-size:12px;color:rgba(255,255,255,0.5);width:70px;flex-shrink:0;line-height:1.3;}
+.vf-track{flex:1;height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;}
+.vf-fill{height:8px;border-radius:4px;transition:width 0.6s;}
+.vf-pct{font-size:12px;font-weight:500;width:30px;text-align:right;flex-shrink:0;}
+.vf-insight-box{background:rgba(255,83,33,0.08);border:0.5px solid rgba(255,83,33,0.2);border-radius:10px;padding:10px 12px;margin-bottom:12px;}
+.vfi-lbl{font-size:9px;color:rgba(255,83,33,0.6);letter-spacing:0.07em;margin-bottom:4px;}
+.vfi-txt{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;}
+.vf-why-label{font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:7px;}
+.vf-why-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.why-tag{padding:6px 12px;border-radius:20px;font-size:12px;border:0.5px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.45);cursor:pointer;transition:all 0.12s;}
+.why-tag.sel{background:rgba(255,83,33,0.15);border-color:rgba(255,83,33,0.4);color:rgba(255,83,33,0.9);}
+.vs-next-btn{width:100%;background:#FF5321;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;}
+
+/* END */
+.vs-end{padding:20px 16px;text-align:center;}
+.ve-xp{font-size:36px;font-weight:500;color:#B3F70B;}
+.ve-lbl{font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:18px;}
+.ve-profile{background:rgba(255,83,33,0.08);border:0.5px solid rgba(255,83,33,0.2);border-radius:12px;padding:12px 14px;margin-bottom:16px;text-align:left;}
+.ve-p-lbl{font-size:9px;color:rgba(255,83,33,0.5);letter-spacing:0.07em;margin-bottom:8px;}
+.ve-dim{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.ve-dname{font-size:12px;color:rgba(255,255,255,0.5);flex:1;}
+.ve-bar{width:80px;height:4px;background:rgba(255,255,255,0.05);border-radius:2px;}
+.ve-bfill{height:4px;border-radius:2px;background:#FF5321;}
+.ve-delta{font-size:11px;color:#B3F70B;}
+.ve-btns{display:flex;flex-direction:column;gap:8px;}
+.ve-btn-main{background:#FF5321;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;width:100%;}
+.ve-btn-sec{background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px;font-size:13px;color:rgba(255,255,255,0.4);cursor:pointer;width:100%;}
+</style>
+
+<h2 class="sr-only">Prototype interactif du format VERSUS — duel visuel A contre B avec preuve sociale et tags de raison</h2>
+
+<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:16px;">
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+
+  <!-- VERSUS 1 : startup vs grande boite -->
+  <div class="step active" id="v1">
+    <div class="vs-header">
+      <div class="vs-fmt"><div class="vs-pip"></div><span class="vs-lbl">VERSUS · 1/3</span></div>
+      <div class="vs-xp">+8 XP</div>
+    </div>
+    <div class="vs-question">Pour bosser, t'es plutôt quel profil ?</div>
+    <div class="vs-arena">
+      <div class="vs-side vs-side-a" onclick="choose('v1','a')">
+        <div class="vs-scene">
+          <div class="scene-startup">
+            <div class="st-desk-row"></div>
+            <div class="st-screens"><div class="st-screen"></div><div class="st-screen"></div><div class="st-screen"></div></div>
+            <div class="st-people">
+              <div class="st-p"><div class="st-head" style="background:#c8956c"></div><div class="st-body" style="background:#3a1a5a"></div></div>
+              <div class="st-p"><div class="st-head" style="background:#8B6B4A"></div><div class="st-body" style="background:#2a1a4a"></div></div>
+              <div class="st-p"><div class="st-head" style="background:#D4A876"></div><div class="st-body" style="background:#3a2a5a"></div></div>
+            </div>
+            <div class="st-chaos">✦ ✦</div>
+          </div>
+        </div>
+        <div class="vs-option-lbl">Startup chaotique</div>
+        <div class="vs-option-sub">Tout à construire</div>
+      </div>
+      <div class="vs-divider"><span class="vs-div-txt">VS</span></div>
+      <div class="vs-side vs-side-b" onclick="choose('v1','b')">
+        <div class="vs-scene">
+          <div class="scene-corp">
+            <div class="co-floor"></div>
+            <div class="co-building">
+              <div class="co-windows">
+                <div class="co-win lit"></div><div class="co-win"></div><div class="co-win lit"></div>
+                <div class="co-win"></div><div class="co-win lit"></div><div class="co-win"></div>
+                <div class="co-win lit"></div><div class="co-win"></div><div class="co-win lit"></div>
+              </div>
+            </div>
+            <div class="co-flag"></div>
+          </div>
+        </div>
+        <div class="vs-option-lbl">Grande boite stable</div>
+        <div class="vs-option-sub">Structure et ressources</div>
+      </div>
+    </div>
+    <div class="vs-prog"><div class="vs-prog-fill"></div></div>
+    <div class="vs-hint">Tape pour choisir</div>
+  </div>
+
+  <!-- VERSUS 2 : solo vs équipe -->
+  <div class="step" id="v2">
+    <div class="vs-header">
+      <div class="vs-fmt"><div class="vs-pip"></div><span class="vs-lbl">VERSUS · 2/3</span></div>
+      <div class="vs-xp">+8 XP</div>
+    </div>
+    <div class="vs-question">Résoudre un problème, tu préfères comment ?</div>
+    <div class="vs-arena">
+      <div class="vs-side vs-side-a" onclick="choose('v2','a')">
+        <div class="vs-scene">
+          <div class="scene-solo">
+            <div class="sl-desk"></div>
+            <div class="sl-lamp"></div><div class="sl-lamp-head"></div>
+            <div class="sl-glow"></div>
+            <div class="sl-screen-s"></div>
+            <div class="sl-person"><div class="sl-head"></div><div class="sl-body"></div></div>
+          </div>
+        </div>
+        <div class="vs-option-lbl">Seul, concentré</div>
+        <div class="vs-option-sub">Dans ma tête</div>
+      </div>
+      <div class="vs-divider"><span class="vs-div-txt">VS</span></div>
+      <div class="vs-side vs-side-b" onclick="choose('v2','b')">
+        <div class="vs-scene">
+          <div class="scene-team">
+            <div class="tm-table"></div>
+            <div class="tm-people">
+              <div class="tm-p"><div class="tm-h" style="background:#c8956c"></div><div class="tm-b" style="background:#0f2a0f"></div></div>
+              <div class="tm-p"><div class="tm-h" style="background:#8B6B4A"></div><div class="tm-b" style="background:#0d1e0d"></div></div>
+              <div class="tm-p"><div class="tm-h" style="background:#D4A876"></div><div class="tm-b" style="background:#122212"></div></div>
+              <div class="tm-p"><div class="tm-h" style="background:#c8796c"></div><div class="tm-b" style="background:#0f2a0f"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="vs-option-lbl">En équipe</div>
+        <div class="vs-option-sub">On brainstorme</div>
+      </div>
+    </div>
+    <div class="vs-prog"><div class="vs-prog-fill" style="width:66%"></div></div>
+    <div class="vs-hint">Tape pour choisir</div>
+  </div>
+
+  <!-- FEEDBACK 1 -->
+  <div class="step" id="fb_v1a">
+    <div class="vs-feedback">
+      <div class="vf-winner">
+        <div class="vf-chose">Tu as choisi</div>
+        <div class="vf-choice-name">Startup chaotique</div>
+      </div>
+      <div class="vf-bars">
+        <div class="vf-bar-lbl">LES AUTRES ONT VOTÉ</div>
+        <div class="vf-row">
+          <span class="vf-opt-lbl">Startup</span>
+          <div class="vf-track"><div class="vf-fill" style="width:43%;background:#7500B8"></div></div>
+          <span class="vf-pct" style="color:#7500B8">43%</span>
+        </div>
+        <div class="vf-row">
+          <span class="vf-opt-lbl">Grande boite</span>
+          <div class="vf-track"><div class="vf-fill" style="width:57%;background:#378ADD"></div></div>
+          <span class="vf-pct" style="color:#378ADD">57%</span>
+        </div>
+      </div>
+      <div class="vf-insight-box">
+        <div class="vfi-lbl">CE QUE ÇA DIT SUR TOI</div>
+        <div class="vfi-txt">Tu es à l'aise avec l'ambiguïté et tu cherches à créer. Signal fort sur l'autonomie et l'appétit pour le risque.</div>
+      </div>
+      <div class="vf-why-label">Pourquoi t'as choisi ça ?</div>
+      <div class="vf-why-tags">
+        <div class="why-tag" onclick="selTag(this)">J'aime créer</div>
+        <div class="why-tag" onclick="selTag(this)">La liberté</div>
+        <div class="why-tag" onclick="selTag(this)">Apprendre vite</div>
+        <div class="why-tag" onclick="selTag(this)">Pas de routine</div>
+      </div>
+      <button class="vs-next-btn" onclick="go('v2')">Versus suivant</button>
+    </div>
+  </div>
+
+  <div class="step" id="fb_v1b">
+    <div class="vs-feedback">
+      <div class="vf-winner">
+        <div class="vf-chose">Tu as choisi</div>
+        <div class="vf-choice-name">Grande boite stable</div>
+      </div>
+      <div class="vf-bars">
+        <div class="vf-bar-lbl">LES AUTRES ONT VOTÉ</div>
+        <div class="vf-row">
+          <span class="vf-opt-lbl">Startup</span>
+          <div class="vf-track"><div class="vf-fill" style="width:43%;background:#7500B8"></div></div>
+          <span class="vf-pct" style="color:#7500B8">43%</span>
+        </div>
+        <div class="vf-row">
+          <span class="vf-opt-lbl">Grande boite</span>
+          <div class="vf-track"><div class="vf-fill" style="width:57%;background:#378ADD"></div></div>
+          <span class="vf-pct" style="color:#378ADD">57%</span>
+        </div>
+      </div>
+      <div class="vf-insight-box">
+        <div class="vfi-lbl">CE QUE ÇA DIT SUR TOI</div>
+        <div class="vfi-txt">Tu valorises la structure et les ressources. Ça parle d'un besoin de stabilité et de progresser dans un cadre clair.</div>
+      </div>
+      <div class="vf-why-label">Pourquoi t'as choisi ça ?</div>
+      <div class="vf-why-tags">
+        <div class="why-tag" onclick="selTag(this)">La sécurité</div>
+        <div class="why-tag" onclick="selTag(this)">Les ressources</div>
+        <div class="why-tag" onclick="selTag(this)">Évoluer vite</div>
+        <div class="why-tag" onclick="selTag(this)">La réputation</div>
+      </div>
+      <button class="vs-next-btn" onclick="go('v2')">Versus suivant</button>
+    </div>
+  </div>
+
+  <div class="step" id="fb_v2a">
+    <div class="vs-feedback">
+      <div class="vf-winner">
+        <div class="vf-chose">Tu as choisi</div>
+        <div class="vf-choice-name">Seul, concentré</div>
+      </div>
+      <div class="vf-bars">
+        <div class="vf-bar-lbl">LES AUTRES ONT VOTÉ</div>
+        <div class="vf-row">
+          <span class="vf-opt-lbl">Solo</span>
+          <div class="vf-track"><div class="vf-fill" style="width:38%;background:#7500B8"></div></div>
+          <span class="vf-pct" style="color:#7500B8">38%</span>
+        </div>
+        <div class="vf-row">
+          <span class="vf-opt-lbl">Équipe</span>
+          <div class="vf-track"><div class="vf-fill" style="width:62%;background:#30B870"></div></div>
+          <span class="vf-pct" style="color:#30B870">62%</span>
+        </div>
+      </div>
+      <div class="vf-insight-box">
+        <div class="vfi-lbl">CE QUE ÇA DIT SUR TOI</div>
+        <div class="vfi-txt">Tu travailles mieux dans la profondeur que dans le bruit. Signal d'autonomie forte et de pensée analytique.</div>
+      </div>
+      <div class="vf-why-label">Pourquoi t'as choisi ça ?</div>
+      <div class="vf-why-tags">
+        <div class="why-tag" onclick="selTag(this)">Je me concentre mieux</div>
+        <div class="why-tag" onclick="selTag(this)">Moins de bruit</div>
+        <div class="why-tag" onclick="selTag(this)">Je vais plus vite</div>
+      </div>
+      <button class="vs-next-btn" onclick="go('vs_end')">Voir mon résultat</button>
+    </div>
+  </div>
+
+  <div class="step" id="fb_v2b">
+    <div class="vs-feedback">
+      <div class="vf-winner">
+        <div class="vf-chose">Tu as choisi</div>
+        <div class="vf-choice-name">En équipe</div>
+      </div>
+      <div class="vf-bars">
+        <div class="vf-bar-lbl">LES AUTRES ONT VOTÉ</div>
+        <div class="vf-row">
+          <span class="vf-opt-lbl">Solo</span>
+          <div class="vf-track"><div class="vf-fill" style="width:38%;background:#7500B8"></div></div>
+          <span class="vf-pct" style="color:#7500B8">38%</span>
+        </div>
+        <div class="vf-row">
+          <span class="vf-opt-lbl">Équipe</span>
+          <div class="vf-track"><div class="vf-fill" style="width:62%;background:#30B870"></div></div>
+          <span class="vf-pct" style="color:#30B870">62%</span>
+        </div>
+      </div>
+      <div class="vf-insight-box">
+        <div class="vfi-lbl">CE QUE ÇA DIT SUR TOI</div>
+        <div class="vfi-txt">Tu génères mieux tes idées dans l'échange. Signal fort de collaboration et d'intelligence collective.</div>
+      </div>
+      <div class="vf-why-label">Pourquoi t'as choisi ça ?</div>
+      <div class="vf-why-tags">
+        <div class="why-tag" onclick="selTag(this)">Les autres m'inspirent</div>
+        <div class="why-tag" onclick="selTag(this)">Plus créatif ensemble</div>
+        <div class="why-tag" onclick="selTag(this)">Je déteste être seul</div>
+      </div>
+      <button class="vs-next-btn" onclick="go('vs_end')">Voir mon résultat</button>
+    </div>
+  </div>
+
+  <!-- END -->
+  <div class="step" id="vs_end">
+    <div class="vs-end">
+      <div class="ve-xp">+16 XP</div>
+      <div class="ve-lbl">2 versus complétés</div>
+      <div class="ve-profile">
+        <div class="ve-p-lbl">TON PROFIL MIS À JOUR</div>
+        <div class="ve-dim">
+          <span class="ve-dname">Mes envies</span>
+          <div class="ve-bar"><div class="ve-bfill" style="width:60%"></div></div>
+          <span class="ve-delta">+4</span>
+        </div>
+        <div class="ve-dim">
+          <span class="ve-dname">Mon background</span>
+          <div class="ve-bar"><div class="ve-bfill" style="width:45%"></div></div>
+          <span class="ve-delta">+3</span>
+        </div>
+        <div class="ve-dim">
+          <span class="ve-dname">Mes forces</span>
+          <div class="ve-bar"><div class="ve-bfill" style="width:35%"></div></div>
+          <span class="ve-delta">+2</span>
+        </div>
+      </div>
+      <div class="ve-btns">
+        <button class="ve-btn-main" onclick="go('v1')">Rejouer</button>
+        <button class="ve-btn-sec">Retour au feed</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+}
+function choose(vsId, side){
+  go('fb_'+vsId+side);
+}
+function selTag(el){
+  el.parentNode.querySelectorAll('.why-tag').forEach(function(t){t.classList.remove('sel');});
+  el.classList.add('sel');
+}
+</script>

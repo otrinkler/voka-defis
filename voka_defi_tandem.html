@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VOKA — TANDEM</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --purple:#7500B8;--green:#B3F70B;--orange:#FF5321;--blue:#378ADD;--teal:#1D9E75;--amber:#EF9F27;
+  --bg:#080810;--bg2:#0f0f1e;
+  --w:#fff;--w7:rgba(255,255,255,0.7);--w6:rgba(255,255,255,0.6);
+  --w5:rgba(255,255,255,0.5);--w4:rgba(255,255,255,0.4);
+  --w2:rgba(255,255,255,0.12);--w1:rgba(255,255,255,0.06);
+}
+body{background:#111;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px;}
+.phone{width:390px;min-height:844px;background:var(--bg);border-radius:48px;overflow:hidden;border:7px solid #1e1e2e;position:relative;display:flex;flex-direction:column;}
+.sb{display:flex;justify-content:space-between;padding:12px 22px 0;font-size:12px;color:var(--w4);flex-shrink:0;}
+.step{display:none;flex-direction:column;flex:1;}
+.step.active{display:flex;}
+
+/* ═══════ INTRO ═══════ */
+.intro-hero{height:190px;position:relative;overflow:hidden;flex-shrink:0;background:#080f18;}
+.ih-deco{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;gap:40px;padding-bottom:14px;}
+.ih-person{display:flex;flex-direction:column;align-items:center;}
+.ih-head{border-radius:50%;}
+.ih-body{border-radius:8px 8px 0 0;margin-top:-2px;}
+.ih-arrow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:6px;}
+.ih-glow-l{position:absolute;width:130px;height:130px;border-radius:50%;background:var(--blue);filter:blur(28px);opacity:0.2;top:20%;left:15%;}
+.ih-glow-r{position:absolute;width:110px;height:110px;border-radius:50%;background:var(--teal);filter:blur(24px);opacity:0.2;top:25%;right:12%;}
+.ih-grad{position:absolute;bottom:0;left:0;right:0;height:70px;background:linear-gradient(to top,var(--bg) 0%,transparent 100%);}
+.ih-badge{position:absolute;top:14px;left:16px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,0.6);border:0.5px solid rgba(55,138,221,0.4);border-radius:10px;padding:5px 11px;}
+.ihb-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);}
+.ihb-txt{font-size:10px;color:#7ab8f0;font-weight:500;letter-spacing:0.04em;}
+.ih-xp{position:absolute;top:14px;right:16px;font-size:11px;color:var(--green);background:rgba(179,247,11,0.1);border:0.5px solid rgba(179,247,11,0.2);padding:4px 10px;border-radius:8px;font-weight:500;}
+
+.intro-body{padding:16px 20px 0;flex:1;}
+.ib-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(55,138,221,0.1);border:0.5px solid rgba(122,184,240,0.25);border-radius:6px;padding:3px 9px;margin-bottom:10px;}
+.ib-tag-txt{font-size:10px;color:#7ab8f0;font-weight:500;letter-spacing:0.04em;}
+.ib-title{font-size:21px;font-weight:500;color:var(--w);line-height:1.28;margin-bottom:8px;}
+.ib-sub{font-size:13px;color:var(--w6);line-height:1.6;margin-bottom:16px;}
+.rules{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;}
+.rule{display:flex;align-items:flex-start;gap:10px;background:var(--w1);border:0.5px solid var(--w2);border-radius:10px;padding:10px 12px;}
+.rule-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.rule-txt{font-size:12px;color:var(--w6);line-height:1.45;flex:1;}
+.rule-txt strong{color:var(--w);font-weight:500;}
+.intro-btn{margin:0 20px 20px;background:var(--blue);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:500;color:#fff;cursor:pointer;width:calc(100% - 40px);flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:8px;}
+
+/* ═══════ PROBLEM ═══════ */
+.problem-wrap{flex:1;display:flex;flex-direction:column;padding:14px 20px 0;}
+.pw-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-shrink:0;}
+.pw-title{font-size:15px;font-weight:500;color:var(--w);}
+.timer-pill{display:flex;align-items:center;gap:6px;background:rgba(55,138,221,0.1);border:0.5px solid rgba(122,184,240,0.2);border-radius:20px;padding:5px 12px;}
+.tp-svg{width:20px;height:20px;transform:rotate(-90deg);}
+.tp-track{fill:none;stroke:rgba(255,255,255,0.1);stroke-width:2.5;}
+.tp-fill{fill:none;stroke:var(--blue);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:56.5;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke 0.3s;}
+.tp-val{font-size:13px;font-weight:500;color:var(--w);min-width:28px;}
+
+/* Partenaire -->
+.partner-row{display:flex;align-items:center;gap:10px;background:var(--bg2);border-radius:12px;padding:10px 12px;border:0.5px solid var(--w2);margin-bottom:12px;flex-shrink:0;}
+.pr-avs{display:flex;align-items:center;}
+.pr-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;border:2px solid var(--bg);}
+.pr-link{font-size:16px;color:var(--w4);margin:0 4px;}
+.pr-info{flex:1;}
+.pr-label{font-size:11px;color:var(--w5);margin-bottom:1px;}
+.pr-names{font-size:13px;font-weight:500;color:var(--w);}
+.pr-status{font-size:10px;color:#7ab8f0;background:rgba(55,138,221,0.1);padding:2px 7px;border-radius:5px;}
+
+/* Problème card */
+.problem-card{background:rgba(55,138,221,0.07);border:0.5px solid rgba(122,184,240,0.18);border-radius:14px;padding:14px;margin-bottom:12px;flex-shrink:0;}
+.pc-lbl{font-size:10px;color:#7ab8f0;letter-spacing:0.07em;font-weight:500;margin-bottom:6px;}
+.pc-title{font-size:16px;font-weight:500;color:var(--w);line-height:1.3;margin-bottom:8px;}
+.pc-context{font-size:12px;color:var(--w6);line-height:1.55;margin-bottom:10px;}
+.pc-constraints{display:flex;flex-direction:column;gap:5px;}
+.pc-constraint{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--w5);}
+.pcc-dot{width:5px;height:5px;border-radius:50%;background:var(--orange);flex-shrink:0;}
+
+/* Zone de travail collaboratif */
+.work-zone{flex:1;background:var(--bg2);border-radius:14px;border:0.5px solid var(--w2);overflow:hidden;display:flex;flex-direction:column;margin-bottom:10px;}
+.wz-tabs{display:flex;border-bottom:0.5px solid var(--w2);}
+.wz-tab{flex:1;padding:9px;font-size:11px;font-weight:500;text-align:center;cursor:pointer;color:var(--w4);transition:all 0.15s;}
+.wz-tab.active{color:var(--blue);border-bottom:2px solid var(--blue);}
+.wz-content{flex:1;padding:12px;display:none;flex-direction:column;gap:8px;overflow-y:auto;}
+.wz-content.active{display:flex;}
+
+/* Actions collaboratives */
+.action-item{display:flex;align-items:flex-start;gap:8px;background:var(--w1);border-radius:9px;padding:9px 11px;border:0.5px solid var(--w2);}
+.ai-who{width:20px;height:20px;border-radius:50%;font-size:9px;font-weight:600;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.ai-txt{font-size:12px;color:var(--w6);line-height:1.45;flex:1;}
+.ai-txt strong{color:var(--w);font-weight:500;}
+.ai-time{font-size:10px;color:var(--w4);flex-shrink:0;}
+
+/* Input collaboratif */
+.collab-input-row{display:flex;gap:7px;padding:10px 12px;border-top:0.5px solid var(--w2);flex-shrink:0;}
+.ci-field{flex:1;background:var(--w1);border:0.5px solid var(--w2);border-radius:9px;padding:9px 12px;font-size:13px;color:var(--w);font-family:inherit;}
+.ci-field::placeholder{color:var(--w4);}
+.ci-send{background:var(--blue);border:none;border-radius:9px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+
+/* Actions pré-définies */
+.quick-actions{padding:10px;display:flex;flex-direction:column;gap:6px;}
+.qa-item{background:var(--w1);border:0.5px solid var(--w2);border-radius:9px;padding:10px 12px;cursor:pointer;font-size:12px;color:var(--w6);transition:all 0.12s;text-align:left;}
+.qa-item:hover{background:rgba(55,138,221,0.08);color:var(--w);}
+.qa-item.used{opacity:0.4;pointer-events:none;}
+
+/* Notification partenaire */
+.partner-notif{background:rgba(29,158,117,0.1);border:0.5px solid rgba(109,219,160,0.25);border-radius:8px;padding:8px 12px;font-size:12px;color:#6ddba0;display:none;flex-shrink:0;margin-bottom:8px;}
+
+.submit-btn{width:100%;background:var(--blue);border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;flex-shrink:0;display:none;}
+
+/* ═══════ AUTO-DESCRIPTION ═══════ */
+.autodesc-wrap{flex:1;display:flex;flex-direction:column;padding:16px 20px 0;}
+.ad-title{font-size:18px;font-weight:500;color:var(--w);margin-bottom:6px;flex-shrink:0;}
+.ad-sub{font-size:13px;color:var(--w6);line-height:1.6;margin-bottom:16px;flex-shrink:0;}
+.role-options{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;flex-shrink:0;}
+.ro-item{display:flex;align-items:flex-start;gap:10px;background:var(--w1);border:0.5px solid var(--w2);border-radius:12px;padding:12px 13px;cursor:pointer;transition:all 0.15s;}
+.ro-item.selected{background:rgba(55,138,221,0.1);border-color:rgba(122,184,240,0.35);}
+.ro-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.ro-info{flex:1;}
+.ro-name{font-size:13px;font-weight:500;color:var(--w);margin-bottom:2px;}
+.ro-desc{font-size:11px;color:var(--w5);line-height:1.4;}
+.ro-check{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--w2);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;}
+.ro-item.selected .ro-check{background:var(--blue);border-color:var(--blue);}
+.autodesc-next{width:100%;background:var(--blue);border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;margin-top:auto;margin-bottom:20px;flex-shrink:0;display:none;}
+
+/* ═══════ RÉSULTAT ═══════ */
+.end-wrap{flex:1;display:flex;flex-direction:column;padding:22px 20px;}
+.end-problem-recap{background:var(--bg2);border-radius:12px;padding:12px 14px;border:0.5px solid var(--w2);margin-bottom:14px;}
+.epr-lbl{font-size:10px;color:rgba(255,255,255,0.55);letter-spacing:0.07em;margin-bottom:5px;font-weight:500;}
+.epr-title{font-size:14px;font-weight:500;color:var(--w);}
+.collab-score{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.cs-item{background:var(--bg2);border-radius:11px;padding:11px;text-align:center;border:0.5px solid var(--w2);}
+.csi-val{font-size:22px;font-weight:300;color:var(--w);}
+.csi-lbl{font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;line-height:1.3;}
+.roles-reveal{background:rgba(55,138,221,0.07);border:0.5px solid rgba(122,184,240,0.15);border-radius:12px;padding:12px 14px;margin-bottom:14px;}
+.rr-lbl{font-size:10px;color:#7ab8f0;letter-spacing:0.07em;font-weight:500;margin-bottom:10px;}
+.rr-persons{display:flex;flex-direction:column;gap:8px;}
+.rr-person{display:flex;align-items:center;gap:9px;}
+.rrp-av{width:32px;height:32px;border-radius:50%;font-size:12px;font-weight:600;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.rrp-info{flex:1;}
+.rrp-name{font-size:12px;font-weight:500;color:var(--w);}
+.rrp-role{font-size:11px;color:rgba(255,255,255,0.6);}
+.rrp-badge{font-size:10px;padding:2px 8px;border-radius:5px;font-weight:500;flex-shrink:0;}
+.signal-box{background:rgba(117,0,184,0.07);border:0.5px solid rgba(179,147,230,0.15);border-radius:12px;padding:12px 14px;margin-bottom:14px;}
+.sb-lbl{font-size:10px;color:#c98ff0;letter-spacing:0.07em;font-weight:500;margin-bottom:8px;}
+.sb-dims{display:flex;flex-direction:column;gap:6px;}
+.sbd-row{display:flex;align-items:center;gap:8px;}
+.sbd-name{font-size:11px;color:rgba(255,255,255,0.65);width:110px;flex-shrink:0;}
+.sbd-bar{flex:1;height:4px;background:var(--w1);border-radius:2px;overflow:hidden;}
+.sbd-fill{height:4px;border-radius:2px;transition:width 0.8s ease;}
+.sbd-delta{font-size:11px;font-weight:500;color:var(--green);width:24px;text-align:right;flex-shrink:0;}
+.end-xp{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.exv{font-size:34px;font-weight:300;color:var(--green);}
+.exl{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5;}
+.end-btns{display:flex;flex-direction:column;gap:7px;margin-top:auto;}
+.btn-m{border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;cursor:pointer;background:var(--blue);color:#fff;}
+.btn-s{background:var(--w1);border:0.5px solid var(--w2);border-radius:13px;padding:11px;font-size:13px;color:rgba(255,255,255,0.65);cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+
+<!-- ═══════ INTRO ═══════ -->
+<div class="step active" id="s-intro">
+  <div class="intro-hero">
+    <div class="ih-glow-l"></div>
+    <div class="ih-glow-r"></div>
+    <div class="ih-deco">
+      <div class="ih-person">
+        <div class="ih-head" style="width:36px;height:38px;background:#D4A876;"></div>
+        <div class="ih-body" style="width:52px;height:50px;background:#0e1828;"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding-bottom:20px;">
+        <svg width="28" height="14" viewBox="0 0 28 14" fill="none"><path d="M2 7h24M18 2l6 5-6 5" stroke="rgba(55,138,221,0.6)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 2L4 7l6 5" stroke="rgba(29,158,117,0.6)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span style="font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:0.06em;">TANDEM</span>
+      </div>
+      <div class="ih-person">
+        <div class="ih-head" style="width:34px;height:36px;background:#8B6040;"></div>
+        <div class="ih-body" style="width:50px;height:48px;background:#0a1a10;"></div>
+      </div>
+    </div>
+    <div class="ih-grad"></div>
+    <div class="ih-badge"><div class="ihb-dot"></div><span class="ihb-txt">TANDEM · 10 min</span></div>
+    <div class="ih-xp">+25 XP</div>
+  </div>
+  <div class="intro-body">
+    <div class="ib-tag"><span class="ib-tag-txt">MES FORCES · MES EXPÉRIENCES</span></div>
+    <div class="ib-title">Un problème à résoudre ensemble. Sans se répartir les tâches à l'avance.</div>
+    <div class="ib-sub">Vous recevez le même problème simultanément. Comment vous vous organisez spontanément révèle vos rôles naturels.</div>
+    <div class="rules">
+      <div class="rule">
+        <div class="rule-icon" style="background:rgba(55,138,221,0.1);border:0.5px solid rgba(122,184,240,0.15);">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2v10" stroke="#7ab8f0" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <div class="rule-txt"><strong>Pas de répartition préalable</strong> — vous décidez ensemble comment attaquer le problème</div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon" style="background:rgba(29,158,117,0.1);border:0.5px solid rgba(109,219,160,0.15);">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="2.5" stroke="#6ddba0" stroke-width="1.3"/><path d="M2 12c0-2.5 2.2-4 5-4s5 1.5 5 4" stroke="#6ddba0" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        <div class="rule-txt"><strong>10 minutes</strong> — produire une décision ou un plan en 3 points, ensemble</div>
+      </div>
+      <div class="rule">
+        <div class="rule-icon" style="background:rgba(179,247,11,0.08);border:0.5px solid rgba(179,247,11,0.12);">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 9l3-4 2 2.5 2-3L12 9" stroke="#B3F70B" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="rule-txt"><strong>Signal croisé</strong> — chacun décrit son rôle après. La corrélation révèle la dynamique</div>
+      </div>
+    </div>
+  </div>
+  <button class="intro-btn" onclick="goStep('s-problem');startTimer()">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 2l7 5-7 5V2z" fill="white"/></svg>
+    Démarrer le TANDEM
+  </button>
+</div>
+
+<!-- ═══════ PROBLÈME ═══════ -->
+<div class="step" id="s-problem">
+  <div class="problem-wrap">
+
+    <div class="pw-hdr">
+      <div class="pw-title">Mission collective</div>
+      <div class="timer-pill">
+        <svg class="tp-svg" viewBox="0 0 20 20"><circle class="tp-track" cx="10" cy="10" r="9"/><circle class="tp-fill" id="tpFill" cx="10" cy="10" r="9"/></svg>
+        <span class="tp-val" id="tpVal">10:00</span>
+      </div>
+    </div>
+
+    <!-- Partenaire -->
+    <div class="partner-row">
+      <div class="pr-avs">
+        <div class="pr-av" style="background:rgba(212,83,126,0.35);border-color:var(--bg);">T</div>
+        <div class="pr-av" style="background:rgba(55,138,221,0.35);border-color:var(--bg);margin-left:-8px;">K</div>
+      </div>
+      <div class="pr-info">
+        <div class="pr-label">Avec</div>
+        <div class="pr-names">Toi × Karim B.</div>
+      </div>
+      <div class="pr-status">En ligne</div>
+    </div>
+
+    <!-- Problème -->
+    <div class="problem-card">
+      <div class="pc-lbl">VOTRE MISSION</div>
+      <div class="pc-title">Planifier une mission humanitaire avec 500€ et 3 bénévoles pour une semaine.</div>
+      <div class="pc-context">Une association vous contacte en urgence. Elle dispose de 500€, 3 bénévoles disponibles une semaine, et doit intervenir dans une zone sinistrée à 200km. Elle a besoin d'un plan d'action concret.</div>
+      <div class="pc-constraints">
+        <div class="pc-constraint"><div class="pcc-dot"></div>Budget fixe : 500€ non négociable</div>
+        <div class="pc-constraint"><div class="pcc-dot"></div>3 bénévoles · 1 semaine · 200km</div>
+        <div class="pc-constraint"><div class="pcc-dot"></div>Livrable : plan en 3 priorités</div>
+      </div>
+    </div>
+
+    <!-- Zone travail -->
+    <div class="work-zone">
+      <div class="wz-tabs">
+        <div class="wz-tab active" onclick="switchTab(this,'actions')">Actions</div>
+        <div class="wz-tab" onclick="switchTab(this,'budget')">Budget</div>
+        <div class="wz-tab" onclick="switchTab(this,'plan')">Plan final</div>
+      </div>
+      <div class="wz-content active" id="tab-actions">
+        <div class="action-item" id="action-start">
+          <div class="ai-who" style="background:var(--blue)">K</div>
+          <div class="ai-txt"><strong>Karim</strong> a rejoint la session. Il lit le problème...</div>
+          <div class="ai-time">00:00</div>
+        </div>
+        <div class="quick-actions" id="quickActions">
+          <div class="qa-item" onclick="doAction(this,'propose','Je propose qu\'on commence par lister ce qu\'on peut acheter avec 500€')">💡 Proposer de lister les besoins prioritaires</div>
+          <div class="qa-item" onclick="doAction(this,'question','Karim, tu penses qu\'on devrait prioriser le transport ou la nourriture ?')">❓ Questionner les priorités avec Karim</div>
+          <div class="qa-item" onclick="doAction(this,'lead','Je vais structurer le plan. Karim tu gères le budget ?')">🎯 Prendre le lead sur la structure</div>
+          <div class="qa-item" onclick="doAction(this,'support','Je suis ton approche Karim, dis-moi où je peux aider')">🤝 Soutenir l'approche de Karim</div>
+        </div>
+      </div>
+      <div class="wz-content" id="tab-budget">
+        <div class="action-item">
+          <div class="ai-who" style="background:var(--blue)">K</div>
+          <div class="ai-txt"><strong>Karim</strong> a proposé : Transport = 180€ · Nourriture = 200€ · Matériel = 120€</div>
+          <div class="ai-time">02:30</div>
+        </div>
+        <div class="quick-actions">
+          <div class="qa-item" onclick="doAction(this,'budget-ok','Je valide cette répartition. On peut réduire le matériel si besoin.')">✅ Valider la répartition de Karim</div>
+          <div class="qa-item" onclick="doAction(this,'budget-modify','Je modifierais plutôt : Transport 150€, garder 50€ de réserve.')">✏️ Modifier — garder une réserve</div>
+          <div class="qa-item" onclick="doAction(this,'budget-question','On a pensé aux frais imprévus ? Je suggère 10% de réserve.')">🔍 Signaler les imprévus</div>
+        </div>
+      </div>
+      <div class="wz-content" id="tab-plan">
+        <div class="action-item">
+          <div class="ai-who" style="background:var(--blue)">K</div>
+          <div class="ai-txt"><strong>Karim</strong> a rédigé une ébauche de plan. Il attend ta validation.</div>
+          <div class="ai-time">07:45</div>
+        </div>
+        <div id="planContent" style="display:flex;flex-direction:column;gap:6px;">
+          <div class="action-item">
+            <div class="ai-who" style="background:var(--teal)">1</div>
+            <div class="ai-txt">Transport et logistique (180€) — 2 bénévoles</div>
+            <div class="ai-time"></div>
+          </div>
+          <div class="action-item">
+            <div class="ai-who" style="background:var(--teal)">2</div>
+            <div class="ai-txt">Distribution alimentaire (200€) — 1 bénévole</div>
+            <div class="ai-time"></div>
+          </div>
+          <div class="action-item">
+            <div class="ai-who" style="background:var(--teal)">3</div>
+            <div class="ai-txt">Matériel d'urgence (120€) — à partager</div>
+            <div class="ai-time"></div>
+          </div>
+        </div>
+        <div class="quick-actions" style="padding-top:0;">
+          <div class="qa-item" onclick="doAction(this,'plan-ok','Plan validé. Je confirme notre livrable.');showSubmit()">✅ Valider le plan final</div>
+          <div class="qa-item" onclick="doAction(this,'plan-edit','Je modifie la priorité 3 — mettre communication/coordination')">✏️ Modifier la priorité 3</div>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div class="collab-input-row">
+        <input class="ci-field" id="ciField" type="text" placeholder="Écrire à Karim...">
+        <button class="ci-send" onclick="sendCustomMsg()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="partner-notif" id="partnerNotif"></div>
+    <button class="submit-btn" id="submitBtn" onclick="goStep('s-autodesc')">Soumettre notre plan →</button>
+
+  </div>
+</div>
+
+<!-- ═══════ AUTO-DESCRIPTION ═══════ -->
+<div class="step" id="s-autodesc">
+  <div class="autodesc-wrap">
+    <div class="ib-tag" style="margin-bottom:10px;background:rgba(55,138,221,0.1);border-color:rgba(122,184,240,0.2);">
+      <span class="ib-tag-txt">ANALYSE DU TANDEM</span>
+    </div>
+    <div class="ad-title">Quel rôle as-tu joué spontanément ?</div>
+    <div class="ad-sub">Sans réfléchir à ce qui "sonne bien". Ce que tu as réellement fait pendant ces 10 minutes.</div>
+    <div class="role-options" id="roleOptions">
+      <div class="ro-item" onclick="selectRole(this,'initiateur')">
+        <div class="ro-icon">🚀</div>
+        <div class="ro-info">
+          <div class="ro-name">L'initiateur</div>
+          <div class="ro-desc">J'ai lancé les premières propositions et structuré l'approche globale</div>
+        </div>
+        <div class="ro-check"></div>
+      </div>
+      <div class="ro-item" onclick="selectRole(this,'executant')">
+        <div class="ro-icon">⚡</div>
+        <div class="ro-info">
+          <div class="ro-name">L'exécutant</div>
+          <div class="ro-desc">J'ai pris en charge une partie concrète et l'ai menée jusqu'au bout</div>
+        </div>
+        <div class="ro-check"></div>
+      </div>
+      <div class="ro-item" onclick="selectRole(this,'verificateur')">
+        <div class="ro-icon">🔍</div>
+        <div class="ro-info">
+          <div class="ro-name">Le vérificateur</div>
+          <div class="ro-desc">J'ai questionné, challengé et vérifié la cohérence du plan</div>
+        </div>
+        <div class="ro-check"></div>
+      </div>
+      <div class="ro-item" onclick="selectRole(this,'coordinateur')">
+        <div class="ro-icon">🔗</div>
+        <div class="ro-info">
+          <div class="ro-name">Le coordinateur</div>
+          <div class="ro-desc">J'ai facilité la communication et maintenu le cap collectif</div>
+        </div>
+        <div class="ro-check"></div>
+      </div>
+    </div>
+    <button class="autodesc-next" id="autodescNext" onclick="goStep('s-end');initEnd()">Voir l'analyse du tandem →</button>
+  </div>
+</div>
+
+<!-- ═══════ RÉSULTAT ═══════ -->
+<div class="step" id="s-end">
+  <div class="end-wrap">
+    <div class="end-problem-recap">
+      <div class="epr-lbl">MISSION COMPLÉTÉE</div>
+      <div class="epr-title">Planification mission humanitaire · 500€ · 3 bénévoles</div>
+    </div>
+
+    <div class="collab-score">
+      <div class="cs-item"><div class="csi-val" style="color:var(--green)">8:42</div><div class="csi-lbl">Temps de travail</div></div>
+      <div class="cs-item"><div class="csi-val" style="color:#7ab8f0">3/3</div><div class="csi-lbl">Priorités définies</div></div>
+      <div class="cs-item"><div class="csi-val" style="color:#c98ff0">7</div><div class="csi-lbl">Échanges</div></div>
+      <div class="cs-item"><div class="csi-val" style="color:var(--amber)">92%</div><div class="csi-lbl">Couverture budget</div></div>
+    </div>
+
+    <div class="roles-reveal">
+      <div class="rr-lbl">RÔLES SPONTANÉS DU TANDEM</div>
+      <div class="rr-persons">
+        <div class="rr-person">
+          <div class="rrp-av" style="background:rgba(212,83,126,0.35);border:2px solid var(--pink)">T</div>
+          <div class="rrp-info">
+            <div class="rrp-name">Toi</div>
+            <div class="rrp-role" id="myRoleLabel">Vérificateur — tu as challengé et sécurisé</div>
+          </div>
+          <div class="rrp-badge" id="myRoleBadge" style="background:rgba(55,138,221,0.12);color:#7ab8f0;">🔍</div>
+        </div>
+        <div class="rr-person">
+          <div class="rrp-av" style="background:rgba(55,138,221,0.3);border:2px solid var(--blue)">K</div>
+          <div class="rrp-info">
+            <div class="rrp-name">Karim</div>
+            <div class="rrp-role">Initiateur — il a lancé et structuré</div>
+          </div>
+          <div class="rrp-badge" style="background:rgba(179,247,11,0.1);color:#d4fb6b;">🚀</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="signal-box">
+      <div class="sb-lbl">TON PROFIL MIS À JOUR</div>
+      <div class="sb-dims" id="sbDims"></div>
+    </div>
+
+    <div class="end-xp">
+      <span class="exv">+25 XP</span>
+      <span class="exl">gagnés<br>sur ce TANDEM</span>
+    </div>
+
+    <div class="end-btns">
+      <button class="btn-m" onclick="resetAll()">Nouveau TANDEM</button>
+      <button class="btn-s" onclick="resetAll()">Retour au feed</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+var timerInt=null, timeLeft=600, myRole=null, usedActions=[];
+
+function goStep(id){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startTimer(){
+  clearInterval(timerInt);
+  timeLeft=600;
+  updateTimer();
+  timerInt=setInterval(()=>{
+    timeLeft--;
+    if(timeLeft<=0){clearInterval(timerInt);autoSubmit();}
+    updateTimer();
+    // Notifications Karim simulées
+    triggerKarimNotifs();
+  },1000);
+  // Premiers messages de Karim
+  setTimeout(()=>karimMsg('Je lis le problème... logistique humanitaire, c\'est costaud !'),2500);
+  setTimeout(()=>karimMsg('Je commence par le budget ? Tu t\'occupes de la structure du plan ?'),6000);
+}
+
+function updateTimer(){
+  var m=Math.floor(timeLeft/60), s=timeLeft%60;
+  document.getElementById('tpVal').textContent=m+':'+(s<10?'0':'')+s;
+  var pct=timeLeft/600;
+  var offset=56.5*(1-pct);
+  var color=timeLeft>300?'var(--blue)':timeLeft>120?'#EF9F27':'#FF5321';
+  var c=document.getElementById('tpFill');
+  if(c){c.style.strokeDashoffset=offset;c.style.stroke=color;}
+}
+
+function autoSubmit(){
+  document.getElementById('submitBtn').style.display='block';
+}
+
+var karimNotifTriggered={180:false,120:false,60:false};
+function triggerKarimNotifs(){
+  if(timeLeft===300&&!karimNotifTriggered[300]){
+    karimNotifTriggered[300]=true;
+    karimMsg('Budget établi ! Transport 180, Nourriture 200, Matériel 120. Ça te va ?');
+    showNotif('Karim a proposé une répartition budgétaire → onglet Budget');
+  }
+  if(timeLeft===180&&!karimNotifTriggered[180]){
+    karimNotifTriggered[180]=true;
+    karimMsg('J\'ai rédigé l\'ébauche du plan final. Tu peux valider ?');
+    showNotif('Karim a rédigé le plan → onglet Plan final');
+  }
+}
+
+function karimMsg(txt){
+  var cont=document.getElementById('tab-actions');
+  var m=Math.floor((600-timeLeft)/60), s=(600-timeLeft)%60;
+  var time=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  var el=document.createElement('div');
+  el.className='action-item';
+  el.innerHTML=`<div class="ai-who" style="background:var(--blue)">K</div><div class="ai-txt"><strong>Karim</strong> : ${txt}</div><div class="ai-time">${time}</div>`;
+  var qa=cont.querySelector('.quick-actions');
+  cont.insertBefore(el,qa);
+}
+
+function showNotif(txt){
+  var n=document.getElementById('partnerNotif');
+  n.textContent='🔔 '+txt;
+  n.style.display='block';
+  setTimeout(()=>n.style.display='none',3000);
+}
+
+function doAction(el,type,msg){
+  if(el.classList.contains('used')) return;
+  el.classList.add('used');
+  usedActions.push(type);
+  // Ajouter dans les actions
+  var cont=document.getElementById('tab-actions');
+  var m=Math.floor((600-timeLeft)/60), s=(600-timeLeft)%60;
+  var time=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  var item=document.createElement('div');
+  item.className='action-item';
+  item.innerHTML=`<div class="ai-who" style="background:rgba(212,83,126,0.5)">T</div><div class="ai-txt"><strong>Toi</strong> : ${msg}</div><div class="ai-time">${time}</div>`;
+  var qa=cont.querySelector('.quick-actions');
+  cont.insertBefore(item,qa);
+  // Réponse Karim
+  setTimeout(()=>{
+    var responses={
+      'propose':'Bonne idée ! Je liste le budget pendant ce temps.',
+      'question':'Je pense transport d\'abord — sans ça on ne peut rien faire.',
+      'lead':'Parfait, je m\'occupe du budget alors.',
+      'support':'Ok go ! Je commence par les chiffres.',
+      'budget-ok':'Super, je note. On a 0€ de marge, faut être précis.',
+      'budget-modify':'Bonne idée la réserve. Je recalcule.',
+      'budget-question':'Ah oui, j\'avais pas pensé aux imprévus. On enlève 50€ du matériel ?',
+      'plan-ok':'Top ! Plan validé. On soumet ?',
+      'plan-edit':'D\'accord, je modifie.',
+    };
+    if(responses[type]) karimMsg(responses[type]);
+  },1500);
+}
+
+function sendCustomMsg(){
+  var field=document.getElementById('ciField');
+  var txt=field.value.trim();
+  if(!txt) return;
+  field.value='';
+  var cont=document.getElementById('tab-actions');
+  var m=Math.floor((600-timeLeft)/60), s=(600-timeLeft)%60;
+  var time=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  var item=document.createElement('div');
+  item.className='action-item';
+  item.innerHTML=`<div class="ai-who" style="background:rgba(212,83,126,0.5)">T</div><div class="ai-txt"><strong>Toi</strong> : ${txt}</div><div class="ai-time">${time}</div>`;
+  var qa=cont.querySelector('.quick-actions');
+  cont.insertBefore(item,qa);
+  setTimeout(()=>karimMsg('Ok, noté !'),1200);
+}
+
+function switchTab(el,tab){
+  document.querySelectorAll('.wz-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.wz-content').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+
+function showSubmit(){
+  clearInterval(timerInt);
+  document.getElementById('submitBtn').style.display='block';
+  showNotif('Plan finalisé ! Vous pouvez soumettre.');
+}
+
+function selectRole(el,role){
+  document.querySelectorAll('.ro-item').forEach(r=>{
+    r.classList.remove('selected');
+    r.querySelector('.ro-check').innerHTML='';
+  });
+  el.classList.add('selected');
+  el.querySelector('.ro-check').innerHTML='<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5 3.5-4" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  myRole=role;
+  document.getElementById('autodescNext').style.display='block';
+}
+
+function initEnd(){
+  var roleLabels={
+    'initiateur':'Initiateur — tu as lancé et structuré',
+    'executant':'Exécutant — tu as pris en charge et livré',
+    'verificateur':'Vérificateur — tu as challengé et sécurisé',
+    'coordinateur':'Coordinateur — tu as facilité et maintenu le cap',
+  };
+  var roleBadges={
+    'initiateur':'🚀','executant':'⚡','verificateur':'🔍','coordinateur':'🔗',
+  };
+  var roleColors={
+    'initiateur':'rgba(179,247,11,0.1)','executant':'rgba(255,83,33,0.1)',
+    'verificateur':'rgba(55,138,221,0.12)','coordinateur':'rgba(29,158,117,0.1)',
+  };
+  var roleTxtColors={
+    'initiateur':'#d4fb6b','executant':'#ff8060','verificateur':'#7ab8f0','coordinateur':'#6ddba0',
+  };
+  if(myRole){
+    document.getElementById('myRoleLabel').textContent=roleLabels[myRole]||'Rôle naturel identifié';
+    var badge=document.getElementById('myRoleBadge');
+    badge.textContent=roleBadges[myRole]||'🎯';
+    badge.style.background=roleColors[myRole]||'rgba(55,138,221,0.12)';
+    badge.style.color=roleTxtColors[myRole]||'#7ab8f0';
+  }
+  // Dims
+  var dims=[
+    {name:'Mes forces',pct:78,color:'#378ADD',delta:'+9'},
+    {name:'Mes expériences',pct:70,color:'#1D9E75',delta:'+7'},
+    {name:'Mes talents cachés',pct:62,color:'#D4537E',delta:'+5'},
+    {name:'Mon projet',pct:55,color:'#7500B8',delta:'+4'},
+  ];
+  document.getElementById('sbDims').innerHTML=dims.map(d=>`
+    <div class="sbd-row">
+      <span class="sbd-name">${d.name}</span>
+      <div class="sbd-bar"><div class="sbd-fill" style="width:${d.pct}%;background:${d.color}"></div></div>
+      <span class="sbd-delta">${d.delta}</span>
+    </div>`).join('');
+}
+
+function resetAll(){
+  clearInterval(timerInt);
+  timeLeft=600; myRole=null; usedActions=[];
+  karimNotifTriggered={300:false,180:false,60:false};
+  goStep('s-intro');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOKA — Feed Mobile</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+body{background:#050508;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:24px;}
+
+.phone-frame{width:390px;height:844px;background:#080810;border-radius:50px;overflow:hidden;position:relative;border:8px solid #1a1a2e;box-shadow:0 40px 80px rgba(0,0,0,0.6);}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:34px;background:#1a1a2e;border-radius:0 0 20px 20px;z-index:100;}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;}
+
+/* STATUS BAR */
+.status{display:flex;justify-content:space-between;align-items:center;padding:12px 24px 0;height:44px;flex-shrink:0;}
+.status-time{font-size:15px;font-weight:600;color:#fff;}
+.status-icons{display:flex;align-items:center;gap:5px;}
+.status-icons span{font-size:12px;color:#fff;}
+
+/* TOP BAR */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:8px 20px 12px;flex-shrink:0;}
+.topbar-left h2{font-size:22px;font-weight:700;color:#fff;}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.streak-pill{display:flex;align-items:center;gap:4px;background:rgba(179,247,11,0.1);border:0.5px solid rgba(179,247,11,0.25);border-radius:20px;padding:5px 11px;}
+.streak-txt{font-size:12px;color:#B3F70B;font-weight:600;}
+.notif-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;}
+.notif-dot{width:8px;height:8px;border-radius:50%;background:#FF5321;position:absolute;top:6px;right:6px;}
+
+/* XP BAR */
+.xp-section{padding:0 20px 14px;flex-shrink:0;}
+.xp-row{display:flex;justify-content:space-between;margin-bottom:5px;}
+.xp-label{font-size:11px;color:rgba(255,255,255,0.3);}
+.xp-track{height:4px;background:rgba(255,255,255,0.08);border-radius:2px;}
+.xp-fill{height:4px;background:#7500B8;border-radius:2px;width:34%;}
+
+/* TABS */
+.tabs{display:flex;gap:5px;padding:0 16px 12px;overflow-x:auto;flex-shrink:0;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;border:none;}
+.tab.on{background:#7500B8;color:#fff;}
+.tab.off{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.35);}
+
+/* FEED */
+.feed{flex:1;overflow-y:auto;padding:0 16px 80px;}
+.feed::-webkit-scrollbar{display:none;}
+
+/* FEATURED CARD (grande, première) */
+.card-featured{border-radius:20px;overflow:hidden;margin-bottom:10px;cursor:pointer;position:relative;height:220px;}
+.card-featured img{width:100%;height:100%;object-fit:cover;display:block;}
+.card-featured .grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,5,10,0.98) 0%,rgba(5,5,10,0.5) 45%,transparent 100%);}
+.card-featured .body{position:absolute;bottom:0;left:0;right:0;padding:14px 16px;}
+.featured-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(179,247,11,0.15);border:0.5px solid rgba(179,247,11,0.3);border-radius:8px;padding:3px 9px;margin-bottom:8px;}
+.featured-badge span{font-size:10px;color:#B3F70B;font-weight:700;letter-spacing:0.04em;}
+.featured-title{font-size:18px;font-weight:700;color:#fff;line-height:1.25;margin-bottom:8px;}
+.featured-row{display:flex;align-items:center;justify-content:space-between;}
+.featured-meta{display:flex;align-items:center;gap:6px;}
+.fmt-pip{width:6px;height:6px;border-radius:50%;}
+.fmt-lbl{font-size:10px;color:rgba(255,255,255,0.5);font-weight:600;letter-spacing:0.04em;}
+.xp-badge{background:rgba(0,0,0,0.5);border-radius:6px;padding:3px 8px;font-size:11px;color:rgba(255,255,255,0.7);}
+.social-strip-feat{display:flex;align-items:center;gap:5px;}
+.savs{display:flex;}
+.sav{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(5,5,10,0.9);font-size:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;margin-left:-5px;}
+.sav:first-child{margin-left:0;}
+.soc-txt{font-size:10px;color:rgba(255,255,255,0.35);}
+.soc-txt strong{color:rgba(255,255,255,0.6);font-weight:600;}
+.cprog-line{position:absolute;bottom:0;left:0;right:0;height:3px;}
+
+/* SECTION LABEL */
+.section-label{font-size:11px;font-weight:700;color:rgba(255,255,255,0.2);letter-spacing:0.08em;margin:14px 0 8px;}
+
+/* STANDARD CARDS */
+.card{border-radius:16px;overflow:hidden;margin-bottom:10px;cursor:pointer;position:relative;}
+.card img{width:100%;height:160px;object-fit:cover;display:block;}
+.card .grad{position:absolute;top:0;left:0;right:0;height:160px;background:linear-gradient(to top,rgba(5,5,10,0.98) 0%,rgba(5,5,10,0.45) 50%,rgba(5,5,10,0.02) 100%);}
+.card .body{position:absolute;bottom:0;left:0;right:0;padding:10px 14px;}
+.card-title{font-size:14px;font-weight:600;color:#fff;line-height:1.3;margin-bottom:6px;}
+.card-row{display:flex;align-items:center;justify-content:space-between;}
+.card-social{padding:8px 14px;background:rgba(0,0,0,0.3);display:flex;align-items:center;gap:8px;}
+.cs-txt{font-size:11px;color:rgba(255,255,255,0.3);}
+.cs-txt strong{color:rgba(255,255,255,0.55);font-weight:600;}
+
+/* BLIND */
+.blind-card{border-radius:16px;overflow:hidden;margin-bottom:10px;cursor:pointer;background:#050505;}
+.blind-inner{height:120px;display:flex;align-items:center;justify-content:center;position:relative;}
+.blind-rings{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.blind-ring{position:absolute;border-radius:50%;border:0.5px solid rgba(255,255,255,0.04);}
+.blind-qbig{font-size:64px;color:rgba(255,255,255,0.05);font-weight:700;line-height:1;user-select:none;}
+.blind-body{padding:10px 14px;}
+
+/* PLAY OVERLAY */
+.play-over{position:absolute;top:50%;left:50%;transform:translate(-50%,-70%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.14);border:2px solid rgba(255,255,255,0.55);display:flex;align-items:center;justify-content:center;}
+.play-tri{width:0;height:0;border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:16px solid rgba(255,255,255,0.85);margin-left:3px;}
+.vid-prog-bar{position:absolute;left:12px;right:12px;height:2px;background:rgba(255,255,255,0.1);border-radius:1px;}
+.vid-prog-fill{height:2px;border-radius:1px;}
+
+/* REC */
+.rec-badge{position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:4px;background:rgba(0,0,0,0.4);border-radius:6px;padding:3px 7px;}
+.rec-dot{width:7px;height:7px;border-radius:50%;background:#FF5321;}
+.rec-lbl{font-size:9px;color:rgba(255,83,33,0.85);font-weight:700;letter-spacing:0.05em;}
+
+/* BOTTOM NAV */
+.bottom-nav{position:absolute;bottom:0;left:0;right:0;height:80px;background:rgba(8,8,16,0.95);border-top:0.5px solid rgba(255,255,255,0.06);display:flex;justify-content:space-around;align-items:center;padding-bottom:16px;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;}
+.nav-icon{width:24px;height:24px;border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.nav-icon.active{background:#7500B8;}
+.nav-icon svg{width:16px;height:16px;}
+.nav-dot{width:4px;height:4px;border-radius:50%;background:#B3F70B;}
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="notch"></div>
+  <div class="screen">
+
+    <div class="status">
+      <span class="status-time">9:41</span>
+      <div class="status-icons"><span>●●●</span><span>WiFi</span><span>🔋</span></div>
+    </div>
+
+    <div class="topbar">
+      <div class="topbar-left"><h2>Défis</h2></div>
+      <div class="topbar-right">
+        <div class="streak-pill"><span class="streak-txt">🔥 7j</span></div>
+        <div class="notif-btn" style="position:relative">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5A4.5 4.5 0 003.5 6v3l-1.5 2h12l-1.5-2V6A4.5 4.5 0 008 1.5z" stroke="white" stroke-width="1.3" opacity=".5"/><path d="M6.5 13a1.5 1.5 0 003 0" stroke="white" stroke-width="1.3" opacity=".5"/></svg>
+          <div class="notif-dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="xp-section">
+      <div class="xp-row">
+        <span class="xp-label">Challenger · 340 XP</span>
+        <span class="xp-label">500 XP</span>
+      </div>
+      <div class="xp-track"><div class="xp-fill"></div></div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab on">Pour toi</div>
+      <div class="tab off">Métiers</div>
+      <div class="tab off">Friends</div>
+      <div class="tab off">Events GO</div>
+    </div>
+
+    <div class="feed">
+
+      <!-- FEATURED : CHOOSE -->
+      <div class="card-featured">
+        <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=85" alt="Groupe de jeunes">
+        <div class="grad"></div>
+        <div class="body">
+          <div class="featured-badge"><span>✦ POUR TOI</span></div>
+          <div class="featured-title">Tu choisis ta voie, pas l'étiquette qu'on te colle.</div>
+          <div class="featured-row">
+            <div class="featured-meta">
+              <div class="fmt-pip" style="background:#7500B8"></div>
+              <span class="fmt-lbl">CHOOSE · 1mn</span>
+              <div class="xp-badge">+10 XP</div>
+            </div>
+            <div class="social-strip-feat">
+              <div class="savs">
+                <div class="sav" style="background:#FF5321">Y</div>
+                <div class="sav" style="background:#7500B8">M</div>
+                <div class="sav" style="background:#1A7A4A">J</div>
+              </div>
+              <span class="soc-txt"><strong>+12</strong> ce matin</span>
+            </div>
+          </div>
+        </div>
+        <div class="cprog-line" style="background:#7500B8;width:0%"></div>
+      </div>
+
+      <div class="section-label">ÉVÉNEMENTS</div>
+
+      <!-- GO -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=800&q=85" alt="Campus HEC">
+        <div class="grad"></div>
+        <div class="body">
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
+            <div class="fmt-pip" style="background:#30B870"></div>
+            <span class="fmt-lbl">GO · 14 mars · Jouy-en-Josas</span>
+          </div>
+          <div class="card-title">Viens défier le campus HEC</div>
+          <div class="card-row">
+            <div class="xp-badge">+25 XP</div>
+            <div class="social-strip-feat">
+              <div class="savs"><div class="sav" style="background:#7500B8">K</div><div class="sav" style="background:#D4537E">R</div></div>
+              <span class="soc-txt">47 inscrits</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-social">
+          <div class="savs"><div class="sav" style="background:#7500B8">K</div><div class="sav" style="background:#D4537E">R</div></div>
+          <span class="cs-txt"><strong>2 de tes contacts</strong> y participent</span>
+        </div>
+        <div class="cprog-line" style="background:#30B870;width:15%"></div>
+      </div>
+
+      <div class="section-label">VIDÉOS MÉTIERS</div>
+
+      <!-- WATCH -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=85" alt="Interview ENGIE">
+        <div class="grad"></div>
+        <div class="play-over"><div class="play-tri"></div></div>
+        <div class="vid-prog-bar" style="bottom:50px"><div class="vid-prog-fill" style="width:38%;background:#378ADD"></div></div>
+        <div class="body">
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
+            <div class="fmt-pip" style="background:#378ADD"></div>
+            <span class="fmt-lbl">WATCH · ENGIE · 2mn</span>
+          </div>
+          <div class="card-title">L'ingénieur énergie de 2030, c'est quoi vraiment ?</div>
+          <div class="card-row"><div class="xp-badge">+15 XP</div><span class="soc-txt">284 vues cette semaine</span></div>
+        </div>
+        <div class="card-social">
+          <span class="cs-txt"><strong>71%</strong> ont répondu pareil après la vidéo</span>
+        </div>
+        <div class="cprog-line" style="background:#378ADD;width:0%"></div>
+      </div>
+
+      <div class="section-label">DÉFIS DE LA SEMAINE</div>
+
+      <!-- BOOST -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=85" alt="Equipe">
+        <div class="grad"></div>
+        <div class="body">
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
+            <div class="fmt-pip" style="background:#EF9F27"></div>
+            <span class="fmt-lbl">BOOST · 7mn · Défi de la semaine</span>
+          </div>
+          <div class="card-title">Crée ton plan de carrière en 5 minutes.</div>
+          <div class="card-row">
+            <div class="xp-badge">+40 XP</div>
+            <div class="social-strip-feat">
+              <div class="savs"><div class="sav" style="background:#7500B8">L</div><div class="sav" style="background:#1A7A4A">T</div><div class="sav" style="background:#D4537E">M</div></div>
+              <span class="soc-txt">+31</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-social">
+          <span class="cs-txt"><strong>Défi premium</strong> · résultat permanent dans ton profil</span>
+        </div>
+        <div class="cprog-line" style="background:#EF9F27;width:0%"></div>
+      </div>
+
+      <!-- SHARE -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=800&q=85" alt="Portrait face cam">
+        <div class="grad"></div>
+        <div class="rec-badge"><div class="rec-dot"></div><span class="rec-lbl">REC</span></div>
+        <div class="body">
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
+            <div class="fmt-pip" style="background:#D4537E"></div>
+            <span class="fmt-lbl">SHARE · 30s · Pitch</span>
+          </div>
+          <div class="card-title">Balance ton talent. Sans filtre.</div>
+          <div class="card-row"><div class="xp-badge">+20 XP</div><span class="soc-txt">1 contact a partagé</span></div>
+        </div>
+        <div class="card-social">
+          <span class="cs-txt">Visible par les <strong>recruteurs VOKA</strong></span>
+        </div>
+        <div class="cprog-line" style="background:#D4537E;width:0%"></div>
+      </div>
+
+      <!-- BLIND -->
+      <div class="blind-card">
+        <div class="blind-inner">
+          <div class="blind-rings">
+            <div class="blind-ring" style="width:130px;height:130px;"></div>
+            <div class="blind-ring" style="width:90px;height:90px;"></div>
+          </div>
+          <span class="blind-qbig">?</span>
+        </div>
+        <div class="blind-body">
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
+            <div class="fmt-pip" style="background:#444"></div>
+            <span class="fmt-lbl">BLIND · surprise</span>
+          </div>
+          <div class="card-title" style="color:rgba(255,255,255,0.28)">Contenu inconnu jusqu'au lancement.</div>
+          <div class="card-row" style="margin-top:6px;"><div class="xp-badge">+15 XP</div></div>
+        </div>
+        <div class="cprog-line" style="background:#444;width:0%"></div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+      <div class="nav-item">
+        <div class="nav-icon active">
+          <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.2" fill="white"/><rect x="9" y="1" width="6" height="6" rx="1.2" fill="white" opacity=".4"/><rect x="1" y="9" width="6" height="6" rx="1.2" fill="white" opacity=".4"/><rect x="9" y="9" width="6" height="6" rx="1.2" fill="white" opacity=".4"/></svg>
+        </div>
+        <div class="nav-dot"></div>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M8 2C5.5 2 3 4.5 3 7c0 3.5 5 9 5 9s5-5.5 5-9c0-2.5-2.5-5-5-5z" stroke="white" stroke-width="1.3" opacity=".35"/><circle cx="8" cy="7" r="1.8" fill="white" opacity=".35"/></svg>
+        </div>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="white" stroke-width="1.3" opacity=".35"/><path d="M2 14c0-3 2.7-4.5 6-4.5s6 1.5 6 4.5" stroke="white" stroke-width="1.3" stroke-linecap="round" opacity=".35"/></svg>
+        </div>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M8 1.5l1.8 3.6 4 .6-2.9 2.8.7 4L8 10.4l-3.6 1.9.7-4L2.2 5.7l4-.6z" stroke="white" stroke-width="1.2" opacity=".35"/></svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

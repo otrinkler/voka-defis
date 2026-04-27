@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VOKA — Profil</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --purple:#7500B8;--green:#B3F70B;--orange:#FF5321;--blue:#378ADD;--pink:#D4537E;--amber:#EF9F27;
+  --bg:#080810;--bg2:#0f0f1e;--bg3:#1a1a2e;
+  --white:#fff;--muted:rgba(255,255,255,0.45);--faint:rgba(255,255,255,0.1);
+}
+body{background:var(--bg);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;display:flex;justify-content:center;}
+.phone{width:390px;min-height:100vh;background:var(--bg);position:relative;overflow-x:hidden;}
+
+/* STATUS BAR */
+.sb{display:flex;justify-content:space-between;padding:12px 20px 0;font-size:12px;color:var(--muted);}
+
+/* HEADER ACTIONS */
+.hdr{display:flex;justify-content:space-between;align-items:center;padding:10px 20px 0;}
+.hdr-back{width:32px;height:32px;border-radius:50%;background:var(--faint);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.hdr-actions{display:flex;gap:8px;}
+.hdr-btn{width:32px;height:32px;border-radius:50%;background:var(--faint);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+
+/* HERO PROFIL */
+.hero{padding:16px 20px 0;display:flex;align-items:flex-start;gap:14px;}
+.avatar-wrap{position:relative;flex-shrink:0;}
+.avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--purple),#a040e0);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:500;color:#fff;border:2px solid var(--purple);}
+.level-badge{position:absolute;bottom:-4px;right:-4px;background:var(--green);border-radius:10px;padding:2px 7px;font-size:10px;font-weight:500;color:#0a1200;border:2px solid var(--bg);}
+.hero-info{flex:1;min-width:0;}
+.hero-name{font-size:20px;font-weight:500;color:var(--white);margin-bottom:2px;}
+.hero-handle{font-size:13px;color:var(--muted);margin-bottom:8px;}
+.hero-tags{display:flex;gap:5px;flex-wrap:wrap;}
+.hero-tag{font-size:10px;padding:3px 8px;border-radius:6px;background:rgba(117,0,184,0.2);border:0.5px solid rgba(179,147,230,0.4);color:#c98ff0;}
+
+/* XP BAR */
+.xp-section{padding:16px 20px 0;}
+.xp-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.xp-level{font-size:12px;color:var(--green);font-weight:500;}
+.xp-next{font-size:11px;color:var(--muted);}
+.xp-track{height:4px;background:var(--faint);border-radius:2px;overflow:hidden;}
+.xp-fill{height:4px;background:linear-gradient(90deg,var(--purple),var(--green));border-radius:2px;width:68%;transition:width 1s ease;}
+
+/* STATS RAPIDES */
+.quick-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:14px 20px 0;}
+.qs{background:var(--bg2);border-radius:10px;padding:10px 8px;text-align:center;border:0.5px solid var(--faint);}
+.qs-val{font-size:18px;font-weight:500;color:var(--white);}
+.qs-lbl{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.3;}
+
+/* SECTION LABEL */
+.section-lbl{padding:18px 20px 8px;display:flex;justify-content:space-between;align-items:center;}
+.sl-title{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;}
+.sl-action{font-size:12px;color:#c98ff0;cursor:pointer;}
+
+/* ACT SKILLS */
+.act-skills{padding:0 20px;}
+.skill-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--faint);cursor:pointer;}
+.skill-row:last-child{border-bottom:none;}
+.skill-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.skill-info{flex:1;min-width:0;}
+.skill-name{font-size:13px;font-weight:500;color:var(--white);margin-bottom:4px;}
+.skill-bar-wrap{display:flex;align-items:center;gap:8px;}
+.skill-bar{flex:1;height:4px;background:var(--faint);border-radius:2px;overflow:hidden;}
+.skill-bar-fill{height:4px;border-radius:2px;transition:width 1s ease;}
+.skill-pct{font-size:11px;color:var(--muted);width:28px;text-align:right;flex-shrink:0;}
+.skill-level{font-size:10px;padding:2px 7px;border-radius:5px;font-weight:500;flex-shrink:0;}
+.lv-explorer{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);}
+.lv-challenger{background:rgba(55,138,221,0.18);color:#7ab8f0;}
+.lv-master{background:rgba(117,0,184,0.25);color:#c98ff0;}
+.lv-superstar{background:rgba(179,247,11,0.15);color:#d4fb6b;}
+.skill-arrow{color:rgba(255,255,255,0.3);font-size:14px;flex-shrink:0;}
+
+/* CARTES PERMANENTES */
+.cards-scroll{padding:0 20px;display:flex;flex-direction:column;gap:10px;}
+
+.perm-card{border-radius:14px;overflow:hidden;position:relative;}
+
+.card-projet{background:#1a0e00;border:0.5px solid rgba(239,159,39,0.25);}
+.card-projet-header{padding:12px 14px 10px;}
+.cp-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(239,159,39,0.12);border-radius:6px;padding:3px 8px;margin-bottom:8px;}
+.cp-tag-lbl{font-size:9px;color:#f0c060;font-weight:600;letter-spacing:0.06em;}
+.cp-word{background:rgba(239,159,39,0.2);border:0.5px solid rgba(239,159,39,0.45);border-radius:5px;padding:3px 8px;font-size:12px;color:#f5c040;font-weight:500;}
+.cp-why{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;font-style:italic;}
+.card-projet-footer{background:#120c00;padding:9px 14px;display:flex;align-items:center;justify-content:space-between;}
+.cpf-left{display:flex;flex-direction:column;gap:1px;}
+.cpf-lbl{font-size:9px;color:rgba(255,255,255,0.45);letter-spacing:0.06em;}
+.cpf-val{font-size:11px;color:#f0c060;font-weight:500;}
+.cpf-skills{display:flex;gap:4px;}
+.cpf-skill{font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.55);}
+
+.card-pitch{background:#12040a;border:0.5px solid rgba(212,83,126,0.25);}
+.card-pitch-inner{padding:12px 14px;}
+.cpi-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(212,83,126,0.12);border-radius:6px;padding:3px 8px;margin-bottom:8px;}
+.cpi-tag-lbl{font-size:9px;color:#f090b0;font-weight:600;letter-spacing:0.06em;}
+.cpi-dur{position:absolute;bottom:6px;right:8px;font-size:10px;color:rgba(255,255,255,0.6);background:rgba(0,0,0,0.5);padding:1px 5px;border-radius:4px;}
+.cpi-skills{display:flex;gap:5px;flex-wrap:wrap;}
+.cpi-skill{font-size:11px;padding:3px 8px;border-radius:5px;font-weight:500;background:rgba(212,83,126,0.18);border:0.5px solid rgba(212,83,126,0.4);color:#f090b0;}
+
+.card-trace{background:#0a1a0a;border:0.5px solid rgba(48,184,112,0.25);}
+.card-trace-inner{padding:12px 14px;}
+.ct-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(48,184,112,0.12);border-radius:6px;padding:3px 8px;margin-bottom:8px;}
+.ct-tag-lbl{font-size:9px;color:#6ddba0;font-weight:600;letter-spacing:0.06em;}
+.ct-label{position:absolute;bottom:6px;left:8px;font-size:10px;color:rgba(48,184,112,0.8);}
+.ct-geo{position:absolute;bottom:6px;right:8px;font-size:9px;color:#B3F70B;background:rgba(0,0,0,0.5);padding:1px 5px;border-radius:4px;}
+.ct-row{display:flex;align-items:center;justify-content:space-between;}
+.ct-info{font-size:12px;color:rgba(255,255,255,0.6);}
+.ct-xp{font-size:12px;font-weight:500;color:var(--green);background:rgba(179,247,11,0.1);padding:3px 8px;border-radius:6px;}
+
+/* DÉFIS RÉCENTS */
+.recent-defis{padding:0 20px;display:flex;flex-direction:column;gap:8px;}
+.rd-item{display:flex;align-items:center;gap:10px;background:var(--bg2);border-radius:10px;padding:10px 12px;border:0.5px solid var(--faint);}
+.rd-fmt{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:500;color:#fff;}
+.rd-info{flex:1;min-width:0;}
+.rd-title{font-size:12px;font-weight:500;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;}
+.rd-meta{font-size:11px;color:var(--muted);}
+.rd-xp{font-size:11px;font-weight:500;color:var(--green);}
+
+/* SIGNAL RECRUTEUR */
+.signal-box{margin:18px 20px 0;background:rgba(117,0,184,0.08);border:0.5px solid rgba(117,0,184,0.2);border-radius:14px;padding:14px;}
+.sb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.sb-title{font-size:12px;font-weight:500;color:var(--white);}
+.sb-badge{font-size:10px;color:var(--green);background:rgba(179,247,11,0.1);padding:3px 8px;border-radius:6px;}
+.sb-meters{display:flex;flex-direction:column;gap:7px;}
+.sb-meter{display:flex;align-items:center;gap:8px;}
+.sb-meter-lbl{font-size:11px;color:rgba(255,255,255,0.6);width:110px;flex-shrink:0;}
+.sb-meter-track{flex:1;height:5px;background:var(--faint);border-radius:3px;overflow:hidden;}
+.sb-meter-fill{height:5px;border-radius:3px;}
+.sb-meter-val{font-size:11px;font-weight:500;width:28px;text-align:right;flex-shrink:0;}
+
+/* CTA SHARE */
+.cta-share{margin:16px 20px 0;display:flex;gap:8px;}
+.cta-dl{flex:1;background:var(--purple);border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.cta-sh{width:48px;background:var(--faint);border:0.5px solid rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+
+/* BOTTOM NAV */
+.bottom-nav{height:70px;border-top:0.5px solid var(--faint);display:flex;justify-content:space-around;align-items:center;padding-bottom:12px;margin-top:24px;background:rgba(8,8,16,0.95);}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;}
+.nav-icon{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;}
+.nav-icon.active{background:var(--purple);}
+.nav-dot{width:4px;height:4px;border-radius:50%;background:var(--green);}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <div class="sb"><span>9:41</span><span style="display:flex;gap:4px;align-items:center"><span>●●●</span><span>WiFi</span><span>🔋</span></span></div>
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+    <div class="hdr-actions">
+      <div class="hdr-btn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3" stroke="rgba(255,255,255,0.5)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12h12" stroke="rgba(255,255,255,0.5)" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </div>
+      <div class="hdr-btn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="4" cy="8" r="1.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.3"/><circle cx="12" cy="4" r="1.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.3"/><circle cx="12" cy="12" r="1.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.3"/><path d="M5.4 7.3L10.6 4.7M5.4 8.7L10.6 11.3" stroke="rgba(255,255,255,0.5)" stroke-width="1.3"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="avatar-wrap">
+      <div class="avatar">T</div>
+      <div class="level-badge">Challenger</div>
+    </div>
+    <div class="hero-info">
+      <div class="hero-name">Thomas R.</div>
+      <div class="hero-handle">@thomas_r · 2026</div>
+      <div class="hero-tags">
+        <div class="hero-tag">Île-de-France</div>
+        <div class="hero-tag">Bac Pro</div>
+        <div class="hero-tag">Énergie</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- XP -->
+  <div class="xp-section">
+    <div class="xp-row">
+      <span class="xp-level">🔥 Challenger · 340 XP</span>
+      <span class="xp-next">500 XP → Master</span>
+    </div>
+    <div class="xp-track"><div class="xp-fill" id="xpFill"></div></div>
+  </div>
+
+  <!-- STATS RAPIDES -->
+  <div class="quick-stats">
+    <div class="qs"><div class="qs-val">23</div><div class="qs-lbl">Défis complétés</div></div>
+    <div class="qs"><div class="qs-val">4</div><div class="qs-lbl">Formats différents</div></div>
+    <div class="qs"><div class="qs-val">3</div><div class="qs-lbl">Cartes permanentes</div></div>
+  </div>
+
+  <!-- ACT SKILLS -->
+  <div class="section-lbl">
+    <span class="sl-title">Mes ACT Skills</span>
+    <span class="sl-action">Détail</span>
+  </div>
+  <div class="act-skills">
+
+    <div class="skill-row" onclick="toggleSkill(this)">
+      <div class="skill-icon" style="background:rgba(239,159,39,0.12);">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="#EF9F27" stroke-width="1.3"/><path d="M3 14c0-2.8 2.2-4.5 5-4.5s5 1.7 5 4.5" stroke="#EF9F27" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="skill-info">
+        <div class="skill-name">Mon background</div>
+        <div class="skill-bar-wrap">
+          <div class="skill-bar"><div class="skill-bar-fill" style="width:72%;background:#EF9F27"></div></div>
+          <span class="skill-pct">72%</span>
+        </div>
+      </div>
+      <span class="skill-level lv-challenger">Challenger</span>
+      <span class="skill-arrow">›</span>
+    </div>
+
+    <div class="skill-row" onclick="toggleSkill(this)">
+      <div class="skill-icon" style="background:rgba(117,0,184,0.12);">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l2 4h4l-3 2.5 1 4L8 10l-4 2.5 1-4L2 6h4z" stroke="#7500B8" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="skill-info">
+        <div class="skill-name">Mon projet</div>
+        <div class="skill-bar-wrap">
+          <div class="skill-bar"><div class="skill-bar-fill" style="width:85%;background:#7500B8"></div></div>
+          <span class="skill-pct">85%</span>
+        </div>
+      </div>
+      <span class="skill-level lv-master">Master</span>
+      <span class="skill-arrow">›</span>
+    </div>
+
+    <div class="skill-row" onclick="toggleSkill(this)">
+      <div class="skill-icon" style="background:rgba(48,184,112,0.12);">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2C5 2 3 4.5 3 7c0 3.5 5 9 5 9s5-5.5 5-9c0-2.5-2-5-5-5z" stroke="#30B870" stroke-width="1.3"/><circle cx="8" cy="7" r="1.8" fill="#30B870"/></svg>
+      </div>
+      <div class="skill-info">
+        <div class="skill-name">Mes expériences</div>
+        <div class="skill-bar-wrap">
+          <div class="skill-bar"><div class="skill-bar-fill" style="width:58%;background:#30B870"></div></div>
+          <span class="skill-pct">58%</span>
+        </div>
+      </div>
+      <span class="skill-level lv-challenger">Challenger</span>
+      <span class="skill-arrow">›</span>
+    </div>
+
+    <div class="skill-row" onclick="toggleSkill(this)">
+      <div class="skill-icon" style="background:rgba(212,83,126,0.12);">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 13s-5-3-5-7a5 5 0 0110 0c0 4-5 7-5 7z" stroke="#D4537E" stroke-width="1.3"/></svg>
+      </div>
+      <div class="skill-info">
+        <div class="skill-name">Mes envies</div>
+        <div class="skill-bar-wrap">
+          <div class="skill-bar"><div class="skill-bar-fill" style="width:64%;background:#D4537E"></div></div>
+          <span class="skill-pct">64%</span>
+        </div>
+      </div>
+      <span class="skill-level lv-challenger">Challenger</span>
+      <span class="skill-arrow">›</span>
+    </div>
+
+    <div class="skill-row" onclick="toggleSkill(this)">
+      <div class="skill-icon" style="background:rgba(55,138,221,0.12);">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 14V8M8 14V4M12 14V9" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="skill-info">
+        <div class="skill-name">Mes forces</div>
+        <div class="skill-bar-wrap">
+          <div class="skill-bar"><div class="skill-bar-fill" style="width:41%;background:#378ADD"></div></div>
+          <span class="skill-pct">41%</span>
+        </div>
+      </div>
+      <span class="skill-level lv-explorer">Explorer</span>
+      <span class="skill-arrow">›</span>
+    </div>
+
+    <div class="skill-row" onclick="toggleSkill(this)">
+      <div class="skill-icon" style="background:rgba(179,247,11,0.1);">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v4M8 10v4M2 8h4M10 8h4" stroke="#B3F70B" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="8" r="2" stroke="#B3F70B" stroke-width="1.3"/></svg>
+      </div>
+      <div class="skill-info">
+        <div class="skill-name">Mes talents cachés</div>
+        <div class="skill-bar-wrap">
+          <div class="skill-bar"><div class="skill-bar-fill" style="width:28%;background:#B3F70B"></div></div>
+          <span class="skill-pct">28%</span>
+        </div>
+      </div>
+      <span class="skill-level lv-explorer">Explorer</span>
+      <span class="skill-arrow">›</span>
+    </div>
+
+  </div>
+
+  <!-- CARTES PERMANENTES -->
+  <div class="section-lbl">
+    <span class="sl-title">Cartes permanentes</span>
+    <span class="sl-action">Voir tout</span>
+  </div>
+  <div class="cards-scroll">
+
+    <!-- BUILD : Mon projet -->
+    <div class="perm-card card-projet">
+      <div class="card-projet-header">
+        <div class="cp-tag"><span class="cp-tag-lbl">BUILD · Mon projet</span></div>
+        <div class="cp-words">
+          <div class="cp-word">Créer</div>
+          <div class="cp-word">Construire</div>
+          <div class="cp-word">Impacter</div>
+        </div>
+        <div class="cp-why">"J'ai besoin de voir le résultat concret de ce que je fais. Les projets qui changent quelque chose."</div>
+      </div>
+      <div class="card-projet-footer">
+        <div class="cpf-left">
+          <span class="cpf-lbl">HORIZON</span>
+          <span class="cpf-val">3 à 5 ans</span>
+        </div>
+        <div class="cpf-skills">
+          <span class="cpf-skill">Initiative</span>
+          <span class="cpf-skill">Vision</span>
+          <span class="cpf-skill">Résultat</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PITCH -->
+    <div class="perm-card card-pitch">
+      <div class="card-pitch-inner">
+        <div class="cpi-tag"><span class="cpi-tag-lbl">PITCH · Mes forces</span></div>
+        <div class="cpi-video">
+          <div class="cpi-person">
+            <div class="cpi-head"></div>
+            <div class="cpi-body"></div>
+          </div>
+          <div class="cpi-overlay"><div class="cpi-play"><div class="cpi-tri"></div></div></div>
+          <div class="cpi-dur">0:17</div>
+        </div>
+        <div class="cpi-skills">
+          <div class="cpi-skill">Confiance en soi</div>
+          <div class="cpi-skill">Clarté d'expression</div>
+          <div class="cpi-skill">Authenticité</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRACE : Mission HEC -->
+    <div class="perm-card card-trace">
+      <div class="card-trace-inner">
+        <div class="ct-tag"><span class="ct-tag-lbl">TRACE · Mes expériences</span></div>
+        <div class="ct-map">
+          <div class="ct-grid"></div>
+          <div class="ct-pin">
+            <div class="ct-pin-ring"></div>
+            <div class="ct-pin-dot"></div>
+          </div>
+          <div class="ct-label">Campus HEC · 14 mars 2026</div>
+          <div class="ct-geo">Géolocalisé</div>
+        </div>
+        <div class="ct-row">
+          <span class="ct-info">42km parcourus · présence validée</span>
+          <span class="ct-xp">+25 XP</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIGNAL RECRUTEUR -->
+  <div class="signal-box">
+    <div class="sb-header">
+      <span class="sb-title">Signal recruteur</span>
+      <span class="sb-badge">Visible · 3 entreprises</span>
+    </div>
+    <div class="sb-meters">
+      <div class="sb-meter">
+        <span class="sb-meter-lbl">Initiative terrain</span>
+        <div class="sb-meter-track"><div class="sb-meter-fill" style="width:85%;background:#30B870"></div></div>
+        <span class="sb-meter-val" style="color:#30B870">85%</span>
+      </div>
+      <div class="sb-meter">
+        <span class="sb-meter-lbl">Clarté du projet</span>
+        <div class="sb-meter-track"><div class="sb-meter-fill" style="width:90%;background:#7500B8"></div></div>
+        <span class="sb-meter-val" style="color:#7500B8">90%</span>
+      </div>
+      <div class="sb-meter">
+        <span class="sb-meter-lbl">Expression orale</span>
+        <div class="sb-meter-track"><div class="sb-meter-fill" style="width:72%;background:#D4537E"></div></div>
+        <span class="sb-meter-val" style="color:#D4537E">72%</span>
+      </div>
+      <div class="sb-meter">
+        <span class="sb-meter-lbl">Non-falsifiable IA</span>
+        <div class="sb-meter-track"><div class="sb-meter-fill" style="width:100%;background:#B3F70B"></div></div>
+        <span class="sb-meter-val" style="color:#B3F70B">100%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DÉFIS RÉCENTS -->
+  <div class="section-lbl">
+    <span class="sl-title">Défis récents</span>
+    <span class="sl-action">Voir tout</span>
+  </div>
+  <div class="recent-defis">
+    <div class="rd-item">
+      <div class="rd-fmt" style="background:#7500B8">CH</div>
+      <div class="rd-info">
+        <div class="rd-title">Tu choisis ta voie, pas l'étiquette</div>
+        <div class="rd-meta">CHOOSE · Mon background · il y a 2j</div>
+      </div>
+      <span class="rd-xp">+10 XP</span>
+    </div>
+    <div class="rd-item">
+      <div class="rd-fmt" style="background:#30B870">GO</div>
+      <div class="rd-info">
+        <div class="rd-title">Campus HEC — JPO 14 mars</div>
+        <div class="rd-meta">TRACE · Mes expériences · il y a 5j</div>
+      </div>
+      <span class="rd-xp">+25 XP</span>
+    </div>
+    <div class="rd-item">
+      <div class="rd-fmt" style="background:#D4537E">PT</div>
+      <div class="rd-info">
+        <div class="rd-title">Balance ton talent en 30s</div>
+        <div class="rd-meta">PITCH · Mes forces · il y a 1sem</div>
+      </div>
+      <span class="rd-xp">+20 XP</span>
+    </div>
+    <div class="rd-item">
+      <div class="rd-fmt" style="background:#FF5321">VS</div>
+      <div class="rd-info">
+        <div class="rd-title">Startup chaotique vs grande boite ?</div>
+        <div class="rd-meta">VERSUS · Mes envies · il y a 1sem</div>
+      </div>
+      <span class="rd-xp">+8 XP</span>
+    </div>
+  </div>
+
+  <!-- CTA SHARE -->
+  <div class="cta-share">
+    <button class="cta-dl">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v7M4 6l3 3 3-3" stroke="white" stroke-width="1.4" stroke-linecap="round"/><path d="M2 11h10" stroke="white" stroke-width="1.4" stroke-linecap="round"/></svg>
+      Télécharger mon profil
+    </button>
+    <div class="cta-sh">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="4" cy="8" r="1.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.3"/><circle cx="12" cy="4" r="1.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.3"/><circle cx="12" cy="12" r="1.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.3"/><path d="M5.4 7.3L10.6 4.7M5.4 8.7L10.6 11.3" stroke="rgba(255,255,255,0.5)" stroke-width="1.3"/></svg>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="nav-item">
+      <div class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.2" fill="rgba(255,255,255,0.35)"/><rect x="9" y="1" width="6" height="6" rx="1.2" fill="rgba(255,255,255,0.35)"/><rect x="1" y="9" width="6" height="6" rx="1.2" fill="rgba(255,255,255,0.35)"/><rect x="9" y="9" width="6" height="6" rx="1.2" fill="rgba(255,255,255,0.35)"/></svg>
+      </div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2C5 2 3 4.5 3 7c0 3.5 5 9 5 9s5-5.5 5-9c0-2.5-2-5-5-5z" stroke="rgba(255,255,255,0.35)" stroke-width="1.3"/><circle cx="8" cy="7" r="2" stroke="rgba(255,255,255,0.35)" stroke-width="1.3"/></svg>
+      </div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon active">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="white" stroke-width="1.3"/><path d="M2.5 14c0-3 2.5-4.5 5.5-4.5s5.5 1.5 5.5 4.5" stroke="white" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="nav-dot"></div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v4M8 10v4M2 8h4M10 8h4" stroke="rgba(255,255,255,0.35)" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    document.getElementById('xpFill').style.width = '68%';
+    document.querySelectorAll('.skill-bar-fill').forEach(function(el) {
+      var w = el.style.width;
+      el.style.width = '0%';
+      setTimeout(function() { el.style.transition = 'width 1s ease'; el.style.width = w; }, 100);
+    });
+    document.querySelectorAll('.sb-meter-fill').forEach(function(el) {
+      var w = el.style.width;
+      el.style.width = '0%';
+      setTimeout(function() { el.style.transition = 'width 1.2s ease'; el.style.width = w; }, 300);
+    });
+  }, 200);
+});
+function toggleSkill(row) {
+  row.style.opacity = row.style.opacity === '0.6' ? '1' : '0.6';
+}
+</script>
+</body>
+</html>

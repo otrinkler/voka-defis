@@ -1,0 +1,364 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-sans);}
+.phone{width:300px;margin:0 auto;background:#080810;border-radius:36px;overflow:hidden;border:6px solid #1a1a2e;}
+.sb{display:flex;justify-content:space-between;padding:10px 18px 0;}
+.sb span{font-size:11px;color:rgba(255,255,255,0.3);}
+.step{display:none;}
+.step.active{display:block;}
+
+/* STEP 1 : l'image plein écran */
+.snap-img{width:100%;height:320px;position:relative;overflow:hidden;}
+.snap-bg{position:absolute;inset:0;}
+.snap-bg-1{background:#1a2a3a;}
+.snap-bg-2{background:#1a1a0a;}
+.snap-bg-3{background:#2a0a1a;}
+.snap-scene{position:absolute;inset:0;}
+.snap-question-overlay{position:absolute;top:0;left:0;right:0;padding:14px 16px;}
+.snap-q-pill{background:rgba(0,0,0,0.55);border-radius:20px;padding:8px 14px;display:inline-block;}
+.snap-q-text{font-size:14px;font-weight:500;color:#fff;line-height:1.35;}
+.snap-counter{position:absolute;top:14px;right:14px;background:rgba(0,0,0,0.5);border-radius:10px;padding:4px 9px;font-size:11px;color:rgba(255,255,255,0.5);}
+.snap-hint{position:absolute;bottom:16px;left:0;right:0;display:flex;justify-content:space-between;padding:0 20px;}
+.snap-hint-btn{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;}
+.snap-arrow{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.arrow-no{background:rgba(255,83,33,0.2);border:1.5px solid rgba(255,83,33,0.5);}
+.arrow-yes{background:rgba(179,247,11,0.15);border:1.5px solid rgba(179,247,11,0.4);}
+.arrow-left{width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-right:13px solid #FF5321;}
+.arrow-right{width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:13px solid #B3F70B;}
+.hint-lbl{font-size:10px;color:rgba(255,255,255,0.3);}
+.snap-prog{height:2px;background:rgba(255,255,255,0.07);}
+.snap-prog-fill{height:2px;background:#7500B8;}
+
+/* STEP 2 : feedback + preuve sociale */
+.feedback-screen{background:#080810;padding:20px 18px;}
+.fb-result{text-align:center;padding:20px 0 16px;}
+.fb-choice-badge{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:8px 18px;margin-bottom:12px;}
+.fb-choice-yes{background:rgba(179,247,11,0.12);border:0.5px solid rgba(179,247,11,0.3);}
+.fb-choice-no{background:rgba(255,83,33,0.12);border:0.5px solid rgba(255,83,33,0.3);}
+.fb-badge-dot{width:7px;height:7px;border-radius:50%;}
+.fb-badge-txt{font-size:13px;font-weight:500;}
+.fb-insight{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.5;text-align:center;margin-bottom:18px;}
+.sp-block{background:rgba(255,255,255,0.04);border-radius:12px;padding:12px 14px;margin-bottom:14px;}
+.sp-label{font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:0.07em;margin-bottom:8px;}
+.sp-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.sp-opt{font-size:12px;color:rgba(255,255,255,0.5);width:28px;flex-shrink:0;}
+.sp-track{flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;}
+.sp-fill{height:6px;border-radius:3px;}
+.sp-pct{font-size:11px;color:rgba(255,255,255,0.35);width:28px;text-align:right;flex-shrink:0;}
+.sp-total{font-size:10px;color:rgba(255,255,255,0.2);text-align:right;margin-top:4px;}
+.act-tag{background:rgba(117,0,184,0.12);border:0.5px solid rgba(117,0,184,0.25);border-radius:8px;padding:8px 12px;margin-bottom:14px;}
+.act-lbl{font-size:9px;color:rgba(117,0,184,0.6);letter-spacing:0.08em;margin-bottom:3px;}
+.act-val{font-size:12px;color:#fff;font-weight:500;}
+.next-snap-btn{width:100%;background:#7500B8;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;}
+
+/* STEP 3 : fin de série */
+.end-screen{background:#080810;padding:24px 18px;text-align:center;}
+.end-xp{font-size:36px;font-weight:500;color:#B3F70B;margin-bottom:4px;}
+.end-xp-lbl{font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:20px;}
+.end-profile-update{background:rgba(117,0,184,0.1);border-radius:12px;padding:14px;border:0.5px solid rgba(117,0,184,0.2);margin-bottom:16px;text-align:left;}
+.epu-lbl{font-size:10px;color:rgba(117,0,184,0.6);letter-spacing:0.07em;margin-bottom:8px;}
+.epu-dim{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.epu-name{font-size:12px;color:rgba(255,255,255,0.6);flex:1;}
+.epu-bar{width:80px;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;}
+.epu-fill{height:4px;border-radius:2px;background:#7500B8;}
+.epu-delta{font-size:11px;color:#B3F70B;}
+.end-cta{display:flex;flex-direction:column;gap:8px;}
+.end-btn-main{background:#7500B8;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;width:100%;}
+.end-btn-sec{background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px;font-size:13px;color:rgba(255,255,255,0.5);cursor:pointer;width:100%;}
+
+/* SCENE CSS pour chaque snap */
+.scene-office{position:absolute;inset:0;background:#1a2a3a;}
+.so-desk{position:absolute;bottom:0;left:0;right:0;height:50px;background:#0d1a28;}
+.so-screen{position:absolute;bottom:44px;left:30px;width:80px;height:54px;background:#0a0f1e;border-radius:4px;border:2px solid #1e3a5a;}
+.so-screen-glow{position:absolute;inset:6px;background:rgba(55,138,221,0.15);}
+.so-chair{position:absolute;bottom:44px;right:40px;width:40px;height:50px;}
+.so-chair-back{position:absolute;top:0;left:8px;width:24px;height:30px;background:#162a3a;border-radius:4px 4px 0 0;}
+.so-chair-seat{position:absolute;bottom:10px;left:4px;width:32px;height:12px;background:#1a3248;border-radius:3px;}
+.so-person{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);width:34px;height:44px;}
+.so-head{width:22px;height:22px;border-radius:50%;background:#c8956c;margin:0 auto;}
+.so-body{width:30px;height:24px;background:#1e3a5a;border-radius:40% 40% 0 0;margin:0 auto;}
+.so-plant{position:absolute;bottom:44px;right:14px;width:16px;height:30px;}
+.so-pot{position:absolute;bottom:0;width:14px;height:10px;background:#2a1a0a;border-radius:2px;left:1px;}
+.so-stem{position:absolute;bottom:8px;left:6px;width:2px;height:14px;background:#1a3a0a;}
+.so-leaf{position:absolute;bottom:18px;width:16px;height:10px;border-radius:50%;background:#1a4a10;left:-1px;}
+
+.scene-forest{position:absolute;inset:0;background:#0a1f0a;}
+.sf-sky{position:absolute;top:0;left:0;right:0;height:120px;background:#0a1428;}
+.sf-tree{position:absolute;bottom:0;}
+.sf-trunk{position:absolute;bottom:0;width:10px;background:#1a0a05;left:50%;transform:translateX(-50%);}
+.sf-crown{position:absolute;border-radius:50% 50% 40% 40%;background:#0d3a0d;}
+.sf-path{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:30px;height:80px;background:#1a1408;border-radius:15px 15px 0 0;}
+.sf-fork-l{position:absolute;bottom:60px;left:calc(50% - 30px);width:25px;height:60px;background:#1a1408;border-radius:12px 0 0 0;transform:rotate(-20deg);transform-origin:bottom right;}
+.sf-fork-r{position:absolute;bottom:60px;right:calc(50% - 30px);width:25px;height:60px;background:#1a1408;border-radius:0 12px 0 0;transform:rotate(20deg);transform-origin:bottom left;}
+.sf-sign-l{position:absolute;bottom:100px;left:calc(50% - 55px);background:#2a1a0a;border-radius:4px;padding:3px 6px;font-size:9px;color:rgba(255,255,255,0.5);}
+.sf-sign-r{position:absolute;bottom:100px;right:calc(50% - 55px);background:#2a1a0a;border-radius:4px;padding:3px 6px;font-size:9px;color:rgba(255,255,255,0.5);}
+
+.scene-stage{position:absolute;inset:0;background:#1a0a0f;}
+.ss-lights{position:absolute;top:0;left:0;right:0;height:40px;display:flex;justify-content:space-around;align-items:flex-start;padding-top:4px;}
+.ss-light{width:8px;height:16px;background:#2a1a08;border-radius:0 0 4px 4px;position:relative;}
+.ss-light-beam{position:absolute;bottom:-30px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;}
+.ss-stage{position:absolute;bottom:0;left:0;right:0;height:40px;background:#0f0a14;}
+.ss-person{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);width:30px;height:50px;}
+.ss-s-head{width:20px;height:20px;border-radius:50%;background:#D4A876;margin:0 auto;}
+.ss-s-body{width:28px;height:28px;background:#3a1a2a;border-radius:40% 40% 0 0;margin:0 auto;}
+.ss-mic-s{position:absolute;bottom:38px;left:calc(50% + 12px);width:3px;height:20px;background:#333;border-radius:2px;}
+.ss-mic-top{position:absolute;bottom:54px;left:calc(50% + 10px);width:7px;height:8px;border-radius:50%;background:#444;}
+.ss-crowd-row{position:absolute;bottom:36px;left:0;right:0;display:flex;justify-content:space-around;padding:0 8px;}
+.ss-head-s{width:12px;height:12px;border-radius:50%;}
+</style>
+
+<h2 class="sr-only">Prototype interactif du format SNAP — swipe, feedback, preuve sociale</h2>
+
+<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:16px;">
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+
+  <!-- STEP 1a : premier snap (bureau) -->
+  <div class="step active" id="s1a">
+    <div class="snap-img">
+      <div class="snap-bg snap-bg-1">
+        <div class="scene-office">
+          <div class="so-desk"></div>
+          <div class="so-screen"><div class="so-screen-glow"></div></div>
+          <div class="so-person"><div class="so-head"></div><div class="so-body"></div></div>
+          <div class="so-plant"><div class="so-pot"></div><div class="so-stem"></div><div class="so-leaf"></div></div>
+        </div>
+      </div>
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(8,8,16,0.7) 0%,rgba(8,8,16,0.1) 60%,transparent 100%);"></div>
+      <div class="snap-question-overlay">
+        <div class="snap-q-pill">
+          <div class="snap-q-text">Cette ambiance de bureau, tu te vois dedans ?</div>
+        </div>
+      </div>
+      <div class="snap-counter">1 / 5</div>
+      <div class="snap-hint">
+        <div class="snap-hint-btn" onclick="swipe('no','s1a','fb1')">
+          <div class="snap-arrow arrow-no"><div class="arrow-left"></div></div>
+          <span class="hint-lbl" style="color:rgba(255,83,33,0.6)">Pas moi</span>
+        </div>
+        <div class="snap-hint-btn" onclick="swipe('yes','s1a','fb1')">
+          <div class="snap-arrow arrow-yes"><div class="arrow-right"></div></div>
+          <span class="hint-lbl" style="color:rgba(179,247,11,0.6)">C'est moi</span>
+        </div>
+      </div>
+    </div>
+    <div class="snap-prog"><div class="snap-prog-fill" style="width:20%"></div></div>
+  </div>
+
+  <!-- STEP 1b : second snap (forêt / chemin) -->
+  <div class="step" id="s1b">
+    <div class="snap-img">
+      <div class="snap-bg snap-bg-2">
+        <div class="scene-forest">
+          <div class="sf-sky"></div>
+          <div class="sf-tree" style="left:10px"><div class="sf-trunk" style="height:80px"></div><div class="sf-crown" style="width:50px;height:60px;bottom:70px;left:50%;transform:translateX(-50%)"></div></div>
+          <div class="sf-tree" style="right:10px"><div class="sf-trunk" style="height:60px"></div><div class="sf-crown" style="width:40px;height:50px;bottom:50px;left:50%;transform:translateX(-50%)"></div></div>
+          <div class="sf-path"></div>
+          <div class="sf-fork-l"></div>
+          <div class="sf-fork-r"></div>
+          <div class="sf-sign-l">Connu</div>
+          <div class="sf-sign-r">Inconnu</div>
+        </div>
+      </div>
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(8,8,16,0.7) 0%,rgba(8,8,16,0.1) 60%,transparent 100%);"></div>
+      <div class="snap-question-overlay">
+        <div class="snap-q-pill">
+          <div class="snap-q-text">T'aurais choisi quelle voie ?</div>
+        </div>
+      </div>
+      <div class="snap-counter">2 / 5</div>
+      <div class="snap-hint">
+        <div class="snap-hint-btn" onclick="swipe('no','s1b','fb2')">
+          <div class="snap-arrow arrow-no"><div class="arrow-left"></div></div>
+          <span class="hint-lbl" style="color:rgba(255,83,33,0.6)">La connue</span>
+        </div>
+        <div class="snap-hint-btn" onclick="swipe('yes','s1b','fb2')">
+          <div class="snap-arrow arrow-yes"><div class="arrow-right"></div></div>
+          <span class="hint-lbl" style="color:rgba(179,247,11,0.6)">L'inconnue</span>
+        </div>
+      </div>
+    </div>
+    <div class="snap-prog"><div class="snap-prog-fill" style="width:40%"></div></div>
+  </div>
+
+  <!-- STEP 1c : troisième snap (scène/foule) -->
+  <div class="step" id="s1c">
+    <div class="snap-img">
+      <div class="snap-bg snap-bg-3">
+        <div class="scene-stage">
+          <div class="ss-lights">
+            <div class="ss-light"><div class="ss-light-beam" style="border-bottom:40px solid rgba(255,200,50,0.08)"></div></div>
+            <div class="ss-light"><div class="ss-light-beam" style="border-bottom:40px solid rgba(255,200,50,0.1)"></div></div>
+            <div class="ss-light"><div class="ss-light-beam" style="border-bottom:40px solid rgba(255,200,50,0.08)"></div></div>
+          </div>
+          <div class="ss-crowd-row">
+            <div class="ss-head-s" style="background:#3a1a2a"></div>
+            <div class="ss-head-s" style="background:#2a2a3a"></div>
+            <div class="ss-head-s" style="background:#3a2a1a"></div>
+            <div class="ss-head-s" style="background:#1a2a2a"></div>
+            <div class="ss-head-s" style="background:#2a1a3a"></div>
+          </div>
+          <div class="ss-person"><div class="ss-s-head"></div><div class="ss-s-body"></div></div>
+          <div class="ss-mic-s"></div><div class="ss-mic-top"></div>
+          <div class="ss-stage"></div>
+        </div>
+      </div>
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(8,8,16,0.7) 0%,rgba(8,8,16,0.1) 60%,transparent 100%);"></div>
+      <div class="snap-question-overlay">
+        <div class="snap-q-pill">
+          <div class="snap-q-text">Prendre la parole devant 200 personnes, t'en es capable ?</div>
+        </div>
+      </div>
+      <div class="snap-counter">3 / 5</div>
+      <div class="snap-hint">
+        <div class="snap-hint-btn" onclick="swipe('no','s1c','fb3')">
+          <div class="snap-arrow arrow-no"><div class="arrow-left"></div></div>
+          <span class="hint-lbl" style="color:rgba(255,83,33,0.6)">Pas encore</span>
+        </div>
+        <div class="snap-hint-btn" onclick="swipe('yes','s1c','end1')">
+          <div class="snap-arrow arrow-yes"><div class="arrow-right"></div></div>
+          <span class="hint-lbl" style="color:rgba(179,247,11,0.6)">Carrément</span>
+        </div>
+      </div>
+    </div>
+    <div class="snap-prog"><div class="snap-prog-fill" style="width:60%"></div></div>
+  </div>
+
+  <!-- FEEDBACK 1 -->
+  <div class="step" id="fb1">
+    <div class="feedback-screen">
+      <div class="fb-result">
+        <div class="fb-choice-badge fb-choice-yes" id="fb1-badge">
+          <div class="fb-badge-dot" style="background:#B3F70B"></div>
+          <span class="fb-badge-txt" style="color:#B3F70B">Tu te vois dedans</span>
+        </div>
+        <div class="fb-insight">Les environnements structurés et collaboratifs te correspondent. Ça dit quelque chose sur ton style de travail.</div>
+      </div>
+      <div class="sp-block">
+        <div class="sp-label">COMMENT LES AUTRES ONT RÉPONDU</div>
+        <div class="sp-bar-row">
+          <span class="sp-opt">Oui</span>
+          <div class="sp-track"><div class="sp-fill" style="width:64%;background:#B3F70B"></div></div>
+          <span class="sp-pct">64%</span>
+        </div>
+        <div class="sp-bar-row">
+          <span class="sp-opt">Non</span>
+          <div class="sp-track"><div class="sp-fill" style="width:36%;background:#FF5321"></div></div>
+          <span class="sp-pct">36%</span>
+        </div>
+        <div class="sp-total">1 247 réponses</div>
+      </div>
+      <div class="act-tag">
+        <div class="act-lbl">SIGNAL ACT SKILLS</div>
+        <div class="act-val">Mon background · affinité environnement structuré</div>
+      </div>
+      <button class="next-snap-btn" onclick="go('s1b')">Snap suivant</button>
+    </div>
+  </div>
+
+  <!-- FEEDBACK 2 -->
+  <div class="step" id="fb2">
+    <div class="feedback-screen">
+      <div class="fb-result">
+        <div class="fb-choice-badge fb-choice-yes">
+          <div class="fb-badge-dot" style="background:#B3F70B"></div>
+          <span class="fb-badge-txt" style="color:#B3F70B">L'inconnue</span>
+        </div>
+        <div class="fb-insight">Tu es à l'aise avec l'incertitude. C'est un signal fort sur ta capacité à prendre des risques calculés.</div>
+      </div>
+      <div class="sp-block">
+        <div class="sp-label">COMMENT LES AUTRES ONT RÉPONDU</div>
+        <div class="sp-bar-row">
+          <span class="sp-opt">Connue</span>
+          <div class="sp-track"><div class="sp-fill" style="width:58%;background:#FF5321"></div></div>
+          <span class="sp-pct">58%</span>
+        </div>
+        <div class="sp-bar-row">
+          <span class="sp-opt">Inconnue</span>
+          <div class="sp-track"><div class="sp-fill" style="width:42%;background:#B3F70B"></div></div>
+          <span class="sp-pct">42%</span>
+        </div>
+        <div class="sp-total">983 réponses</div>
+      </div>
+      <div class="act-tag">
+        <div class="act-lbl">SIGNAL ACT SKILLS</div>
+        <div class="act-val">Mes envies · appétit pour la nouveauté</div>
+      </div>
+      <button class="next-snap-btn" onclick="go('s1c')">Snap suivant</button>
+    </div>
+  </div>
+
+  <!-- FEEDBACK 3 -->
+  <div class="step" id="fb3">
+    <div class="feedback-screen">
+      <div class="fb-result">
+        <div class="fb-choice-badge fb-choice-no">
+          <div class="fb-badge-dot" style="background:#FF5321"></div>
+          <span class="fb-badge-txt" style="color:#FF5321">Pas encore</span>
+        </div>
+        <div class="fb-insight">Ça s'apprend. 67% des jeunes qui ont dit "pas encore" ont changé d'avis après un défi PITCH.</div>
+      </div>
+      <div class="sp-block">
+        <div class="sp-label">COMMENT LES AUTRES ONT RÉPONDU</div>
+        <div class="sp-bar-row">
+          <span class="sp-opt">Oui</span>
+          <div class="sp-track"><div class="sp-fill" style="width:38%;background:#B3F70B"></div></div>
+          <span class="sp-pct">38%</span>
+        </div>
+        <div class="sp-bar-row">
+          <span class="sp-opt">Non</span>
+          <div class="sp-track"><div class="sp-fill" style="width:62%;background:#FF5321"></div></div>
+          <span class="sp-pct">62%</span>
+        </div>
+        <div class="sp-total">2 103 réponses</div>
+      </div>
+      <div class="act-tag">
+        <div class="act-lbl">SIGNAL ACT SKILLS</div>
+        <div class="act-val">Mes forces · confiance en expression publique</div>
+      </div>
+      <button class="next-snap-btn" onclick="go('end1')">Voir mon résultat</button>
+    </div>
+  </div>
+
+  <!-- END -->
+  <div class="step" id="end1">
+    <div class="end-screen">
+      <div class="end-xp">+15 XP</div>
+      <div class="end-xp-lbl">Série complétée · 3 snaps</div>
+      <div class="end-profile-update">
+        <div class="epu-lbl">TON PROFIL A ÉTÉ MIS À JOUR</div>
+        <div class="epu-dim">
+          <span class="epu-name">Mon background</span>
+          <div class="epu-bar"><div class="epu-fill" style="width:55%"></div></div>
+          <span class="epu-delta">+3</span>
+        </div>
+        <div class="epu-dim">
+          <span class="epu-name">Mes envies</span>
+          <div class="epu-bar"><div class="epu-fill" style="width:40%"></div></div>
+          <span class="epu-delta">+2</span>
+        </div>
+        <div class="epu-dim">
+          <span class="epu-name">Mes forces</span>
+          <div class="epu-bar"><div class="epu-fill" style="width:30%"></div></div>
+          <span class="epu-delta">+2</span>
+        </div>
+      </div>
+      <div class="end-cta">
+        <button class="end-btn-main" onclick="go('s1a')">Rejouer</button>
+        <button class="end-btn-sec" onclick="go('s1a')">Retour au feed</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+}
+function swipe(choice, from, to){
+  go(to);
+}
+</script>

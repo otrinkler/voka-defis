@@ -1,0 +1,376 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-sans);}
+.phone{width:300px;margin:0 auto;background:#080810;border-radius:36px;overflow:hidden;border:6px solid #1a1a2e;}
+.sb{display:flex;justify-content:space-between;padding:10px 18px 0;}
+.sb span{font-size:11px;color:rgba(255,255,255,0.3);}
+.step{display:none;}.step.active{display:block;}
+
+/* INTRO */
+.pi-intro{padding:16px;}
+.pi-fmt{display:flex;align-items:center;gap:6px;margin-bottom:12px;}
+.pi-pip{width:7px;height:7px;border-radius:50%;background:#D4537E;}
+.pi-lbl{font-size:11px;color:rgba(212,83,126,0.7);font-weight:500;letter-spacing:0.05em;}
+.pi-xp{margin-left:auto;font-size:11px;color:#B3F70B;background:rgba(179,247,11,0.1);padding:3px 8px;border-radius:8px;}
+.pi-invite{font-size:19px;font-weight:500;color:#fff;line-height:1.3;margin-bottom:8px;}
+.pi-sub{font-size:13px;color:rgba(255,255,255,0.35);line-height:1.55;margin-bottom:16px;}
+.pi-rules{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;}
+.pi-rule{display:flex;align-items:center;gap:10px;}
+.pi-rule-icon{width:28px;height:28px;border-radius:8px;background:rgba(212,83,126,0.08);border:0.5px solid rgba(212,83,126,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pi-rule-txt{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.4;}
+.pi-examples{background:rgba(255,255,255,0.03);border-radius:10px;padding:10px 12px;margin-bottom:16px;}
+.pi-ex-lbl{font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:0.07em;margin-bottom:6px;}
+.pi-ex-item{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.pi-ex-item:last-child{margin-bottom:0;}
+.pi-ex-dot{width:4px;height:4px;border-radius:50%;background:rgba(212,83,126,0.4);flex-shrink:0;}
+.pi-ex-txt{font-size:11px;color:rgba(255,255,255,0.35);font-style:italic;}
+.pi-start{width:100%;background:#D4537E;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:500;color:#fff;cursor:pointer;}
+
+/* REC SCREEN */
+.rec-screen{padding:0;}
+.rec-top{padding:12px 16px 0;display:flex;justify-content:space-between;align-items:center;}
+.rec-invite-pill{background:rgba(212,83,126,0.1);border:0.5px solid rgba(212,83,126,0.25);border-radius:20px;padding:5px 12px;}
+.rec-invite-txt{font-size:11px;color:rgba(212,83,126,0.8);font-weight:500;}
+.rec-xp{font-size:11px;color:#B3F70B;background:rgba(179,247,11,0.1);padding:3px 8px;border-radius:8px;}
+
+.rec-prompt{padding:14px 16px 12px;text-align:center;}
+.rp-txt{font-size:16px;font-weight:500;color:#fff;line-height:1.35;}
+.rp-sub{font-size:12px;color:rgba(255,255,255,0.3);margin-top:5px;}
+
+.rec-face{width:100%;height:160px;background:#0d0510;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.rf-bg{position:absolute;inset:0;background:#0d0510;}
+.rf-vignette{position:absolute;inset:0;}
+.rf-person{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100px;height:150px;}
+.rfp-head{width:52px;height:56px;border-radius:50% 50% 45% 45%;background:#D4A876;margin:0 auto;position:relative;}
+.rfp-hair{position:absolute;top:-3px;left:-2px;right:-2px;height:26px;background:#0a0806;border-radius:50% 50% 0 0;}
+.rfp-neck{width:20px;height:12px;background:#c07040;margin:0 auto;}
+.rfp-body{width:90px;height:84px;background:#2a1020;border-radius:50% 50% 0 0;margin:0 auto;}
+.rf-frame{position:absolute;inset:8px;border:1.5px solid rgba(212,83,126,0.25);border-radius:10px;}
+.rf-rec-indicator{position:absolute;top:14px;right:14px;display:flex;align-items:center;gap:5px;}
+.rf-rec-dot{width:8px;height:8px;border-radius:50%;background:#FF5321;}
+.rf-rec-lbl{font-size:10px;color:rgba(255,83,33,0.8);font-weight:600;letter-spacing:0.05em;}
+.rf-timer{position:absolute;top:14px;left:14px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.6);background:rgba(0,0,0,0.4);padding:3px 8px;border-radius:6px;}
+
+.waveform{display:flex;align-items:center;gap:2px;height:32px;padding:0 16px;margin:10px 0;}
+.wf-bar{flex:1;border-radius:2px;background:rgba(212,83,126,0.2);}
+
+.rec-zone{padding:0 16px;display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:12px;}
+.rec-btn{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;transition:all 0.15s;}
+.rec-btn-idle{background:rgba(212,83,126,0.15);border:2px solid rgba(212,83,126,0.4);}
+.rec-btn-active{background:rgba(255,83,33,0.2);border:2px solid #FF5321;}
+.rec-circle-inner{width:26px;height:26px;border-radius:50%;background:#D4537E;transition:all 0.2s;}
+.rec-btn-active .rec-circle-inner{border-radius:6px;width:20px;height:20px;background:#FF5321;}
+.rec-btn-label{font-size:11px;color:rgba(255,255,255,0.3);text-align:center;}
+.rec-hint{font-size:11px;color:rgba(255,255,255,0.2);text-align:center;line-height:1.4;}
+
+.rec-progress{margin:0 16px 14px;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;}
+.rec-prog-fill{height:3px;border-radius:2px;background:#D4537E;width:0%;transition:width 0.1s linear;}
+
+/* REVIEW SCREEN */
+.review-screen{padding:14px 16px;}
+.rv-top{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.rv-done-badge{display:flex;align-items:center;gap:5px;background:rgba(179,247,11,0.1);border:0.5px solid rgba(179,247,11,0.2);border-radius:20px;padding:5px 11px;}
+.rv-done-dot{width:6px;height:6px;border-radius:50%;background:#B3F70B;}
+.rv-done-txt{font-size:11px;color:#B3F70B;font-weight:500;}
+.rv-dur{margin-left:auto;font-size:11px;color:rgba(255,255,255,0.3);}
+.rv-playback{width:100%;height:110px;background:#0d0510;border-radius:12px;position:relative;overflow:hidden;margin-bottom:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.rv-pb-face{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;}
+.rv-pb-person{width:80px;height:120px;position:relative;}
+.rvp-head{width:40px;height:44px;border-radius:50% 50% 45% 45%;background:#D4A876;margin:0 auto;position:relative;}
+.rvp-hair{position:absolute;top:-2px;left:-2px;right:-2px;height:20px;background:#0a0806;border-radius:50% 50% 0 0;}
+.rvp-neck{width:16px;height:10px;background:#c07040;margin:0 auto;}
+.rvp-body{width:70px;height:66px;background:#2a1020;border-radius:50% 50% 0 0;margin:0 auto;}
+.rv-pb-overlay{position:absolute;inset:0;background:rgba(13,5,16,0.5);display:flex;align-items:center;justify-content:center;}
+.rv-play-btn{width:36px;height:36px;border-radius:50%;background:rgba(212,83,126,0.3);border:1.5px solid rgba(212,83,126,0.6);display:flex;align-items:center;justify-content:center;}
+.rv-play-tri{width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:12px solid rgba(212,83,126,0.9);margin-left:3px;}
+.rv-prog{position:absolute;bottom:0;left:0;right:0;height:2px;background:rgba(255,255,255,0.08);}
+.rv-prog-fill{height:2px;background:#D4537E;width:28%;}
+
+.rv-tags-lbl{font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:0.07em;margin-bottom:7px;}
+.rv-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;}
+.rv-tag{padding:5px 10px;border-radius:20px;font-size:11px;font-weight:500;}
+.rv-tag-act{background:rgba(212,83,126,0.12);border:0.5px solid rgba(212,83,126,0.3);color:rgba(212,83,126,0.9);}
+.rv-tag-neu{background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.35);}
+
+.rv-recruiter-preview{background:rgba(255,255,255,0.03);border:0.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;margin-bottom:14px;}
+.rv-rp-lbl{font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:0.07em;margin-bottom:6px;}
+.rv-rp-row{display:flex;align-items:center;gap:8px;}
+.rv-rp-av{width:28px;height:28px;border-radius:50%;background:#1a3a5a;display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(55,138,221,0.7);font-weight:500;flex-shrink:0;}
+.rv-rp-info{flex:1;}
+.rv-rp-name{font-size:12px;color:rgba(255,255,255,0.5);}
+.rv-rp-co{font-size:10px;color:rgba(255,255,255,0.25);}
+.rv-rp-eye{width:6px;height:6px;border-radius:50%;background:rgba(179,247,11,0.4);}
+
+.rv-btns{display:flex;flex-direction:column;gap:8px;}
+.rv-btn-pub{background:#D4537E;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;width:100%;}
+.rv-btn-rec{background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px;font-size:13px;color:rgba(255,255,255,0.4);cursor:pointer;width:100%;}
+
+/* END */
+.pitch-end{padding:18px 16px;text-align:center;}
+.pe-xp{font-size:36px;font-weight:500;color:#D4537E;}
+.pe-lbl{font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:18px;}
+.pe-profile{background:rgba(212,83,126,0.07);border:0.5px solid rgba(212,83,126,0.18);border-radius:12px;padding:12px 14px;margin-bottom:12px;text-align:left;}
+.pe-p-lbl{font-size:9px;color:rgba(212,83,126,0.5);letter-spacing:0.08em;margin-bottom:8px;}
+.pe-dim{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.pe-dname{font-size:12px;color:rgba(255,255,255,0.45);flex:1;}
+.pe-bar{width:80px;height:3px;background:rgba(255,255,255,0.05);border-radius:2px;}
+.pe-fill{height:3px;border-radius:2px;background:#D4537E;}
+.pe-delta{font-size:11px;color:#B3F70B;}
+.pe-nonfalsi{background:rgba(179,247,11,0.06);border:0.5px solid rgba(179,247,11,0.15);border-radius:10px;padding:10px 12px;margin-bottom:16px;text-align:left;}
+.pe-nf-lbl{font-size:9px;color:rgba(179,247,11,0.5);letter-spacing:0.07em;margin-bottom:4px;}
+.pe-nf-txt{font-size:12px;color:rgba(255,255,255,0.45);line-height:1.5;}
+.pe-btns{display:flex;flex-direction:column;gap:8px;}
+.pe-btn-m{background:#D4537E;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;width:100%;}
+.pe-btn-s{background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px;font-size:13px;color:rgba(255,255,255,0.4);cursor:pointer;width:100%;}
+</style>
+
+<h2 class="sr-only">Prototype interactif du format PITCH — enregistrement vidéo 30 secondes sans script</h2>
+
+<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:16px;">
+<div class="phone">
+  <div class="sb"><span>9:41</span><span>●●●</span></div>
+
+  <!-- INTRO -->
+  <div class="step active" id="pi_intro">
+    <div class="pi-intro">
+      <div class="pi-fmt"><div class="pi-pip"></div><span class="pi-lbl">PITCH · 30s</span><span class="pi-xp">+20 XP</span></div>
+      <div class="pi-invite">Balance ton talent en 30 secondes. Sans filtre.</div>
+      <div class="pi-sub">Pas de script. Pas de perfection. L'important c'est de te lancer. Ta réponse enrichit directement ton profil ACT SKILLS.</div>
+      <div class="pi-rules">
+        <div class="pi-rule">
+          <div class="pi-rule-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="#D4537E" stroke-width="1.2"/><path d="M6.5 3.5v3.5l2 1.5" stroke="#D4537E" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+          <span class="pi-rule-txt">30 secondes maximum, tu peux t'arrêter avant</span>
+        </div>
+        <div class="pi-rule">
+          <div class="pi-rule-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 6.5l3 3 5-5" stroke="#D4537E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="pi-rule-txt">Tu vois le rendu avant de le publier</span>
+        </div>
+        <div class="pi-rule">
+          <div class="pi-rule-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="4" r="2" stroke="#D4537E" stroke-width="1.2"/><path d="M2 11.5c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4" stroke="#D4537E" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+          <span class="pi-rule-txt">Visible par les recruteurs VOKA uniquement</span>
+        </div>
+      </div>
+      <div class="pi-examples">
+        <div class="pi-ex-lbl">QUELQUES INVITATIONS POSSIBLES</div>
+        <div class="pi-ex-item"><div class="pi-ex-dot"></div><span class="pi-ex-txt">"C'est quoi ton talent caché ?"</span></div>
+        <div class="pi-ex-item"><div class="pi-ex-dot"></div><span class="pi-ex-txt">"Raconte une fois où t'as résolu un problème."</span></div>
+        <div class="pi-ex-item"><div class="pi-ex-dot"></div><span class="pi-ex-txt">"Pourquoi tu veux bosser dans ce secteur ?"</span></div>
+      </div>
+      <button class="pi-start" onclick="go('pi_rec')">C'est parti</button>
+    </div>
+  </div>
+
+  <!-- REC SCREEN -->
+  <div class="step" id="pi_rec">
+    <div class="rec-screen">
+      <div class="rec-top">
+        <div class="rec-invite-pill"><span class="rec-invite-txt">C'est quoi ton talent caché ?</span></div>
+        <span class="rec-xp">+20 XP</span>
+      </div>
+      <div class="rec-prompt">
+        <div class="rp-txt">Dis-nous quelque chose de vrai sur toi.</div>
+        <div class="rp-sub">Pas de pression. 30 secondes max.</div>
+      </div>
+      <div class="rec-face">
+        <div class="rf-bg"></div>
+        <div class="rf-person">
+          <div class="rfp-head"><div class="rfp-hair"></div></div>
+          <div class="rfp-neck"></div>
+          <div class="rfp-body"></div>
+        </div>
+        <div class="rf-frame"></div>
+        <div class="rf-rec-indicator" id="recInd" style="display:none;">
+          <div class="rf-rec-dot"></div>
+          <span class="rf-rec-lbl">REC</span>
+        </div>
+        <div class="rf-timer" id="recTimer" style="display:none;">00:00</div>
+      </div>
+      <div class="waveform" id="waveform">
+        <div class="wf-bar" style="height:8px"></div><div class="wf-bar" style="height:14px"></div><div class="wf-bar" style="height:6px"></div>
+        <div class="wf-bar" style="height:18px"></div><div class="wf-bar" style="height:10px"></div><div class="wf-bar" style="height:22px"></div>
+        <div class="wf-bar" style="height:8px"></div><div class="wf-bar" style="height:16px"></div><div class="wf-bar" style="height:12px"></div>
+        <div class="wf-bar" style="height:20px"></div><div class="wf-bar" style="height:7px"></div><div class="wf-bar" style="height:24px"></div>
+        <div class="wf-bar" style="height:10px"></div><div class="wf-bar" style="height:18px"></div><div class="wf-bar" style="height:6px"></div>
+        <div class="wf-bar" style="height:14px"></div><div class="wf-bar" style="height:20px"></div><div class="wf-bar" style="height:9px"></div>
+        <div class="wf-bar" style="height:16px"></div><div class="wf-bar" style="height:12px"></div>
+      </div>
+      <div class="rec-progress"><div class="rec-prog-fill" id="recProgFill"></div></div>
+      <div class="rec-zone">
+        <button class="rec-btn rec-btn-idle" id="recBtn" onclick="toggleRec()">
+          <div class="rec-circle-inner" id="recCircle"></div>
+        </button>
+        <div class="rec-btn-label" id="recBtnLbl">Appuie pour enregistrer</div>
+        <div class="rec-hint" id="recHint">Tu peux t'arrêter quand tu veux avant 30s</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEW -->
+  <div class="step" id="pi_review">
+    <div class="review-screen">
+      <div class="rv-top">
+        <div class="rv-done-badge"><div class="rv-done-dot"></div><span class="rv-done-txt">Enregistré</span></div>
+        <span class="rv-dur" id="rvDur">0:17</span>
+      </div>
+      <div class="rv-playback" onclick="togglePlayback()">
+        <div class="rv-pb-face">
+          <div class="rv-pb-person">
+            <div class="rvp-head"><div class="rvp-hair"></div></div>
+            <div class="rvp-neck"></div>
+            <div class="rvp-body"></div>
+          </div>
+        </div>
+        <div class="rv-pb-overlay" id="pbOverlay">
+          <div class="rv-play-btn"><div class="rv-play-tri"></div></div>
+        </div>
+        <div class="rv-prog"><div class="rv-prog-fill" id="pbProg"></div></div>
+      </div>
+      <div class="rv-tags-lbl">ACT SKILLS DÉTECTÉES DANS TON PITCH</div>
+      <div class="rv-tags">
+        <div class="rv-tag rv-tag-act">Confiance en soi</div>
+        <div class="rv-tag rv-tag-act">Clarté d'expression</div>
+        <div class="rv-tag rv-tag-neu">Leadership</div>
+        <div class="rv-tag rv-tag-neu">Créativité</div>
+        <div class="rv-tag rv-tag-act">Authenticité</div>
+      </div>
+      <div class="rv-recruiter-preview">
+        <div class="rv-rp-lbl">QUI VERRA TON PITCH</div>
+        <div class="rv-rp-row">
+          <div class="rv-rp-av">DRH</div>
+          <div class="rv-rp-info">
+            <div class="rv-rp-name">Recruteurs VOKA · profils matchés</div>
+            <div class="rv-rp-co">Entreprises partenaires uniquement</div>
+          </div>
+          <div class="rv-rp-eye"></div>
+        </div>
+      </div>
+      <div class="rv-btns">
+        <button class="rv-btn-pub" onclick="go('pi_end')">Publier dans mon profil</button>
+        <button class="rv-btn-rec" onclick="go('pi_rec')">Recommencer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- END -->
+  <div class="step" id="pi_end">
+    <div class="pitch-end">
+      <div class="pe-xp">+20 XP</div>
+      <div class="pe-lbl">Pitch publié dans ton profil</div>
+      <div class="pe-profile">
+        <div class="pe-p-lbl">SIGNAL GÉNÉRÉ</div>
+        <div class="pe-dim"><span class="pe-dname">Mes forces</span><div class="pe-bar"><div class="pe-fill" style="width:75%"></div></div><span class="pe-delta">+7</span></div>
+        <div class="pe-dim"><span class="pe-dname">Mon projet</span><div class="pe-bar"><div class="pe-fill" style="width:55%"></div></div><span class="pe-delta">+5</span></div>
+        <div class="pe-dim"><span class="pe-dname">Mes talents cachés</span><div class="pe-bar"><div class="pe-fill" style="width:40%"></div></div><span class="pe-delta">+4</span></div>
+      </div>
+      <div class="pe-nonfalsi">
+        <div class="pe-nf-lbl">SIGNAL NON-FALSIFIABLE</div>
+        <div class="pe-nf-txt">Un pitch vidéo ne peut pas être généré par l'IA. C'est ta voix, ta structure de pensée, ta confiance. Aucun CV ne montre ça.</div>
+      </div>
+      <div class="pe-btns">
+        <button class="pe-btn-m" onclick="go('pi_intro')">Faire un autre PITCH</button>
+        <button class="pe-btn-s">Retour au feed</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  if(id==='pi_rec'){resetRec();}
+}
+
+var recOn=false, recInt=null, recSec=0;
+
+function resetRec(){
+  recOn=false; recSec=0;
+  clearInterval(recInt);
+  var btn=document.getElementById('recBtn');
+  btn.className='rec-btn rec-btn-idle';
+  document.getElementById('recCircle').style.cssText='';
+  document.getElementById('recBtnLbl').textContent='Appuie pour enregistrer';
+  document.getElementById('recHint').style.display='block';
+  document.getElementById('recInd').style.display='none';
+  document.getElementById('recTimer').style.display='none';
+  document.getElementById('recProgFill').style.width='0%';
+  animWave(false);
+}
+
+function toggleRec(){
+  if(!recOn){
+    recOn=true;
+    var btn=document.getElementById('recBtn');
+    btn.className='rec-btn rec-btn-active';
+    document.getElementById('recBtnLbl').textContent='Appuie pour arrêter';
+    document.getElementById('recHint').style.display='none';
+    document.getElementById('recInd').style.display='flex';
+    document.getElementById('recTimer').style.display='block';
+    animWave(true);
+    recSec=0;
+    recInt=setInterval(function(){
+      recSec++;
+      var s=recSec%60;
+      var m=Math.floor(recSec/60);
+      document.getElementById('recTimer').textContent=(m<10?'0'+m:m)+':'+(s<10?'0'+s:s);
+      document.getElementById('recProgFill').style.width=Math.min(recSec/30*100,100)+'%';
+      if(recSec>=30){stopRec();}
+    },1000);
+  } else {
+    stopRec();
+  }
+}
+
+function stopRec(){
+  clearInterval(recInt);
+  recOn=false;
+  animWave(false);
+  var dur='0:'+pad(recSec);
+  setTimeout(function(){
+    document.getElementById('rvDur').textContent=dur;
+    go('pi_review');
+  },300);
+}
+
+var waveInt=null;
+function animWave(on){
+  clearInterval(waveInt);
+  var bars=document.querySelectorAll('.wf-bar');
+  if(on){
+    waveInt=setInterval(function(){
+      bars.forEach(function(b){
+        var h=Math.floor(Math.random()*22)+4;
+        b.style.height=h+'px';
+        b.style.background='rgba(212,83,126,'+(0.15+Math.random()*0.5)+')';
+      });
+    },120);
+  } else {
+    bars.forEach(function(b,i){
+      var heights=[8,14,6,18,10,22,8,16,12,20,7,24,10,18,6,14,20,9,16,12];
+      b.style.height=(heights[i%heights.length])+'px';
+      b.style.background='rgba(212,83,126,0.15)';
+    });
+  }
+}
+
+var pbOn=false, pbInt=null, pbProg=28;
+function togglePlayback(){
+  pbOn=!pbOn;
+  var overlay=document.getElementById('pbOverlay');
+  if(pbOn){
+    overlay.style.display='none';
+    pbInt=setInterval(function(){
+      pbProg+=2;
+      document.getElementById('pbProg').style.width=pbProg+'%';
+      if(pbProg>=100){clearInterval(pbInt);pbOn=false;overlay.style.display='flex';pbProg=0;}
+    },200);
+  } else {
+    clearInterval(pbInt);
+    overlay.style.display='flex';
+  }
+}
+
+function pad(n){return n<10?'0'+n:n;}
+</script>

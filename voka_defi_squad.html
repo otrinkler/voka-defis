@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>VOKA — SQUAD</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --purple:#7500B8;--green:#B3F70B;--orange:#FF5321;--blue:#378ADD;
+  --bg:#080810;--bg2:#0f0f1e;--bg3:#1a1a2e;
+  --w:#fff;--w7:rgba(255,255,255,0.7);--w6:rgba(255,255,255,0.6);
+  --w4:rgba(255,255,255,0.55);--w2:rgba(255,255,255,0.12);--w1:rgba(255,255,255,0.06);
+}
+body{background:#111;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px;}
+.phone{width:390px;min-height:844px;background:var(--bg);border-radius:48px;overflow:hidden;border:7px solid #1e1e2e;position:relative;display:flex;flex-direction:column;}
+.sb{display:flex;justify-content:space-between;padding:12px 22px 0;font-size:12px;color:var(--w4);flex-shrink:0;}
+.step{display:none;flex-direction:column;flex:1;}
+.step.active{display:flex;}
+
+/* ─── MEMBRES DU SQUAD ─── */
+/* Couleurs par membre */
+.c0{--mc:#7500B8;--mcl:#c98ff0;--mcll:rgba(117,0,184,0.15);}
+.c1{--mc:#FF5321;--mcl:#ff8060;--mcll:rgba(255,83,33,0.12);}
+.c2{--mc:#378ADD;--mcl:#7ab8f0;--mcll:rgba(55,138,221,0.12);}
+.c3{--mc:#1D9E75;--mcl:#6ddba0;--mcll:rgba(29,158,117,0.12);}
+.c4{--mc:#D4537E;--mcl:#f090b0;--mcll:rgba(212,83,126,0.12);}
+
+/* ─── LOBBY ─── */
+.lobby-hdr{padding:14px 20px 0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.squad-badge{display:flex;align-items:center;gap:6px;background:rgba(55,138,221,0.12);border:0.5px solid rgba(122,184,240,0.3);border-radius:20px;padding:5px 12px;}
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);}
+.sb-txt{font-size:11px;color:#7ab8f0;font-weight:500;letter-spacing:0.04em;}
+.xp-tag{font-size:11px;color:var(--green);background:rgba(179,247,11,0.1);border:0.5px solid rgba(179,247,11,0.2);padding:4px 10px;border-radius:8px;font-weight:500;}
+
+.lobby-intro{padding:16px 20px 0;text-align:center;flex-shrink:0;}
+.lobby-title{font-size:22px;font-weight:500;color:var(--w);line-height:1.25;margin-bottom:6px;}
+.lobby-sub{font-size:13px;color:var(--w4);line-height:1.55;margin-bottom:16px;}
+
+/* Grille membres */
+.members-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:0 16px 14px;flex-shrink:0;}
+.member{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;}
+.member-av{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;color:#fff;border:2px solid;transition:all 0.2s;}
+.member-name{font-size:10px;font-weight:500;text-align:center;line-height:1.2;}
+.member-role-badge{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:500;text-align:center;}
+.you-indicator{font-size:9px;color:rgba(255,255,255,0.35);margin-top:1px;}
+
+/* Mission card */
+.mission-card{margin:0 16px 12px;border-radius:14px;overflow:hidden;flex-shrink:0;}
+.mc-header{padding:12px 14px 10px;}
+.mc-lbl{font-size:9px;font-weight:600;letter-spacing:0.08em;color:rgba(122,184,240,0.8);margin-bottom:6px;}
+.mc-title{font-size:16px;font-weight:500;color:var(--w);line-height:1.3;margin-bottom:4px;}
+.mc-sub{font-size:12px;color:var(--w4);line-height:1.5;}
+.mc-footer{padding:9px 14px;display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.25);}
+.mc-pills{display:flex;gap:5px;}
+.mc-pill{font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,0.08);color:var(--w6);}
+
+/* Rôles */
+.roles-section{margin:0 16px 12px;flex-shrink:0;}
+.rs-title{font-size:11px;color:var(--w4);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:8px;font-weight:500;}
+.roles-list{display:flex;flex-direction:column;gap:6px;}
+.role-item{background:var(--w1);border:0.5px solid var(--w2);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.15s;}
+.role-item.selected{border-color:rgba(55,138,221,0.4);background:rgba(55,138,221,0.08);}
+.role-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.role-info{flex:1;}
+.role-name{font-size:13px;font-weight:500;color:var(--w);margin-bottom:2px;}
+.role-desc{font-size:11px;color:rgba(255,255,255,0.6);line-height:1.35;}
+.role-check{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--w2);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.role-item.selected .role-check{background:var(--blue);border-color:var(--blue);}
+
+.start-btn{margin:0 16px 16px;background:var(--blue);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:500;color:#fff;cursor:pointer;width:calc(100% - 32px);flex-shrink:0;}
+.start-btn:active{opacity:0.85;}
+
+/* ─── COUNTDOWN ─── */
+.countdown-overlay{position:absolute;inset:0;background:rgba(8,8,16,0.97);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;}
+.cd-squad-row{display:flex;gap:-6px;margin-bottom:4px;}
+.cd-mini-av{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--bg);font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:600;color:#fff;margin-left:-6px;}
+.cd-mini-av:first-child{margin-left:0;}
+.cd-big{font-size:88px;font-weight:300;color:var(--blue);line-height:1;}
+.cd-lbl{font-size:13px;color:var(--w4);letter-spacing:0.1em;}
+.cd-mission{font-size:12px;color:var(--w6);font-style:italic;text-align:center;padding:0 30px;}
+
+/* ─── IN SQUAD ─── */
+.squad-header{padding:12px 16px 0;flex-shrink:0;}
+.squad-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.squad-score-box{display:flex;align-items:center;gap:8px;background:var(--bg2);border-radius:10px;padding:7px 12px;border:0.5px solid var(--w2);}
+.ssb-icon{font-size:14px;}
+.ssb-val{font-size:18px;font-weight:500;color:var(--w);}
+.ssb-lbl{font-size:10px;color:var(--w4);}
+.squad-timer{display:flex;align-items:center;gap:6px;background:rgba(55,138,221,0.1);border:0.5px solid rgba(122,184,240,0.25);border-radius:20px;padding:5px 12px;}
+.st-svg{width:20px;height:20px;transform:rotate(-90deg);}
+.st-track{fill:none;stroke:rgba(255,255,255,0.1);stroke-width:2.5;}
+.st-fill{fill:none;stroke:var(--blue);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:56.5;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke 0.3s;}
+.st-val{font-size:13px;font-weight:500;color:var(--w);}
+
+/* Mini avatars status */
+.squad-status-row{display:flex;gap:5px;margin-bottom:8px;}
+.status-av{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.sta-circle{width:32px;height:32px;border-radius:50%;font-size:11px;font-weight:600;color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid;}
+.sta-done{position:absolute;bottom:-2px;right:-2px;width:12px;height:12px;border-radius:50%;background:var(--green);border:1.5px solid var(--bg);display:flex;align-items:center;justify-content:center;display:none;}
+.sta-name{font-size:10px;color:var(--w6);}
+
+.squad-prog{height:3px;background:var(--w1);border-radius:2px;overflow:hidden;}
+.squad-prog-fill{height:3px;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:2px;transition:width 0.3s ease;}
+
+/* Rôle actif */
+.role-active-bar{margin:8px 16px 0;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;flex-shrink:0;}
+.rab-icon{font-size:14px;}
+.rab-txt{font-size:12px;color:var(--w6);flex:1;}
+.rab-name{font-weight:500;color:var(--w);}
+
+.sq-question{padding:12px 16px 0;flex-shrink:0;}
+.sq-q-num{font-size:10px;color:var(--w4);letter-spacing:0.08em;margin-bottom:5px;}
+.sq-q-text{font-size:17px;font-weight:500;color:var(--w);line-height:1.32;}
+
+.sq-opts{display:flex;flex-direction:column;gap:6px;padding:12px 16px 0;flex-shrink:0;}
+.sq-opt{background:var(--w1);border:0.5px solid var(--w2);border-radius:12px;padding:11px 13px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all 0.12s;}
+.sq-opt:hover{background:rgba(55,138,221,0.06);}
+.sq-opt.chosen{background:rgba(55,138,221,0.12);border-color:rgba(122,184,240,0.35);}
+.sq-opt.correct{background:rgba(179,247,11,0.08);border-color:rgba(179,247,11,0.3);}
+.sq-opt.wrong{background:rgba(255,83,33,0.08);border-color:rgba(255,83,33,0.25);}
+.sq-opt-letter{width:24px;height:24px;border-radius:7px;background:var(--w1);font-size:11px;font-weight:500;color:var(--w4);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sq-opt.chosen .sq-opt-letter{background:rgba(55,138,221,0.2);color:#7ab8f0;}
+.sq-opt.correct .sq-opt-letter{background:rgba(179,247,11,0.15);color:var(--green);}
+.sq-opt.wrong .sq-opt-letter{background:rgba(255,83,33,0.15);color:#ff8060;}
+.sq-opt-text{font-size:13px;color:var(--w6);}
+.sq-opt.chosen .sq-opt-text{color:var(--w);}
+.sq-opt.correct .sq-opt-text{color:var(--w);}
+
+/* Contributions live */
+.live-contributions{margin:10px 16px 0;flex-shrink:0;}
+.lc-lbl{font-size:10px;color:var(--w4);letter-spacing:0.07em;margin-bottom:6px;font-weight:500;}
+.lc-items{display:flex;flex-direction:column;gap:5px;}
+.lc-item{display:flex;align-items:center;gap:8px;background:var(--w1);border-radius:8px;padding:7px 10px;border:0.5px solid var(--w2);}
+.lci-av{width:22px;height:22px;border-radius:50%;font-size:9px;font-weight:600;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.lci-name{font-size:11px;font-weight:500;flex:1;}
+.lci-answer{font-size:11px;color:var(--w4);}
+.lci-pts{font-size:11px;font-weight:500;}
+.pts-pos{color:var(--green);}
+.pts-neg{color:#ff8060;}
+.pts-wait{color:var(--w4);}
+
+.sq-next-btn{margin:10px 16px 0;width:calc(100% - 32px);background:var(--blue);border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;display:none;flex-shrink:0;}
+
+/* ─── FIN SQUAD ─── */
+.end-wrap{flex:1;display:flex;flex-direction:column;padding:24px 20px;position:relative;}
+.end-confetti{position:absolute;top:0;left:0;right:0;height:120px;overflow:hidden;pointer-events:none;}
+.end-title-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.end-icon{font-size:28px;}
+.end-title{font-size:24px;font-weight:500;color:var(--w);}
+.end-sub{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.55;margin-bottom:20px;}
+
+/* Podium membres */
+.podium{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;}
+.podium-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:0.5px solid var(--w2);background:var(--w1);}
+.pod-rank{font-size:13px;font-weight:500;color:var(--w4);width:18px;text-align:center;flex-shrink:0;}
+.pod-av{width:32px;height:32px;border-radius:50%;font-size:12px;font-weight:600;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid;}
+.pod-info{flex:1;}
+.pod-name{font-size:13px;font-weight:500;color:var(--w);margin-bottom:3px;}
+.pod-role-tag{font-size:10px;padding:1px 6px;border-radius:4px;font-weight:500;}
+.pod-bar-wrap{display:flex;align-items:center;gap:6px;margin-top:3px;}
+.pod-bar{flex:1;height:3px;background:var(--w2);border-radius:2px;overflow:hidden;}
+.pod-fill{height:3px;border-radius:2px;transition:width 1s ease;}
+.pod-pts{font-size:12px;font-weight:500;flex-shrink:0;}
+
+/* Score collectif */
+.collective-score{background:rgba(55,138,221,0.08);border:0.5px solid rgba(122,184,240,0.2);border-radius:12px;padding:14px;margin-bottom:16px;}
+.cs-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.cs-lbl{font-size:11px;color:var(--w4);}
+.cs-val{font-size:20px;font-weight:500;color:var(--blue);}
+.cs-bar{height:5px;background:var(--w2);border-radius:3px;overflow:hidden;}
+.cs-fill{height:5px;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:3px;transition:width 1.2s ease;}
+.cs-note{font-size:11px;color:rgba(255,255,255,0.6);margin-top:6px;font-style:italic;}
+
+/* XP */
+.xp-row{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.xp-big{font-size:34px;font-weight:500;color:var(--green);}
+.xp-detail{font-size:12px;color:var(--w4);line-height:1.5;}
+
+.end-btns{display:flex;flex-direction:column;gap:7px;margin-top:auto;}
+.btn-main{background:var(--blue);border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:500;color:#fff;cursor:pointer;}
+.btn-sec{background:var(--w1);border:0.5px solid var(--w2);border-radius:13px;padding:11px;font-size:13px;color:var(--w6);cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+
+<!-- ─── LOBBY ─── -->
+<div class="step active" id="s-lobby">
+  <div class="lobby-hdr">
+    <div class="squad-badge"><div class="sb-dot"></div><span class="sb-txt">SQUAD · 5 joueurs</span></div>
+    <div class="xp-tag">+30 XP collectif</div>
+  </div>
+  <div class="lobby-intro">
+    <div class="lobby-title">Un défi.<br>Cinq cerveaux.</div>
+    <div class="lobby-sub">Chaque membre répond à sa question selon son rôle. Le score final est celui de l'équipe.</div>
+  </div>
+
+  <!-- Membres -->
+  <div class="members-grid">
+    <div class="member c0">
+      <div class="member-av" style="background:rgba(117,0,184,0.3);border-color:#7500B8;">T</div>
+      <span class="member-name" style="color:#c98ff0;">Toi</span>
+      <span class="you-indicator">← toi</span>
+    </div>
+    <div class="member c1">
+      <div class="member-av" style="background:rgba(255,83,33,0.25);border-color:#FF5321;">Y</div>
+      <span class="member-name" style="color:#ff8060;">Yasmine</span>
+    </div>
+    <div class="member c2">
+      <div class="member-av" style="background:rgba(55,138,221,0.25);border-color:#378ADD;">M</div>
+      <span class="member-name" style="color:#7ab8f0;">Marcus</span>
+    </div>
+    <div class="member c3">
+      <div class="member-av" style="background:rgba(29,158,117,0.25);border-color:#1D9E75;">K</div>
+      <span class="member-name" style="color:#6ddba0;">Kaïs</span>
+    </div>
+    <div class="member c4">
+      <div class="member-av" style="background:rgba(212,83,126,0.25);border-color:#D4537E;">L</div>
+      <span class="member-name" style="color:#f090b0;">Leïla</span>
+    </div>
+  </div>
+
+  <!-- Mission -->
+  <div class="mission-card" style="background:rgba(55,138,221,0.08);border:0.5px solid rgba(122,184,240,0.18);">
+    <div class="mc-header">
+      <div class="mc-lbl">MISSION DU SQUAD</div>
+      <div class="mc-title">Construisez ensemble un profil de secteur</div>
+      <div class="mc-sub">Chaque membre répond à 1 question dans son domaine de force. Le collectif révèle une vue complète du secteur de l'énergie.</div>
+    </div>
+    <div class="mc-footer">
+      <div class="mc-pills">
+        <span class="mc-pill">Secteur Énergie</span>
+        <span class="mc-pill">5 questions</span>
+        <span class="mc-pill">15 min</span>
+      </div>
+      <span style="font-size:10px;color:#7ab8f0;font-weight:500;">×1.5 XP si 5/5</span>
+    </div>
+  </div>
+
+  <!-- Rôles -->
+  <div class="roles-section">
+    <div class="rs-title">Choisis ton rôle</div>
+    <div class="roles-list">
+      <div class="role-item selected" onclick="selectRole(this,'Explorateur','🧭')">
+        <div class="role-icon" style="background:rgba(117,0,184,0.12);border:0.5px solid rgba(179,147,230,0.2);">🧭</div>
+        <div class="role-info">
+          <div class="role-name">Explorateur</div>
+          <div class="role-desc">Tu identifies les tendances et les grandes évolutions du secteur</div>
+        </div>
+        <div class="role-check">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5 3.5-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="role-item" onclick="selectRole(this,'Stratège','⚡')">
+        <div class="role-icon" style="background:rgba(55,138,221,0.1);border:0.5px solid rgba(122,184,240,0.2);">⚡</div>
+        <div class="role-info">
+          <div class="role-name">Stratège</div>
+          <div class="role-desc">Tu analyses les chiffres clés et les enjeux économiques</div>
+        </div>
+        <div class="role-check"></div>
+      </div>
+      <div class="role-item" onclick="selectRole(this,'Terrain','🔧')">
+        <div class="role-icon" style="background:rgba(29,158,117,0.1);border:0.5px solid rgba(109,219,160,0.2);">🔧</div>
+        <div class="role-info">
+          <div class="role-name">Terrain</div>
+          <div class="role-desc">Tu connais les métiers concrets et les réalités de l'entreprise</div>
+        </div>
+        <div class="role-check"></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="start-btn" onclick="startCountdown()">Rejoindre la mission</button>
+</div>
+
+<!-- ─── COUNTDOWN ─── -->
+<div class="countdown-overlay" id="countdown" style="display:none;">
+  <div class="cd-squad-row">
+    <div class="cd-mini-av" style="background:#7500B8;">T</div>
+    <div class="cd-mini-av" style="background:#FF5321;">Y</div>
+    <div class="cd-mini-av" style="background:#378ADD;">M</div>
+    <div class="cd-mini-av" style="background:#1D9E75;">K</div>
+    <div class="cd-mini-av" style="background:#D4537E;">L</div>
+  </div>
+  <div class="cd-big" id="cdNum">3</div>
+  <div class="cd-lbl">SQUAD EN ROUTE</div>
+  <div class="cd-mission" id="cdMission">"Construisez ensemble un profil de secteur"</div>
+</div>
+
+<!-- ─── IN SQUAD ─── -->
+<div class="step" id="s-squad">
+  <div class="squad-header">
+    <div class="squad-top">
+      <div class="squad-score-box">
+        <span class="ssb-icon">🏆</span>
+        <div>
+          <div class="ssb-val" id="squadScore">0</div>
+          <div class="ssb-lbl">pts collectif</div>
+        </div>
+      </div>
+      <div class="squad-timer">
+        <svg class="st-svg" viewBox="0 0 20 20">
+          <circle class="st-track" cx="10" cy="10" r="9"/>
+          <circle class="st-fill" id="timerCircle" cx="10" cy="10" r="9"/>
+        </svg>
+        <span class="st-val" id="timerVal">180</span>
+      </div>
+    </div>
+
+    <!-- Status membres -->
+    <div class="squad-status-row" id="statusRow">
+      <div class="status-av">
+        <div class="sta-circle" id="stav0" style="background:rgba(117,0,184,0.3);border-color:#7500B8;">T</div>
+        <div class="sta-done" id="stadone0">✓</div>
+        <span class="sta-name">Toi</span>
+      </div>
+      <div class="status-av">
+        <div class="sta-circle" id="stav1" style="background:rgba(255,83,33,0.25);border-color:#FF5321;">Y</div>
+        <div class="sta-done" id="stadone1">✓</div>
+        <span class="sta-name">Yasmine</span>
+      </div>
+      <div class="status-av">
+        <div class="sta-circle" id="stav2" style="background:rgba(55,138,221,0.25);border-color:#378ADD;">M</div>
+        <div class="sta-done" id="stadone2">✓</div>
+        <span class="sta-name">Marcus</span>
+      </div>
+      <div class="status-av">
+        <div class="sta-circle" id="stav3" style="background:rgba(29,158,117,0.25);border-color:#1D9E75;">K</div>
+        <div class="sta-done" id="stadone3">✓</div>
+        <span class="sta-name">Kaïs</span>
+      </div>
+      <div class="status-av">
+        <div class="sta-circle" id="stav4" style="background:rgba(212,83,126,0.25);border-color:#D4537E;">L</div>
+        <div class="sta-done" id="stadone4">✓</div>
+        <span class="sta-name">Leïla</span>
+      </div>
+    </div>
+    <div class="squad-prog"><div class="squad-prog-fill" id="squadProg" style="width:0%"></div></div>
+  </div>
+
+  <div class="role-active-bar" style="background:rgba(117,0,184,0.08);border:0.5px solid rgba(179,147,230,0.15);">
+    <span class="rab-icon">🧭</span>
+    <span class="rab-txt"><span class="rab-name">Explorateur</span> · Ta question porte sur les tendances du secteur</span>
+  </div>
+
+  <div class="sq-question">
+    <div class="sq-q-num" id="sqQNum">QUESTION 1 / 5 · TON TOUR</div>
+    <div class="sq-q-text" id="sqQText">Quel est le principal défi du secteur énergétique d'ici 2030 selon les experts ?</div>
+  </div>
+
+  <div class="sq-opts" id="sqOpts"></div>
+
+  <div class="live-contributions" id="liveContribs" style="display:none;">
+    <div class="lc-lbl">CONTRIBUTIONS DU SQUAD</div>
+    <div class="lc-items" id="lcItems"></div>
+  </div>
+
+  <button class="sq-next-btn" id="sqNextBtn" onclick="sqNextQ()"></button>
+</div>
+
+<!-- ─── FIN ─── -->
+<div class="step" id="s-end">
+  <div class="end-wrap">
+    <canvas class="end-confetti" id="confettiCanvas" width="376" height="120"></canvas>
+    <div class="end-title-row">
+      <span class="end-icon" id="endIcon">🏆</span>
+      <span class="end-title" id="endTitle">Mission accomplie !</span>
+    </div>
+    <div class="end-sub" id="endSub">Votre squad a complété la mission. Voici vos contributions individuelles.</div>
+
+    <!-- Podium -->
+    <div class="podium" id="podium"></div>
+
+    <!-- Score collectif -->
+    <div class="collective-score">
+      <div class="cs-row">
+        <span class="cs-lbl">Score collectif</span>
+        <span class="cs-val" id="csVal">0 / 500</span>
+      </div>
+      <div class="cs-bar"><div class="cs-fill" id="csFill" style="width:0%"></div></div>
+      <div class="cs-note" id="csNote">Excellent travail d'équipe — bonus ×1.5 XP débloqué !</div>
+    </div>
+
+    <!-- XP -->
+    <div class="xp-row">
+      <span class="xp-big" id="endXp">+0 XP</span>
+      <span class="xp-detail" id="endXpDetail">XP gagnés<br>sur cette mission</span>
+    </div>
+
+    <div class="end-btns">
+      <button class="btn-main" onclick="goStep('s-lobby')">Nouvelle mission</button>
+      <button class="btn-sec" onclick="goStep('s-lobby')">Retour au feed</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+var selectedRole='Explorateur', selectedRoleIcon='🧭';
+var qIdx=0, timeLeft=180, timerInt=null;
+var squadScore=0, myScore=0;
+var answered=false;
+
+var MEMBER_COLORS=['#7500B8','#FF5321','#378ADD','#1D9E75','#D4537E'];
+var MEMBER_NAMES=['Toi','Yasmine','Marcus','Kaïs','Leïla'];
+
+var QUESTIONS=[
+  {
+    who:'Toi (Explorateur)',whoIdx:0,
+    icon:'🧭',
+    num:'QUESTION 1 / 5 · TON TOUR',
+    text:"Quel est le principal défi du secteur énergétique d'ici 2030 selon les experts ?",
+    opts:["Augmenter la production nucléaire","Intégrer massivement les énergies renouvelables","Réduire les coûts de transport","Privatiser EDF"],
+    correct:1,pts:80
+  },
+  {
+    who:'Yasmine (Stratège)',whoIdx:1,
+    icon:'⚡',
+    num:'QUESTION 2 / 5 · YASMINE RÉPOND',
+    text:"Quelle part de l'électricité française était d'origine nucléaire en 2024 ?",
+    opts:["25%","50%","70%","90%"],
+    correct:2,pts:80,
+    oppAns:2,oppCorrect:true
+  },
+  {
+    who:'Marcus (Terrain)',whoIdx:2,
+    icon:'🔧',
+    num:'QUESTION 3 / 5 · MARCUS RÉPOND',
+    text:"Quel métier recrute le plus chez ENGIE et EDF en ce moment ?",
+    opts:["Juriste","Ingénieur en systèmes énergétiques","Comptable","Community manager"],
+    correct:1,pts:80,
+    oppAns:1,oppCorrect:true
+  },
+  {
+    who:'Kaïs (Explorateur)',whoIdx:3,
+    icon:'🧭',
+    num:'QUESTION 4 / 5 · KAÏS RÉPOND',
+    text:"En France, combien d'emplois directs représente le secteur de l'énergie ?",
+    opts:["50 000","150 000","300 000","700 000"],
+    correct:2,pts:80,
+    oppAns:1,oppCorrect:false
+  },
+  {
+    who:'Leïla (Terrain)',whoIdx:4,
+    icon:'🔧',
+    num:'QUESTION 5 / 5 · LEÏLA RÉPOND',
+    text:"Quelle compétence est la plus demandée dans les offres énergie-environnement junior ?",
+    opts:["Maîtrise du code Python","Connaissance des normes RE2020","Expérience en trading","Bilinguisme anglais/allemand"],
+    correct:1,pts:80,
+    oppAns:1,oppCorrect:true
+  }
+];
+
+var memberScores=[0,0,0,0,0];
+
+function goStep(id){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function selectRole(el,name,icon){
+  document.querySelectorAll('.role-item').forEach(r=>{
+    r.classList.remove('selected');
+    r.querySelector('.role-check').innerHTML='';
+  });
+  el.classList.add('selected');
+  el.querySelector('.role-check').innerHTML='<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5 3.5-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  selectedRole=name; selectedRoleIcon=icon;
+}
+
+function startCountdown(){
+  document.getElementById('countdown').style.display='flex';
+  let n=3;
+  let cd=setInterval(()=>{
+    n--;
+    if(n===0){
+      document.getElementById('cdNum').textContent='GO !';
+      document.getElementById('cdNum').style.color=getComputedStyle(document.documentElement).getPropertyValue('--green').trim()||'#B3F70B';
+      setTimeout(()=>{
+        document.getElementById('countdown').style.display='none';
+        document.getElementById('cdNum').style.color='';
+        goStep('s-squad');
+        startSquad();
+      },800);
+      clearInterval(cd);
+    } else {
+      document.getElementById('cdNum').textContent=n;
+    }
+  },1000);
+}
+
+function startSquad(){
+  qIdx=0; squadScore=0; myScore=0; timeLeft=180;
+  memberScores=[0,0,0,0,0];
+  answered=false;
+  updateSquadScore();
+  loadSqQuestion();
+  startTimer();
+}
+
+function loadSqQuestion(){
+  answered=false;
+  var q=QUESTIONS[qIdx];
+  var isMyTurn=q.whoIdx===0;
+
+  document.getElementById('sqQNum').textContent=q.num;
+  document.getElementById('sqQText').textContent=q.text;
+  document.getElementById('squadProg').style.width=((qIdx)/QUESTIONS.length*100)+'%';
+  document.getElementById('liveContribs').style.display='none';
+  document.getElementById('sqNextBtn').style.display='none';
+
+  // Rôle actif
+  var rab=document.querySelector('.role-active-bar');
+  rab.style.background=isMyTurn?'rgba(117,0,184,0.1)':'rgba(255,255,255,0.04)';
+  rab.style.borderColor=isMyTurn?'rgba(179,147,230,0.2)':'rgba(255,255,255,0.08)';
+  rab.querySelector('.rab-icon').textContent=q.icon;
+  rab.querySelector('.rab-name').textContent=q.who;
+  rab.querySelector('.rab-txt').innerHTML=`<span class="rab-name">${q.who}</span> · ${isMyTurn?'Ta question — réponds !':'En attente de sa réponse...'}`;
+
+  var optsContainer=document.getElementById('sqOpts');
+  optsContainer.innerHTML='';
+  if(isMyTurn){
+    q.opts.forEach((opt,i)=>{
+      var el=document.createElement('div');
+      el.className='sq-opt';
+      el.innerHTML=`<div class="sq-opt-letter">${['A','B','C','D'][i]}</div><span class="sq-opt-text">${opt}</span>`;
+      el.onclick=()=>sqAnswer(el,i);
+      optsContainer.appendChild(el);
+    });
+    // Réponse auto des autres après délai
+    setTimeout(()=>simulateOtherAnswers(), 5000);
+  } else {
+    // Afficher les options désactivées le temps de la réponse
+    q.opts.forEach((opt,i)=>{
+      var el=document.createElement('div');
+      el.className='sq-opt';
+      el.style.opacity='0.4';
+      el.style.pointerEvents='none';
+      el.innerHTML=`<div class="sq-opt-letter">${['A','B','C','D'][i]}</div><span class="sq-opt-text">${opt}</span>`;
+      optsContainer.appendChild(el);
+    });
+    // Simuler la réponse du membre concerné
+    var delay=2+Math.random()*4;
+    setTimeout(()=>simulateMemberAnswer(q), delay*1000);
+  }
+}
+
+function sqAnswer(el, idx){
+  if(answered) return;
+  answered=true;
+  var q=QUESTIONS[qIdx];
+  var correct=idx===q.correct;
+  var pts=correct?q.pts:0;
+
+  document.querySelectorAll('#sqOpts .sq-opt').forEach(o=>o.onclick=null);
+  if(correct){
+    el.classList.add('correct');
+    myScore+=pts;
+    squadScore+=pts;
+    memberScores[0]+=pts;
+  } else {
+    el.classList.add('wrong');
+    document.querySelectorAll('#sqOpts .sq-opt')[q.correct].classList.add('correct');
+  }
+  updateSquadScore();
+  markMemberDone(0);
+  simulateOtherAnswers();
+}
+
+function simulateMemberAnswer(q){
+  var correct=q.oppCorrect!==undefined?q.oppCorrect:(Math.random()>0.35);
+  var pts=correct?q.pts:0;
+  squadScore+=pts;
+  memberScores[q.whoIdx]+=pts;
+  updateSquadScore();
+  markMemberDone(q.whoIdx);
+  // Marquer la bonne réponse visuellement
+  document.querySelectorAll('#sqOpts .sq-opt').forEach((o,i)=>{
+    if(i===q.correct) o.classList.add('correct');
+    if(q.oppAns!==undefined && i===q.oppAns && !correct) o.classList.add('wrong');
+    o.style.opacity='1';
+  });
+  showContributions(q,correct,pts);
+}
+
+function simulateOtherAnswers(){
+  // Pour les autres membres non concernés (questions d'autres)
+  showContributions(QUESTIONS[qIdx],true,QUESTIONS[qIdx].pts);
+}
+
+function showContributions(q,correct,pts){
+  var lc=document.getElementById('liveContribs');
+  var items=document.getElementById('lcItems');
+  lc.style.display='block';
+  items.innerHTML='';
+
+  // Membre principal
+  var row=`<div class="lc-item">
+    <div class="lci-av" style="background:${MEMBER_COLORS[q.whoIdx]}">${MEMBER_NAMES[q.whoIdx][0]}</div>
+    <span class="lci-name" style="color:${q.whoIdx===0?'#c98ff0':'var(--w6)'}">${MEMBER_NAMES[q.whoIdx]}</span>
+    <span class="lci-answer">${correct?'✓ Correct':'✗ Raté'}</span>
+    <span class="lci-pts ${pts>0?'pts-pos':'pts-neg'}">${pts>0?'+'+pts+' pts':'0 pt'}</span>
+  </div>`;
+  items.innerHTML=row;
+
+  var btn=document.getElementById('sqNextBtn');
+  btn.style.display='block';
+  btn.textContent=qIdx<QUESTIONS.length-1?'Question suivante':'Voir le résultat';
+}
+
+function sqNextQ(){
+  qIdx++;
+  if(qIdx>=QUESTIONS.length){
+    clearInterval(timerInt);
+    showEnd();
+  } else {
+    loadSqQuestion();
+  }
+}
+
+function markMemberDone(idx){
+  var done=document.getElementById('stadone'+idx);
+  if(done){done.style.display='flex';}
+}
+
+function startTimer(){
+  clearInterval(timerInt);
+  updateTimer();
+  timerInt=setInterval(()=>{
+    timeLeft--;
+    if(timeLeft<=0){clearInterval(timerInt); showEnd();}
+    updateTimer();
+  },1000);
+}
+
+function updateTimer(){
+  var pct=timeLeft/180;
+  var offset=56.5*(1-pct);
+  var color=timeLeft>60?'#378ADD':timeLeft>30?'#EF9F27':'#FF5321';
+  var c=document.getElementById('timerCircle');
+  if(c){c.style.strokeDashoffset=offset;c.style.stroke=color;}
+  var v=document.getElementById('timerVal');
+  if(v){v.textContent=timeLeft;v.style.color=color;}
+}
+
+function updateSquadScore(){
+  document.getElementById('squadScore').textContent=squadScore;
+}
+
+function showEnd(){
+  goStep('s-end');
+
+  var maxPossible=QUESTIONS.length*80;
+  var pct=squadScore/maxPossible;
+  var xp=Math.round(30*(pct>=0.8?1.5:pct>=0.6?1.2:1.0));
+
+  // Titre
+  var icon=pct>=0.8?'🏆':pct>=0.6?'⭐':'🎯';
+  var title=pct>=0.8?'Mission accomplie !':pct>=0.6?'Beau travail !':'Mission terminée';
+  var sub=pct>=0.8?'Votre squad a dominé cette mission. Bonus ×1.5 XP débloqué !':
+          pct>=0.6?'Bon travail collectif. Quelques questions ont résisté.':
+          'Mission complétée. Vous pouvez faire mieux en équipe !';
+  document.getElementById('endIcon').textContent=icon;
+  document.getElementById('endTitle').textContent=title;
+  document.getElementById('endSub').textContent=sub;
+
+  // Podium
+  var ranked=[...memberScores.map((s,i)=>({i,s,name:MEMBER_NAMES[i],color:MEMBER_COLORS[i]}))];
+  ranked.sort((a,b)=>b.s-a.s);
+  var maxS=ranked[0].s||1;
+  var podiumHTML=ranked.map((m,rank)=>`
+    <div class="podium-item" style="${rank===0?'border-color:rgba(179,247,11,0.25);background:rgba(179,247,11,0.05)':''}">
+      <span class="pod-rank">${rank===0?'🥇':rank===1?'🥈':rank===2?'🥉':rank+1}</span>
+      <div class="pod-av" style="background:${m.color}40;border-color:${m.color}">${m.name[0]}</div>
+      <div class="pod-info">
+        <div class="pod-name" style="${m.i===0?'color:#c98ff0':''}">${m.name}${m.i===0?' (toi)':''}</div>
+        <div class="pod-bar-wrap">
+          <div class="pod-bar"><div class="pod-fill" style="background:${m.color};width:${(m.s/maxS*100)}%"></div></div>
+          <span class="pod-pts" style="color:${m.color}">${m.s} pts</span>
+        </div>
+      </div>
+    </div>`).join('');
+  document.getElementById('podium').innerHTML=podiumHTML;
+
+  // Score collectif
+  document.getElementById('csVal').textContent=squadScore+' / '+maxPossible;
+  setTimeout(()=>{document.getElementById('csFill').style.width=(pct*100)+'%';},200);
+  document.getElementById('csNote').textContent=pct>=0.8?'Excellent — bonus ×1.5 XP débloqué !':pct>=0.6?'Bon collectif — continuez comme ça.':'Repassez la mission ensemble pour débloquer le bonus.';
+
+  document.getElementById('endXp').textContent='+'+xp+' XP';
+  document.getElementById('endXp').style.color=pct>=0.8?'var(--green)':pct>=0.6?'#f5c040':'#ff8060';
+  document.getElementById('endXpDetail').textContent='XP gagnés\n'+(pct>=0.8?'(bonus ×1.5 appliqué)':'sur cette mission');
+
+  // Confetti si victoire
+  if(pct>=0.8) drawConfetti();
+}
+
+function drawConfetti(){
+  var canvas=document.getElementById('confettiCanvas');
+  var ctx=canvas.getContext('2d');
+  var pieces=[];
+  var colors=['#B3F70B','#7500B8','#378ADD','#FF5321','#D4537E','#EF9F27'];
+  for(var i=0;i<40;i++){
+    pieces.push({x:Math.random()*376,y:Math.random()*-60,w:6+Math.random()*6,h:4+Math.random()*4,color:colors[Math.floor(Math.random()*colors.length)],speed:1.5+Math.random()*2,angle:Math.random()*360});
+  }
+  var anim=setInterval(()=>{
+    ctx.clearRect(0,0,376,120);
+    pieces.forEach(p=>{
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.angle*Math.PI/180);
+      ctx.fillStyle=p.color;ctx.globalAlpha=0.85;
+      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+      p.y+=p.speed;p.angle+=3;
+      if(p.y>130) p.y=-10;
+    });
+  },20);
+  setTimeout(()=>clearInterval(anim),4000);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-sans);}
+.wrap{width:100%;max-width:360px;margin:0 auto;}
+.stabs{display:flex;gap:5px;margin-bottom:12px;}
+.stab{flex:1;padding:7px 4px;font-size:11px;font-weight:500;border:0.5px solid var(--color-border-tertiary);border-radius:10px;background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer;text-align:center;}
+.stab.on{color:#fff;border-color:transparent;}
+.view{display:none;}.view.active{display:block;}
+
+/* ---- VUE COLLAB (mobile collaborateur) ---- */
+.collab-phone{background:#080810;border-radius:20px;overflow:hidden;}
+.cp-header{padding:12px 16px 0;display:flex;justify-content:space-between;align-items:center;}
+.cp-role{display:flex;align-items:center;gap:6px;background:rgba(55,138,221,0.12);border:0.5px solid rgba(55,138,221,0.25);border-radius:20px;padding:4px 10px;}
+.cp-role-dot{width:6px;height:6px;border-radius:50%;background:#378ADD;}
+.cp-role-txt{font-size:11px;color:#378ADD;font-weight:500;}
+.cp-xp{font-size:11px;color:#B3F70B;background:rgba(179,247,11,0.1);padding:3px 8px;border-radius:8px;}
+.cp-context{padding:10px 16px 0;background:rgba(55,138,221,0.06);margin:8px 0 0;}
+.cp-co-lbl{font-size:9px;color:rgba(55,138,221,0.5);letter-spacing:0.07em;margin-bottom:4px;}
+.cp-co-txt{font-size:12px;color:rgba(255,255,255,0.45);line-height:1.45;padding-bottom:10px;}
+.cp-prog-track{height:2px;background:rgba(255,255,255,0.06);margin:0 16px;}
+.cp-prog-fill{height:2px;background:#378ADD;border-radius:1px;}
+.cp-question{padding:14px 16px 10px;font-size:16px;font-weight:500;color:#fff;line-height:1.35;}
+.cp-opts{display:flex;flex-direction:column;gap:7px;padding:0 16px 12px;}
+.cp-opt{background:rgba(55,138,221,0.06);border:0.5px solid rgba(55,138,221,0.15);border-radius:11px;padding:11px 13px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all 0.12s;}
+.cp-opt:hover{background:rgba(55,138,221,0.1);}
+.cp-opt.sel{background:rgba(55,138,221,0.15);border-color:rgba(55,138,221,0.4);}
+.cp-opt-letter{width:22px;height:22px;border-radius:6px;background:rgba(55,138,221,0.1);font-size:11px;font-weight:500;color:rgba(55,138,221,0.5);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cp-opt.sel .cp-opt-letter{background:rgba(55,138,221,0.25);color:#378ADD;}
+.cp-opt-text{font-size:13px;color:rgba(255,255,255,0.65);}
+.cp-opt.sel .cp-opt-text{color:#fff;}
+.cp-waiting{padding:10px 16px;display:none;}
+.cp-wait-lbl{font-size:11px;color:rgba(255,255,255,0.2);margin-bottom:6px;}
+.cp-wait-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;}
+.cp-wait-fill{height:3px;border-radius:2px;background:#378ADD;width:0%;transition:width 0.1s linear;}
+
+/* ---- VUE JEUNE (mobile) ---- */
+.jeune-phone{background:#080810;border-radius:20px;overflow:hidden;}
+.jp-header{padding:12px 16px 0;display:flex;justify-content:space-between;align-items:center;}
+.jp-role{display:flex;align-items:center;gap:6px;background:rgba(117,0,184,0.12);border:0.5px solid rgba(117,0,184,0.25);border-radius:20px;padding:4px 10px;}
+.jp-role-dot{width:6px;height:6px;border-radius:50%;background:#7500B8;}
+.jp-role-txt{font-size:11px;color:#7500B8;font-weight:500;}
+.jp-xp{font-size:11px;color:#B3F70B;background:rgba(179,247,11,0.1);padding:3px 8px;border-radius:8px;}
+.jp-prog-track{height:2px;background:rgba(255,255,255,0.06);margin:10px 16px 0;}
+.jp-prog-fill{height:2px;background:#7500B8;border-radius:1px;}
+.jp-question{padding:14px 16px 10px;font-size:16px;font-weight:500;color:#fff;line-height:1.35;}
+.jp-opts{display:flex;flex-direction:column;gap:7px;padding:0 16px 12px;}
+.jp-opt{background:rgba(117,0,184,0.06);border:0.5px solid rgba(117,0,184,0.15);border-radius:11px;padding:11px 13px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all 0.12s;}
+.jp-opt:hover{background:rgba(117,0,184,0.1);}
+.jp-opt.sel{background:rgba(117,0,184,0.15);border-color:rgba(117,0,184,0.4);}
+.jp-opt-letter{width:22px;height:22px;border-radius:6px;background:rgba(117,0,184,0.1);font-size:11px;font-weight:500;color:rgba(117,0,184,0.5);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.jp-opt.sel .jp-opt-letter{background:rgba(117,0,184,0.25);color:#B3F70B;}
+.jp-opt-text{font-size:13px;color:rgba(255,255,255,0.65);}
+.jp-opt.sel .jp-opt-text{color:#fff;}
+.jp-waiting{padding:10px 16px;display:none;}
+.jp-wait-lbl{font-size:11px;color:rgba(255,255,255,0.2);margin-bottom:6px;}
+.jp-wait-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;}
+.jp-wait-fill{height:3px;border-radius:2px;background:#7500B8;width:0%;transition:width 0.1s linear;}
+
+/* ---- VUE MIROIR (grand écran résultat) ---- */
+.mirror-screen{background:#080810;border-radius:16px;overflow:hidden;}
+.ms-header{padding:12px 16px;border-bottom:0.5px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;}
+.ms-title{font-size:13px;font-weight:500;color:#fff;}
+.ms-nav{display:flex;gap:6px;}
+.ms-nav-btn{padding:5px 10px;border-radius:7px;font-size:11px;font-weight:500;cursor:pointer;border:none;}
+.ms-nav-prev{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);}
+.ms-nav-next{background:#7500B8;color:#fff;}
+.ms-q-zone{padding:14px 16px 10px;}
+.ms-q{font-size:14px;font-weight:500;color:#fff;line-height:1.35;text-align:center;margin-bottom:16px;}
+.ms-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.ms-col{border-radius:12px;padding:12px;}
+.ms-col-collab{background:rgba(55,138,221,0.08);border:0.5px solid rgba(55,138,221,0.2);}
+.ms-col-jeune{background:rgba(117,0,184,0.08);border:0.5px solid rgba(117,0,184,0.2);}
+.ms-col-header{display:flex;align-items:center;gap:5px;margin-bottom:10px;}
+.ms-col-dot{width:6px;height:6px;border-radius:50%;}
+.ms-col-lbl{font-size:10px;font-weight:500;letter-spacing:0.05em;}
+.ms-bar-row{margin-bottom:7px;}
+.ms-bar-opt{font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:3px;}
+.ms-bar-track{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;position:relative;}
+.ms-bar-fill{height:6px;border-radius:3px;transition:width 0.8s cubic-bezier(0.4,0,0.2,1);}
+.ms-bar-pct{font-size:10px;font-weight:500;margin-top:2px;}
+.ms-gap-zone{padding:0 16px 12px;}
+.ms-gap-lbl{font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:0.07em;margin-bottom:8px;}
+.ms-gap-item{background:rgba(255,255,255,0.03);border-radius:8px;padding:9px 11px;margin-bottom:6px;border-left:2.5px solid;}
+.ms-gap-title{font-size:12px;font-weight:500;color:#fff;margin-bottom:2px;}
+.ms-gap-sub{font-size:11px;color:rgba(255,255,255,0.4);line-height:1.45;}
+.ms-score{padding:10px 16px 14px;border-top:0.5px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;}
+.ms-score-lbl{font-size:11px;color:rgba(255,255,255,0.25);}
+.ms-score-val{font-size:14px;font-weight:500;}
+.ms-align-badge{display:inline-flex;align-items:center;gap:5px;border-radius:8px;padding:3px 8px;}
+</style>
+
+<h2 class="sr-only">Prototype BRIDGE — collaborateurs et jeunes répondent au même défi, le miroir révèle l'écart culturel</h2>
+
+<div class="wrap">
+  <div class="stabs">
+    <div class="stab on" style="background:#378ADD" onclick="sv('collab',this)">Collaborateur</div>
+    <div class="stab" onclick="sv('jeune',this)">Jeune</div>
+    <div class="stab" onclick="sv('miroir',this)">Miroir RH</div>
+  </div>
+
+  <!-- COLLAB -->
+  <div id="v-collab" class="view active">
+    <div class="collab-phone">
+      <div class="cp-header">
+        <div class="cp-role"><div class="cp-role-dot"></div><span class="cp-role-txt">Collaborateur · Colas</span></div>
+        <span class="cp-xp">+10 XP</span>
+      </div>
+      <div class="cp-context">
+        <div class="cp-co-lbl">CONTEXTE DU DÉFI</div>
+        <div class="cp-co-txt">Réponds comme tu le penses vraiment. Tes réponses seront comparées à celles des jeunes candidats. Sans filtre.</div>
+      </div>
+      <div class="cp-prog-track"><div class="cp-prog-fill" id="cpProg" style="width:40%"></div></div>
+      <div class="cp-question" id="cpQ">Quand tu arrives sur un nouveau projet, ton premier réflexe c'est quoi ?</div>
+      <div class="cp-opts" id="cpOpts">
+        <div class="cp-opt" onclick="cpChoose(this,'A')">
+          <div class="cp-opt-letter">A</div>
+          <span class="cp-opt-text">Lire toute la doc disponible avant de commencer</span>
+        </div>
+        <div class="cp-opt" onclick="cpChoose(this,'B')">
+          <div class="cp-opt-letter">B</div>
+          <span class="cp-opt-text">Parler à l'équipe pour comprendre les vrais enjeux</span>
+        </div>
+        <div class="cp-opt" onclick="cpChoose(this,'C')">
+          <div class="cp-opt-letter">C</div>
+          <span class="cp-opt-text">Plonger dedans et apprendre en faisant</span>
+        </div>
+      </div>
+      <div class="cp-waiting" id="cpWaiting">
+        <div class="cp-wait-lbl">Réponse envoyée · en attente des jeunes...</div>
+        <div class="cp-wait-bar"><div class="cp-wait-fill" id="cpWaitFill"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JEUNE -->
+  <div id="v-jeune" class="view">
+    <div class="jeune-phone">
+      <div class="jp-header">
+        <div class="jp-role"><div class="jp-role-dot"></div><span class="jp-role-txt">Toi · candidat</span></div>
+        <span class="jp-xp">+10 XP</span>
+      </div>
+      <div class="jp-prog-track"><div class="jp-prog-fill" id="jpProg" style="width:40%"></div></div>
+      <div class="jp-question" id="jpQ">Quand tu arrives sur un nouveau projet, ton premier réflexe c'est quoi ?</div>
+      <div class="jp-opts" id="jpOpts">
+        <div class="jp-opt" onclick="jpChoose(this,'A')">
+          <div class="jp-opt-letter">A</div>
+          <span class="jp-opt-text">Lire toute la doc disponible avant de commencer</span>
+        </div>
+        <div class="jp-opt" onclick="jpChoose(this,'B')">
+          <div class="jp-opt-letter">B</div>
+          <span class="jp-opt-text">Parler à l'équipe pour comprendre les vrais enjeux</span>
+        </div>
+        <div class="jp-opt" onclick="jpChoose(this,'C')">
+          <div class="jp-opt-letter">C</div>
+          <span class="jp-opt-text">Plonger dedans et apprendre en faisant</span>
+        </div>
+      </div>
+      <div class="jp-waiting" id="jpWaiting">
+        <div class="jp-wait-lbl">Réponse envoyée · en attente du résultat...</div>
+        <div class="jp-wait-bar"><div class="jp-wait-fill" id="jpWaitFill"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MIROIR -->
+  <div id="v-miroir" class="view">
+    <div class="mirror-screen">
+      <div class="ms-header">
+        <span class="ms-title">BRIDGE · Colas × Candidats</span>
+        <div class="ms-nav">
+          <button class="ms-nav-btn ms-nav-prev" onclick="prevBridge()">Préc.</button>
+          <button class="ms-nav-btn ms-nav-next" onclick="nextBridge()">Suiv.</button>
+        </div>
+      </div>
+      <div class="ms-q-zone">
+        <div class="ms-q" id="msQ">Quand tu arrives sur un nouveau projet, ton premier réflexe c'est quoi ?</div>
+        <div class="ms-cols">
+          <div class="ms-col ms-col-collab">
+            <div class="ms-col-header">
+              <div class="ms-col-dot" style="background:#378ADD"></div>
+              <span class="ms-col-lbl" style="color:rgba(55,138,221,0.7)">COLLABORATEURS</span>
+            </div>
+            <div class="ms-bar-row">
+              <div class="ms-bar-opt">Lire la doc</div>
+              <div class="ms-bar-track"><div class="ms-bar-fill" id="cb1" style="background:#378ADD;width:52%"></div></div>
+              <div class="ms-bar-pct" style="color:#378ADD" id="cp1">52%</div>
+            </div>
+            <div class="ms-bar-row">
+              <div class="ms-bar-opt">Parler équipe</div>
+              <div class="ms-bar-track"><div class="ms-bar-fill" id="cb2" style="background:#378ADD;width:35%"></div></div>
+              <div class="ms-bar-pct" style="color:#378ADD" id="cp2">35%</div>
+            </div>
+            <div class="ms-bar-row">
+              <div class="ms-bar-opt">Plonger dedans</div>
+              <div class="ms-bar-track"><div class="ms-bar-fill" id="cb3" style="background:#378ADD;width:13%"></div></div>
+              <div class="ms-bar-pct" style="color:#378ADD" id="cp3">13%</div>
+            </div>
+          </div>
+          <div class="ms-col ms-col-jeune">
+            <div class="ms-col-header">
+              <div class="ms-col-dot" style="background:#7500B8"></div>
+              <span class="ms-col-lbl" style="color:rgba(117,0,184,0.7)">CANDIDATS</span>
+            </div>
+            <div class="ms-bar-row">
+              <div class="ms-bar-opt">Lire la doc</div>
+              <div class="ms-bar-track"><div class="ms-bar-fill" id="jb1" style="background:#7500B8;width:18%"></div></div>
+              <div class="ms-bar-pct" style="color:#7500B8" id="jp1">18%</div>
+            </div>
+            <div class="ms-bar-row">
+              <div class="ms-bar-opt">Parler équipe</div>
+              <div class="ms-bar-track"><div class="ms-bar-fill" id="jb2" style="background:#7500B8;width:44%"></div></div>
+              <div class="ms-bar-pct" style="color:#7500B8" id="jp2">44%</div>
+            </div>
+            <div class="ms-bar-row">
+              <div class="ms-bar-opt">Plonger dedans</div>
+              <div class="ms-bar-track"><div class="ms-bar-fill" id="jb3" style="background:#7500B8;width:38%"></div></div>
+              <div class="ms-bar-pct" style="color:#7500B8" id="jp3">38%</div>
+            </div>
+          </div>
+        </div>
+        <div class="ms-gap-zone">
+          <div class="ms-gap-lbl">CE QUE LE MIROIR RÉVÈLE</div>
+          <div class="ms-gap-item" id="gap1" style="border-color:#FF5321">
+            <div class="ms-gap-title" id="gap1Title">Écart majeur sur l'approche doc</div>
+            <div class="ms-gap-sub" id="gap1Sub">52% des collabs lisent d'abord, seulement 18% des candidats. Les jeunes veulent comprendre par l'humain, pas par les process.</div>
+          </div>
+          <div class="ms-gap-item" id="gap2" style="border-color:#B3F70B">
+            <div class="ms-gap-title" id="gap2Title">Point commun : l'équipe d'abord</div>
+            <div class="ms-gap-sub" id="gap2Sub">Les deux groupes valorisent le contact humain. Ça dit que la culture collaborative de Colas est transmissible.</div>
+          </div>
+        </div>
+        <div class="ms-score">
+          <span class="ms-score-lbl">Alignement culturel</span>
+          <div>
+            <span class="ms-align-badge" id="alignBadge" style="background:rgba(239,159,39,0.12);border:0.5px solid rgba(239,159,39,0.3);">
+              <span style="font-size:13px;font-weight:500;color:#EF9F27" id="alignScore">63%</span>
+              <span style="font-size:10px;color:rgba(239,159,39,0.6)">Moyen</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var QUESTIONS=[
+  {
+    q:"Quand tu arrives sur un nouveau projet, ton premier réflexe c'est quoi ?",
+    opts:["Lire toute la doc disponible avant de commencer","Parler à l'équipe pour comprendre les vrais enjeux","Plonger dedans et apprendre en faisant"],
+    collab:[52,35,13],jeune:[18,44,38],
+    gap1:{c:"Écart majeur sur l'approche doc",t:"52% des collabs lisent d'abord, seulement 18% des candidats. Les jeunes veulent comprendre par l'humain, pas par les process.",color:"#FF5321"},
+    gap2:{c:"Point commun : l'équipe d'abord",t:"Les deux groupes valorisent le contact humain. Ça dit que la culture collaborative de Colas est transmissible.",color:"#B3F70B"},
+    align:63,alignLabel:"Moyen"
+  },
+  {
+    q:"T'as une bonne idée mais ton manager n'est pas d'accord. Tu fais quoi ?",
+    opts:["Je m'adapte et je fais comme il dit","Je défends mon point avec des arguments","J'essaie en petit pour prouver que ça marche"],
+    collab:[28,55,17],jeune:[12,38,50],
+    gap1:{c:"Écart sur l'expérimentation",t:"50% des jeunes testent sans demander, vs 17% des collabs. Les candidats veulent prouver par l'action, pas par la discussion.",color:"#FF5321"},
+    gap2:{c:"Convergence sur l'argumentation",t:"Les deux groupes défendent leurs idées. Signal de culture du débat sain, compatible avec l'environnement Colas.",color:"#B3F70B"},
+    align:71,alignLabel:"Bon"
+  },
+  {
+    q:"Ce qui te motive le plus dans un métier, c'est quoi ?",
+    opts:["Un salaire stable et sécurisant","L'impact concret de ce que je fais","Apprendre et me développer sans arrêt"],
+    collab:[35,42,23],jeune:[18,36,46],
+    gap1:{c:"Divergence sur la sécurité",t:"35% des collabs placent la stabilité en tête, vs 18% des jeunes. Signal de tension potentielle sur les valeurs.",color:"#FF5321"},
+    gap2:{c:"Alignement sur l'impact",t:"Les deux groupes valorisent l'impact concret. C'est le terrain commun le plus solide pour attirer ces candidats.",color:"#B3F70B"},
+    align:58,alignLabel:"À surveiller"
+  }
+];
+
+var qIdx=0;
+
+function sv(id,el){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+  document.getElementById('v-'+id).classList.add('active');
+  document.querySelectorAll('.stab').forEach(function(t){t.classList.remove('on');t.style.background='';});
+  el.classList.add('on');
+  if(id==='collab')el.style.background='#378ADD';
+  if(id==='jeune')el.style.background='#7500B8';
+  if(id==='miroir')el.style.background='#1a1a2e';
+}
+
+function updateViews(){
+  var q=QUESTIONS[qIdx];
+  document.getElementById('cpQ').textContent=q.q;
+  document.getElementById('jpQ').textContent=q.q;
+  var optHtmlC='', optHtmlJ='';
+  q.opts.forEach(function(o,i){
+    var l=['A','B','C'][i];
+    optHtmlC+='<div class="cp-opt" onclick="cpChoose(this,\''+l+'\')"><div class="cp-opt-letter">'+l+'</div><span class="cp-opt-text">'+o+'</span></div>';
+    optHtmlJ+='<div class="jp-opt" onclick="jpChoose(this,\''+l+'\')"><div class="jp-opt-letter">'+l+'</div><span class="jp-opt-text">'+o+'</span></div>';
+  });
+  document.getElementById('cpOpts').innerHTML=optHtmlC;
+  document.getElementById('jpOpts').innerHTML=optHtmlJ;
+  document.getElementById('cpWaiting').style.display='none';
+  document.getElementById('jpWaiting').style.display='none';
+  document.getElementById('cpProg').style.width=Math.round((qIdx+1)/QUESTIONS.length*100)+'%';
+  document.getElementById('jpProg').style.width=Math.round((qIdx+1)/QUESTIONS.length*100)+'%';
+  document.getElementById('msQ').textContent=q.q;
+  var bars=[['cb1','cp1','jb1','jp1'],['cb2','cp2','jb2','jp2'],['cb3','cp3','jb3','jp3']];
+  var opts=document.querySelectorAll('#v-miroir .ms-bar-opt');
+  q.opts.forEach(function(o,i){if(opts[i])opts[i].textContent=o.substring(0,18)+(o.length>18?'...':'');});
+  bars.forEach(function(b,i){
+    document.getElementById(b[0]).style.width=q.collab[i]+'%';
+    document.getElementById(b[1]).textContent=q.collab[i]+'%';
+    document.getElementById(b[2]).style.width=q.jeune[i]+'%';
+    document.getElementById(b[3]).textContent=q.jeune[i]+'%';
+  });
+  document.getElementById('gap1Title').textContent=q.gap1.c;
+  document.getElementById('gap1Sub').textContent=q.gap1.t;
+  document.getElementById('gap1').style.borderColor=q.gap1.color;
+  document.getElementById('gap2Title').textContent=q.gap2.c;
+  document.getElementById('gap2Sub').textContent=q.gap2.t;
+  document.getElementById('gap2').style.borderColor=q.gap2.color;
+  var alignColor=q.align>=70?'#B3F70B':q.align>=60?'#EF9F27':'#FF5321';
+  document.getElementById('alignScore').textContent=q.align+'%';
+  document.getElementById('alignScore').style.color=alignColor;
+  document.getElementById('alignBadge').style.background='rgba('+hexToRgb(alignColor)+',0.1)';
+  document.getElementById('alignBadge').style.borderColor='rgba('+hexToRgb(alignColor)+',0.3)';
+  document.getElementById('alignBadge').querySelector('span:last-child').textContent=q.alignLabel;
+  document.getElementById('alignBadge').querySelector('span:last-child').style.color='rgba('+hexToRgb(alignColor)+',0.6)';
+}
+
+function hexToRgb(hex){
+  var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return r+','+g+','+b;
+}
+
+var cpWaitInt=null;
+function cpChoose(el,letter){
+  el.parentNode.querySelectorAll('.cp-opt').forEach(function(o){o.style.pointerEvents='none';o.classList.remove('sel');});
+  el.classList.add('sel');
+  document.getElementById('cpOpts').style.opacity='0.5';
+  document.getElementById('cpWaiting').style.display='block';
+  var fill=document.getElementById('cpWaitFill');
+  var p=0;
+  clearInterval(cpWaitInt);
+  cpWaitInt=setInterval(function(){p+=3;fill.style.width=Math.min(p,100)+'%';if(p>=100)clearInterval(cpWaitInt);},80);
+}
+
+var jpWaitInt=null;
+function jpChoose(el,letter){
+  el.parentNode.querySelectorAll('.jp-opt').forEach(function(o){o.style.pointerEvents='none';o.classList.remove('sel');});
+  el.classList.add('sel');
+  document.getElementById('jpOpts').style.opacity='0.5';
+  document.getElementById('jpWaiting').style.display='block';
+  var fill=document.getElementById('jpWaitFill');
+  var p=0;
+  clearInterval(jpWaitInt);
+  jpWaitInt=setInterval(function(){p+=3;fill.style.width=Math.min(p,100)+'%';if(p>=100)clearInterval(jpWaitInt);},80);
+}
+
+function nextBridge(){if(qIdx<QUESTIONS.length-1){qIdx++;updateViews();}}
+function prevBridge(){if(qIdx>0){qIdx--;updateViews();}}
+
+updateViews();
+</script>
