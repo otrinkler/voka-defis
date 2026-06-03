@@ -968,7 +968,7 @@
       <span class="brief-tag">Épreuve 02 sur 03</span>
       <div class="brief-title">Détection en flux</div>
       <div class="brief-instruction"><b>12 images vont défiler rapidement.</b> Tape l'écran dès que tu vois une <b>anomalie</b>.<br>Tu ne sais pas combien il y en a. Une seule chance par image.</div>
-      <div class="brief-meta">1.5 s par image · flux non interruptible</div>
+      <div class="brief-meta">3 s par image · flux non interruptible</div>
       <button class="btn brief-cta" onclick="startEp2Countdown()">Je suis prêt</button>
     </div>
   </div>
@@ -977,12 +977,11 @@
   <div class="view" id="v-ep2-flux">
     <div class="ep-header">
       <div class="ep-tag"><span class="num">02</span>Détection en flux</div>
-      <div class="ep-timer" id="ep2-timer">19</div>
+      <div class="ep-timer" id="ep2-timer">36</div>
     </div>
     <div class="flux-wrap" id="flux-wrap">
       <div class="flux-hud" id="flux-hud">00 / 12</div>
-      <img class="flux-img" id="flux-img-a" alt="">
-      <img class="flux-img" id="flux-img-b" alt="">
+      <img class="flux-img on" id="flux-img" alt="">
       <div class="flux-progress" id="flux-progress"></div>
       <div class="flux-tap-feedback" id="flux-feedback"></div>
       <div class="flux-cd" id="flux-cd" style="display:none">3</div>
@@ -1316,8 +1315,7 @@ function startEp2Countdown() {
   S.fluxIndex = 0;
   S.fluxAnomalyHit = false;
   document.getElementById('flux-hud').textContent = '00 / 12';
-  document.getElementById('flux-img-a').classList.remove('on');
-  document.getElementById('flux-img-b').classList.remove('on');
+  document.getElementById('flux-img').src = '';
   document.getElementById('flux-progress').style.width = '0%';
 
   const cd = document.getElementById('flux-cd');
@@ -1341,8 +1339,8 @@ function startEp2Flux() {
   // Listener tap sur le flux
   const wrap = document.getElementById('flux-wrap');
   wrap.onclick = handleFluxTap;
-  // Démarrer timer global 19s (12 * 1.5 + petit buffer)
-  startTimer('ep2-timer', 18, () => {
+  // Démarrer timer global 36s (12 * 3 + petit buffer)
+  startTimer('ep2-timer', 36, () => {
     // backup if not finished
     if (S.fluxIndex < 12) endEp2();
   });
@@ -1355,28 +1353,23 @@ function showFluxImage() {
   }
   const name = EP2_SEQUENCE[S.fluxIndex];
   const isAnomaly = EP2_ANOMALIES.indexOf(S.fluxIndex) !== -1;
-  // Double buffer pour transitions propres
-  const a = document.getElementById('flux-img-a');
-  const b = document.getElementById('flux-img-b');
-  const visible = a.classList.contains('on') ? a : null;
-  const target = (visible === a) ? b : a;
-  target.src = IMG_BASE + name + '.png';
-  target.classList.add('on');
-  if (visible) visible.classList.remove('on');
+  // Une seule image, on change le src
+  const img = document.getElementById('flux-img');
+  img.src = IMG_BASE + name + '.png';
   document.getElementById('flux-hud').textContent = String(S.fluxIndex + 1).padStart(2, '0') + ' / 12';
-  // Progress bar reset & animate
+  // Progress bar reset & animate sur 3s
   const pg = document.getElementById('flux-progress');
   pg.style.transition = 'none';
   pg.style.width = '0%';
   void pg.offsetWidth;
-  pg.style.transition = 'width 1.5s linear';
+  pg.style.transition = 'width 3s linear';
   pg.style.width = '100%';
   // Anomalie ?
   S.fluxAnomalyHit = false;
   S.fluxAnomalyAppeared = isAnomaly ? Date.now() : null;
   S.fluxImageIsAnomaly = isAnomaly;
   S.fluxImageStart = Date.now();
-  // Avancer après 1.5s
+  // Avancer après 3s
   S.fluxTimer = setTimeout(() => {
     // Si anomalie non détectée : false negative
     if (S.fluxImageIsAnomaly && !S.fluxAnomalyHit) {
@@ -1384,7 +1377,7 @@ function showFluxImage() {
     }
     S.fluxIndex++;
     showFluxImage();
-  }, 1500);
+  }, 3000);
 }
 function handleFluxTap() {
   if (S.fluxIndex >= 12 || S.fluxAnomalyHit) return;
