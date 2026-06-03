@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VOKA · RENSEIGNEMENT · CAJ-4</title>
+<style>
+  :root {
+    --purple: #7500B8;
+    --green: #B3F70B;
+    --orange: #FF5321;
+    --blue: #378ADD;
+    --teal: #1D9E75;
+    --amber: #EF9F27;
+    --pink: #D4537E;
+    --bg: #050508;
+    --green-l: #6ddba0;
+    --blue-l: #7ab8f0;
+    --amber-l: #f5c040;
+    --orange-l: #ff8868;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow: hidden; -webkit-user-select: none; user-select: none; }
+  body {
+    background: #111;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .phone {
+    width: 844px;
+    height: 390px;
+    background: var(--bg);
+    border-radius: 36px;
+    border: 6px solid #1e1e2e;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  }
+  @media (max-width: 900px) {
+    body { padding: 0; }
+    .phone {
+      width: 100vw;
+      height: 100vh;
+      max-width: 100vw;
+      max-height: 100vh;
+      border-radius: 0;
+      border: none;
+    }
+  }
+
+  /* ====== ROTATE PROMPT ====== */
+  .rotate-prompt {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 32px;
+    text-align: center;
+  }
+  @media (orientation: portrait) and (max-width: 900px) {
+    .rotate-prompt { display: flex; }
+    .phone { display: none; }
+  }
+  .rotate-prompt svg {
+    width: 80px;
+    height: 80px;
+    animation: rotIcon 2.5s ease-in-out infinite;
+  }
+  @keyframes rotIcon {
+    0%, 40% { transform: rotate(0deg); }
+    60%, 100% { transform: rotate(-90deg); }
+  }
+  .rotate-prompt h2 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    color: var(--green);
+  }
+  .rotate-prompt p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.5;
+    max-width: 280px;
+  }
+
+  /* ====== VIEWS ====== */
+  .view { display: none; width: 100%; height: 100%; flex-direction: column; }
+  .view.on { display: flex; }
+
+  /* ====== INTRO ====== */
+  .intro {
+    display: flex;
+    flex: 1;
+    padding: 26px 34px;
+    gap: 30px;
+  }
+  .intro-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .badge-m {
+    align-self: flex-start;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    color: var(--green);
+    padding: 5px 10px;
+    border: 1px solid var(--green);
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .intro h1 {
+    font-size: 44px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    line-height: 0.92;
+    text-transform: uppercase;
+    margin-top: 14px;
+  }
+  .intro h1 .sub {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 12px;
+    text-transform: none;
+    line-height: 1.45;
+  }
+  .intro-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+  }
+  .mc {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 9px;
+    padding: 10px 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .mc .k {
+    font-size: 10px;
+    letter-spacing: 1.8px;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+  }
+  .mc .v {
+    font-size: 13px;
+    color: #fff;
+    font-weight: 700;
+  }
+  .btn {
+    background: var(--green);
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    width: 100%;
+    transition: transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.5; }
+  .audio-hint {
+    text-align: center;
+    font-size: 10px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 8px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ====== RULES ====== */
+  .rules {
+    padding: 24px 34px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .rules-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .rules-title {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+    margin-top: -8px;
+  }
+  .rules-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .rule-item {
+    display: flex;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .rule-item:last-child { border-bottom: none; }
+  .rule-num {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--green);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 28px;
+  }
+  .rule-text {
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.45;
+  }
+  .rule-text b { color: #fff; }
+
+  /* ====== LOADING ====== */
+  .loading {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    gap: 20px;
+  }
+  .load-spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid rgba(179,247,11,0.2);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .load-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .load-progress {
+    width: 240px;
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .load-bar {
+    height: 100%;
+    background: var(--green);
+    width: 0%;
+    transition: width 0.3s;
+  }
+  .load-count {
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1px;
+  }
+
+  /* ====== BRIEF (avant chaque épreuve) ====== */
+  .brief {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 50px;
+    gap: 16px;
+    text-align: center;
+  }
+  .brief-tag {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+    padding: 5px 11px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+  }
+  .brief-title {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+    color: var(--green);
+    line-height: 1.05;
+  }
+  .brief-instruction {
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.88);
+    max-width: 540px;
+  }
+  .brief-instruction b { color: #fff; }
+  .brief-meta {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+  }
+  .brief-cta {
+    margin-top: 6px;
+    width: 220px;
+  }
+
+  /* ====== HEADER PENDANT ÉPREUVE ====== */
+  .ep-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 18px;
+    background: rgba(0,0,0,0.5);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+  }
+  .ep-tag {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+  }
+  .ep-tag .num {
+    color: var(--green);
+    font-weight: 800;
+    margin-right: 6px;
+  }
+  .ep-timer {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--green);
+    padding: 3px 10px;
+    border: 1px solid rgba(179,247,11,0.4);
+    border-radius: 6px;
+    background: rgba(179,247,11,0.08);
+    min-width: 52px;
+    text-align: center;
+    line-height: 1.1;
+    font-family: ui-monospace, monospace;
+  }
+  .ep-timer.warn { color: var(--amber-l); border-color: rgba(245,192,64,0.5); background: rgba(245,192,64,0.08); }
+  .ep-timer.crit { color: var(--orange); border-color: var(--orange); background: rgba(255,83,33,0.10); animation: critP 0.6s infinite; }
+  @keyframes critP {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  /* ====== ÉPREUVE 1 : SCENE ====== */
+  .scene-wrap {
+    flex: 1;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .scene-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .scene-overlay-text {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    background: rgba(0,0,0,0.5);
+    padding: 4px 10px;
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  /* ====== ÉPREUVE 1 : QUESTIONS ====== */
+  .question {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 26px;
+    gap: 14px;
+    justify-content: center;
+  }
+  .q-num {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--green);
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .q-text {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+    letter-spacing: -0.3px;
+  }
+  .q-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 6px;
+  }
+  .q-opt {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.14);
+    color: #fff;
+    border-radius: 10px;
+    padding: 14px 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.12s;
+    text-align: center;
+  }
+  .q-opt:active { transform: scale(0.97); }
+  .q-opt:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.25); }
+  .q-opt.good {
+    background: rgba(179,247,11,0.15);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .q-opt.bad {
+    background: rgba(255,83,33,0.12);
+    border-color: var(--orange);
+    color: var(--orange);
+  }
+
+  /* ====== ÉPREUVE 2 : FLUX ====== */
+  .flux-wrap {
+    flex: 1;
+    background: #000;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .flux-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.15s;
+    position: absolute;
+    inset: 0;
+  }
+  .flux-img.on { opacity: 1; }
+  .flux-hud {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--green);
+    background: rgba(0,0,0,0.6);
+    padding: 4px 9px;
+    border-radius: 4px;
+    font-weight: 700;
+    z-index: 5;
+    pointer-events: none;
+  }
+  .flux-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: var(--green);
+    width: 0%;
+    z-index: 5;
+    transition: width linear;
+  }
+  .flux-tap-feedback {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    background: rgba(179,247,11,0.18);
+    opacity: 0;
+  }
+  .flux-tap-feedback.on { animation: tapFlash 0.4s ease-out; }
+  .flux-tap-feedback.bad { background: rgba(255,83,33,0.18); }
+  @keyframes tapFlash {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  .flux-cd {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 8;
+    font-size: 120px;
+    font-weight: 900;
+    color: var(--green);
+    background: rgba(0,0,0,0.7);
+    letter-spacing: -3px;
+  }
+  .flux-instruction {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.8);
+    background: rgba(0,0,0,0.7);
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* ====== ÉPREUVE 3 : DIFFÉRENTIEL ====== */
+  .diff-wrap {
+    flex: 1;
+    background: #000;
+    position: relative;
+    overflow: hidden;
+  }
+  .diff-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .diff-overlay-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .diff-hud {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #fff;
+    background: rgba(0,0,0,0.7);
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-weight: 700;
+    z-index: 5;
+    text-transform: uppercase;
+  }
+  .diff-hud .before { color: var(--blue-l); }
+  .diff-hud .after { color: var(--orange-l); }
+  .diff-counter {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--green);
+    background: rgba(0,0,0,0.7);
+    padding: 5px 11px;
+    border-radius: 4px;
+    font-weight: 700;
+    z-index: 5;
+  }
+  .diff-flash {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .diff-flash.on { animation: dFlash 0.5s ease-out; }
+  @keyframes dFlash {
+    0% { opacity: 0; }
+    20% { opacity: 0.9; }
+    100% { opacity: 0; }
+  }
+  .diff-tap-bad {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--orange);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 12;
+    opacity: 0;
+  }
+  .diff-tap-bad.on { animation: tapBad 0.6s ease-out; }
+  @keyframes tapBad {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.4); }
+  }
+
+  /* ====== OUTCOME (transition) ====== */
+  .transition {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 30px;
+  }
+  .trans-icon {
+    font-size: 48px;
+    color: var(--green);
+    font-weight: 900;
+  }
+  .trans-title {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    text-transform: uppercase;
+  }
+  .trans-line {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    max-width: 480px;
+    line-height: 1.5;
+  }
+
+  /* ====== REPORT ====== */
+  .report {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 22px 20px;
+  }
+  .report::-webkit-scrollbar { width: 0; }
+  .rep-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .rep-head .tag {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--green);
+    text-transform: uppercase;
+  }
+  .rep-head h2 {
+    font-size: 18px;
+    font-weight: 800;
+    margin-top: 3px;
+    letter-spacing: -0.3px;
+  }
+  .score-b { text-align: right; }
+  .score-b .l {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+  }
+  .score-b .v {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--green);
+    line-height: 1;
+    margin-top: 2px;
+    letter-spacing: -1px;
+  }
+  .score-b .v small { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 500; }
+
+  .dims-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .dim {
+    padding: 11px 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+  }
+  .dim-name {
+    font-size: 10px;
+    letter-spacing: 1.3px;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  .dim-pct {
+    font-size: 11px;
+    padding: 3px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    font-weight: 800;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+  .dim-pct.t1 { background: rgba(179,247,11,0.18); color: var(--green); border: 1px solid var(--green); }
+  .dim-pct.t2 { background: rgba(245,192,64,0.15); color: var(--amber-l); border: 1px solid var(--amber-l); }
+  .dim-pct.t3 { background: rgba(122,184,240,0.15); color: var(--blue-l); border: 1px solid rgba(122,184,240,0.5); }
+  .dim-pct.t4 { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.15); }
+  .dim-metric {
+    font-size: 11px;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.4;
+  }
+  .dim-metric b { color: #fff; }
+
+  .rep-reveal {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+  }
+  .rep-reveal .h {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--green);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .rep-reveal .t {
+    font-size: 13px;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.5;
+  }
+  .rep-reveal .t b { color: #fff; }
+
+  .jobs-h {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    margin: 4px 0 8px;
+    font-weight: 700;
+  }
+  .jobs-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .job {
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+  }
+  .job .n {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .job .m {
+    font-size: 10px;
+    color: rgba(255,255,255,0.65);
+    margin-top: 5px;
+    line-height: 1.35;
+  }
+  .job .pct {
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 0.8px;
+    color: var(--green);
+    padding: 2px 5px;
+    border: 1px solid rgba(179,247,11,0.4);
+    border-radius: 3px;
+    margin-top: 5px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .cta-row {
+    display: flex;
+    gap: 8px;
+  }
+  .cta-row button {
+    flex: 1;
+    padding: 11px;
+    font-family: inherit;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .cta-row .replay { background: var(--green); color: #000; border: none; }
+  .cta-row .share { background: transparent; border: 1px solid rgba(255,255,255,0.18); color: #fff; }
+
+  /* TOAST */
+  .toast {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background: rgba(0,0,0,0.92);
+    border: 2px solid var(--green);
+    color: var(--green);
+    padding: 10px 22px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s, transform 0.18s;
+    white-space: nowrap;
+  }
+  .toast.on { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .toast.bad { border-color: var(--orange); color: var(--orange); }
+</style>
+</head>
+<body>
+
+<div class="rotate-prompt">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#B3F70B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6" y="2" width="12" height="20" rx="2"/>
+    <line x1="12" y1="18" x2="12" y2="18.01"/>
+  </svg>
+  <h2>Tourne ton téléphone</h2>
+  <p>Ce défi se joue en mode paysage. Bascule ton écran pour commencer.</p>
+</div>
+
+<div class="phone">
+  <div class="toast" id="toast"></div>
+
+  <!-- INTRO -->
+  <div class="view on" id="v-intro">
+    <div class="intro">
+      <div class="intro-left">
+        <div>
+          <span class="badge-m">Mission · CAJ-4</span>
+          <h1>RENSEIGNEMENT
+            <span class="sub">Test analyste image. 3 épreuves, 3 compétences mesurées séparément.</span>
+          </h1>
+        </div>
+        <div>
+          <button class="btn" onclick="goRules()">Lire les règles</button>
+          <p class="audio-hint">Active le son. Ton téléphone doit être en paysage.</p>
+        </div>
+      </div>
+      <div class="intro-right">
+        <div class="mc"><span class="k">Durée</span><span class="v">2 min 15</span></div>
+        <div class="mc"><span class="k">Épreuves</span><span class="v">3</span></div>
+        <div class="mc"><span class="k">XP</span><span class="v">+50</span></div>
+        <div class="mc"><span class="k">Niveau</span><span class="v">Novice</span></div>
+        <div class="mc"><span class="k">Format</span><span class="v">Paysage</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RULES -->
+  <div class="view" id="v-rules">
+    <div class="rules">
+      <div>
+        <div class="rules-sub">Avant de commencer</div>
+        <div class="rules-title">Règles d'engagement</div>
+      </div>
+      <div class="rules-list">
+        <div class="rule-item">
+          <div class="rule-num">01</div>
+          <div class="rule-text">Tu es <b>analyste image au renseignement militaire</b>. 3 épreuves, chacune mesure une compétence différente.</div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-num">02</div>
+          <div class="rule-text">La <b>consigne change à chaque épreuve</b>. Lis-la bien, elle n'est jamais répétée.</div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-num">03</div>
+          <div class="rule-text">Tes performances sont <b>chronométrées et comparées</b>. Aucun retour en arrière.</div>
+        </div>
+      </div>
+      <button class="btn" onclick="startLoading()">Démarrer le test</button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="view" id="v-loading">
+    <div class="loading">
+      <div class="load-spinner"></div>
+      <div class="load-label">Chargement des images</div>
+      <div class="load-progress"><div class="load-bar" id="load-bar"></div></div>
+      <div class="load-count" id="load-count">0 / 15</div>
+    </div>
+  </div>
+
+  <!-- BRIEF EP1 -->
+  <div class="view" id="v-ep1-brief">
+    <div class="brief">
+      <span class="brief-tag">Épreuve 01 sur 03</span>
+      <div class="brief-title">Observation libre</div>
+      <div class="brief-instruction">Une image va s'afficher pendant <b>15 secondes</b>. Observe-la attentivement.<br>Aucun indice sur ce qui te sera demandé ensuite.</div>
+      <div class="brief-meta">15 s d'observation · 6 questions ensuite</div>
+      <button class="btn brief-cta" onclick="startEp1Scene()">Je suis prêt</button>
+    </div>
+  </div>
+
+  <!-- EP1 SCENE -->
+  <div class="view" id="v-ep1-scene">
+    <div class="ep-header">
+      <div class="ep-tag"><span class="num">01</span>Observation libre</div>
+      <div class="ep-timer" id="ep1-timer">15</div>
+    </div>
+    <div class="scene-wrap">
+      <img class="scene-img" id="ep1-img" alt="">
+      <div class="scene-overlay-text">Mémorise ce que tu vois</div>
+    </div>
+  </div>
+
+  <!-- EP1 QUESTIONS -->
+  <div class="view" id="v-ep1-questions">
+    <div class="ep-header">
+      <div class="ep-tag"><span class="num">01</span>Questions · <span id="q-counter">1 / 6</span></div>
+      <div class="ep-timer" id="ep1-q-timer">--</div>
+    </div>
+    <div class="question">
+      <div class="q-num" id="q-num">QUESTION 01</div>
+      <div class="q-text" id="q-text">--</div>
+      <div class="q-options" id="q-options"></div>
+    </div>
+  </div>
+
+  <!-- BRIEF EP2 -->
+  <div class="view" id="v-ep2-brief">
+    <div class="brief">
+      <span class="brief-tag">Épreuve 02 sur 03</span>
+      <div class="brief-title">Détection en flux</div>
+      <div class="brief-instruction"><b>12 images vont défiler rapidement.</b> Tape l'écran dès que tu vois une <b>anomalie</b>.<br>Tu ne sais pas combien il y en a. Une seule chance par image.</div>
+      <div class="brief-meta">3 s par image · flux non interruptible</div>
+      <button class="btn brief-cta" onclick="startEp2Countdown()">Je suis prêt</button>
+    </div>
+  </div>
+
+  <!-- EP2 FLUX -->
+  <div class="view" id="v-ep2-flux">
+    <div class="ep-header">
+      <div class="ep-tag"><span class="num">02</span>Détection en flux</div>
+      <div class="ep-timer" id="ep2-timer">36</div>
+    </div>
+    <div class="flux-wrap" id="flux-wrap">
+      <div class="flux-hud" id="flux-hud">00 / 12</div>
+      <img class="flux-img on" id="flux-img" alt="">
+      <div class="flux-progress" id="flux-progress"></div>
+      <div class="flux-tap-feedback" id="flux-feedback"></div>
+      <div class="flux-cd" id="flux-cd" style="display:none">3</div>
+      <div class="flux-instruction">Tape l'écran si tu vois une anomalie</div>
+    </div>
+  </div>
+
+  <!-- BRIEF EP3 -->
+  <div class="view" id="v-ep3-brief">
+    <div class="brief">
+      <span class="brief-tag">Épreuve 03 sur 03</span>
+      <div class="brief-title">Vigilance différentielle</div>
+      <div class="brief-instruction"><b>Mémorise la scène AVANT</b> qui s'affiche 8 secondes. Quand <b>l'APRÈS</b> apparaîtra, tape les zones qui ont changé.<br>3 changements à détecter.</div>
+      <div class="brief-meta">Avant · 8 s · Après · 18 s</div>
+      <button class="btn brief-cta" onclick="startEp3Before()">Je suis prêt</button>
+    </div>
+  </div>
+
+  <!-- EP3 BEFORE -->
+  <div class="view" id="v-ep3-before">
+    <div class="ep-header">
+      <div class="ep-tag"><span class="num">03</span>Vigilance différentielle</div>
+      <div class="ep-timer" id="ep3-timer">08</div>
+    </div>
+    <div class="diff-wrap">
+      <div class="diff-hud"><span class="before">AVANT</span> · Mémorise</div>
+      <img class="diff-img" id="ep3-before-img" alt="">
+    </div>
+  </div>
+
+  <!-- EP3 AFTER -->
+  <div class="view" id="v-ep3-after">
+    <div class="ep-header">
+      <div class="ep-tag"><span class="num">03</span>Tape les changements</div>
+      <div class="ep-timer" id="ep3-after-timer">18</div>
+    </div>
+    <div class="diff-wrap" id="ep3-after-wrap">
+      <div class="diff-hud"><span class="after">APRÈS</span> · Tape les changements</div>
+      <div class="diff-counter" id="ep3-counter">0 / 3</div>
+      <img class="diff-img" id="ep3-after-img" alt="">
+      <svg class="diff-overlay-svg" id="ep3-overlay" preserveAspectRatio="none" viewBox="0 0 100 100"></svg>
+      <div class="diff-flash" id="ep3-flash"></div>
+    </div>
+  </div>
+
+  <!-- TRANSITION -->
+  <div class="view" id="v-transition">
+    <div class="transition">
+      <div class="trans-icon">✓</div>
+      <div class="trans-title" id="trans-title">Épreuve terminée</div>
+      <div class="trans-line" id="trans-line">--</div>
+      <button class="btn brief-cta" id="trans-cta" onclick="onTransitionNext()">Continuer</button>
+    </div>
+  </div>
+
+  <!-- REPORT -->
+  <div class="view" id="v-report">
+    <div class="report">
+      <div class="rep-head">
+        <div>
+          <div class="tag">Rapport · CAJ-4</div>
+          <h2>Profil analyste image</h2>
+        </div>
+        <div class="score-b">
+          <div class="l">Score</div>
+          <div class="v" id="rep-score">0<small>/1000</small></div>
+        </div>
+      </div>
+      <div class="dims-row">
+        <div class="dim">
+          <div class="dim-name">Mémoire visuelle</div>
+          <div class="dim-pct" id="d1-pct">--</div>
+          <div class="dim-metric" id="d1-metric"></div>
+        </div>
+        <div class="dim">
+          <div class="dim-name">Détection en flux</div>
+          <div class="dim-pct" id="d2-pct">--</div>
+          <div class="dim-metric" id="d2-metric"></div>
+        </div>
+        <div class="dim">
+          <div class="dim-name">Vigilance différentielle</div>
+          <div class="dim-pct" id="d3-pct">--</div>
+          <div class="dim-metric" id="d3-metric"></div>
+        </div>
+      </div>
+      <div class="rep-reveal">
+        <div class="h">Ton profil</div>
+        <div class="t" id="rep-reveal"></div>
+      </div>
+      <div class="jobs-h">Métiers AAE en résonance</div>
+      <div class="jobs-row" id="rep-jobs"></div>
+      <div class="cta-row">
+        <button class="share" onclick="shareScore()">Partager</button>
+        <button class="replay" onclick="restart()">Rejouer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============== CONFIG ==============
+const IMG_BASE = 'https://otrinkler.github.io/voka-defis/renseignement/images/';
+const ALL_IMAGES = [
+  'N1.png',
+  'N2A.png', 'N2B.png', 'N2C.png', 'N2D.png', 'N2E.png', 'N2F.png',
+  'N2G.png', 'N2H.png', 'N2I.png', 'N2J.png', 'N2K.png', 'N2L.png',
+  'N3AV.png', 'N3AP.png'
+];
+
+// Indices des images contenant une anomalie en épreuve 2 (1-indexed dans l'ordre A à L)
+// N2C = index 2 (image 3), N2F = index 5 (image 6), N2J = index 9 (image 10)
+const EP2_SEQUENCE = ['N2A', 'N2B', 'N2C', 'N2D', 'N2E', 'N2F', 'N2G', 'N2H', 'N2I', 'N2J', 'N2K', 'N2L'];
+const EP2_ANOMALIES = [2, 5, 9]; // index 0-based
+
+// Questions épreuve 1
+const EP1_QUESTIONS = [
+  { q: "Combien de personnes au total dans la scène ?", opts: ["2", "3", "4"], correct: 0 },
+  { q: "Le coffre d'une voiture était-il ouvert ?", opts: ["Oui", "Non", "Indéterminé"], correct: 0 },
+  { q: "Combien de caméras de sécurité ?", opts: ["1", "2", "3"], correct: 1 },
+  { q: "Couleur du cône de signalisation ?", opts: ["Rouge et blanc", "Orange", "Jaune"], correct: 0 },
+  { q: "Position du véhicule militaire ?", opts: ["Devant le bâtiment", "Derrière le bâtiment", "À côté"], correct: 1 },
+  { q: "Plage horaire indiquée ?", opts: ["Matin", "Après-midi", "Soir"], correct: 1 }
+];
+
+// Zones de changement épreuve 3 (en % de l'image)
+const EP3_ZONES = [
+  { x: 19, y: 68, r: 14, label: "Véhicules ajoutés", found: false },
+  { x: 47, y: 41, r: 9, label: "Porte du hangar ouverte", found: false },
+  { x: 42, y: 80, r: 8, label: "Garde disparu", found: false }
+];
+
+// ============== ÉTAT ==============
+const S = {
+  audio: null,
+  audioOn: false,
+  measures: {
+    ep1: { correct: 0, answers: [], responseTimes: [] },
+    ep2: { truePositives: 0, falsePositives: 0, falseNegatives: 0, reactionTimes: [] },
+    ep3: { correctZones: 0, falseTaps: 0, detectionTimes: [] }
+  },
+  q1Index: 0,
+  q1Start: 0,
+  fluxIndex: 0,
+  fluxStart: 0,
+  fluxAnomalyAppeared: null,
+  fluxAnomalyHit: false,
+  fluxTimer: null,
+  ep3AfterStart: 0,
+  nextEpisode: 0
+};
+
+// ============== AUDIO ==============
+function initAudio() {
+  if (S.audio) return;
+  try {
+    S.audio = new (window.AudioContext || window.webkitAudioContext)();
+    S.audioOn = true;
+    if (S.audio.state === 'suspended') S.audio.resume();
+  } catch(e) {}
+}
+function beep(freq, dur, vol, type) {
+  if (!S.audioOn) return;
+  const o = S.audio.createOscillator();
+  const g = S.audio.createGain();
+  o.type = type || 'sine';
+  o.frequency.value = freq;
+  g.gain.setValueAtTime(0, S.audio.currentTime);
+  g.gain.linearRampToValueAtTime(vol || 0.06, S.audio.currentTime + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.001, S.audio.currentTime + dur);
+  o.connect(g).connect(S.audio.destination);
+  o.start();
+  o.stop(S.audio.currentTime + dur);
+}
+function snTick() { beep(800, 0.03, 0.05, 'square'); }
+function snOk() { beep(880, 0.08, 0.08, 'sine'); setTimeout(() => beep(1320, 0.1, 0.08, 'sine'), 70); }
+function snBad() { beep(200, 0.18, 0.1, 'sawtooth'); }
+function snChime() {
+  if (!S.audioOn) return;
+  [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => beep(f, 0.16, 0.07, 'sine'), i * 90));
+}
+function snFlash() { beep(1500, 0.04, 0.08, 'sine'); setTimeout(() => beep(2000, 0.04, 0.06, 'sine'), 60); }
+function snCountdown() { beep(880, 0.08, 0.07, 'square'); }
+function buzz(p) { if (navigator.vibrate) navigator.vibrate(p || 25); }
+
+// ============== NAV ==============
+function show(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+function toast(text, ok) {
+  const t = document.getElementById('toast');
+  t.textContent = text;
+  t.classList.toggle('bad', !ok);
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 900);
+}
+
+// ============== TIMER ==============
+let phaseTimerId = null;
+function startTimer(elId, seconds, onEnd) {
+  clearInterval(phaseTimerId);
+  const el = document.getElementById(elId);
+  el.classList.remove('warn', 'crit');
+  let r = seconds;
+  el.textContent = String(r).padStart(2, '0');
+  phaseTimerId = setInterval(() => {
+    r--;
+    if (r < 0) r = 0;
+    el.textContent = String(r).padStart(2, '0');
+    if (r <= 3) { el.classList.remove('warn'); el.classList.add('crit'); snTick(); }
+    else if (r <= 5) { el.classList.add('warn'); }
+    if (r === 0) {
+      clearInterval(phaseTimerId);
+      if (onEnd) onEnd();
+    }
+  }, 1000);
+}
+function stopTimer() { clearInterval(phaseTimerId); }
+
+// ============== NAVIGATION ==============
+function goRules() {
+  initAudio();
+  show('v-rules');
+}
+
+// ============== LOADING IMAGES ==============
+async function startLoading() {
+  show('v-loading');
+  const bar = document.getElementById('load-bar');
+  const cnt = document.getElementById('load-count');
+  let loaded = 0;
+  const total = ALL_IMAGES.length;
+  const promises = ALL_IMAGES.map(name => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        loaded++;
+        bar.style.width = (loaded / total * 100) + '%';
+        cnt.textContent = loaded + ' / ' + total;
+        resolve(name);
+      };
+      img.onerror = () => {
+        loaded++;
+        bar.style.width = (loaded / total * 100) + '%';
+        cnt.textContent = loaded + ' / ' + total + ' (erreur ' + name + ')';
+        resolve(name);
+      };
+      img.src = IMG_BASE + name;
+    });
+  });
+  await Promise.all(promises);
+  setTimeout(() => show('v-ep1-brief'), 400);
+}
+
+// ============== ÉPREUVE 1 ==============
+function startEp1Scene() {
+  show('v-ep1-scene');
+  document.getElementById('ep1-img').src = IMG_BASE + 'N1.png';
+  startTimer('ep1-timer', 15, () => {
+    snFlash();
+    buzz(40);
+    setTimeout(() => startEp1Questions(), 300);
+  });
+}
+function startEp1Questions() {
+  S.q1Index = 0;
+  show('v-ep1-questions');
+  renderQuestion();
+}
+function renderQuestion() {
+  if (S.q1Index >= EP1_QUESTIONS.length) {
+    endEp1();
+    return;
+  }
+  const q = EP1_QUESTIONS[S.q1Index];
+  document.getElementById('q-counter').textContent = (S.q1Index + 1) + ' / 6';
+  document.getElementById('q-num').textContent = 'QUESTION ' + String(S.q1Index + 1).padStart(2, '0');
+  document.getElementById('q-text').textContent = q.q;
+  const c = document.getElementById('q-options');
+  c.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const b = document.createElement('button');
+    b.className = 'q-opt';
+    b.textContent = opt;
+    b.onclick = () => answerQuestion(i);
+    c.appendChild(b);
+  });
+  S.q1Start = Date.now();
+  startTimer('ep1-q-timer', 6, () => {
+    // Timeout = mauvaise réponse
+    S.measures.ep1.answers.push(-1);
+    S.measures.ep1.responseTimes.push(6000);
+    snBad();
+    nextQuestion();
+  });
+}
+function answerQuestion(i) {
+  stopTimer();
+  const q = EP1_QUESTIONS[S.q1Index];
+  const correct = (i === q.correct);
+  S.measures.ep1.answers.push(i);
+  S.measures.ep1.responseTimes.push(Date.now() - S.q1Start);
+  if (correct) S.measures.ep1.correct++;
+  // Visuel feedback
+  const opts = document.querySelectorAll('#q-options .q-opt');
+  opts.forEach((o, k) => {
+    o.onclick = null;
+    if (k === q.correct) o.classList.add('good');
+    else if (k === i && !correct) o.classList.add('bad');
+  });
+  if (correct) snOk(); else snBad();
+  buzz(15);
+  setTimeout(nextQuestion, 700);
+}
+function nextQuestion() {
+  S.q1Index++;
+  renderQuestion();
+}
+function endEp1() {
+  showTransition(
+    'Épreuve 01 terminée',
+    'Score mémoire visuelle : ' + S.measures.ep1.correct + ' / 6.',
+    1 // next = ep2
+  );
+}
+
+// ============== ÉPREUVE 2 ==============
+function startEp2Countdown() {
+  show('v-ep2-flux');
+  // Reset
+  S.fluxIndex = 0;
+  S.fluxAnomalyHit = false;
+  document.getElementById('flux-hud').textContent = '00 / 12';
+  document.getElementById('flux-img').src = '';
+  document.getElementById('flux-progress').style.width = '0%';
+
+  const cd = document.getElementById('flux-cd');
+  cd.style.display = 'flex';
+  let n = 3;
+  cd.textContent = n;
+  snCountdown();
+  const cdInt = setInterval(() => {
+    n--;
+    if (n > 0) {
+      cd.textContent = n;
+      snCountdown();
+    } else {
+      clearInterval(cdInt);
+      cd.style.display = 'none';
+      startEp2Flux();
+    }
+  }, 700);
+}
+function startEp2Flux() {
+  // Listener tap sur le flux
+  const wrap = document.getElementById('flux-wrap');
+  wrap.onclick = handleFluxTap;
+  // Démarrer timer global 36s (12 * 3 + petit buffer)
+  startTimer('ep2-timer', 36, () => {
+    // backup if not finished
+    if (S.fluxIndex < 12) endEp2();
+  });
+  showFluxImage();
+}
+function showFluxImage() {
+  if (S.fluxIndex >= 12) {
+    endEp2();
+    return;
+  }
+  const name = EP2_SEQUENCE[S.fluxIndex];
+  const isAnomaly = EP2_ANOMALIES.indexOf(S.fluxIndex) !== -1;
+  // Une seule image, on change le src
+  const img = document.getElementById('flux-img');
+  img.src = IMG_BASE + name + '.png';
+  document.getElementById('flux-hud').textContent = String(S.fluxIndex + 1).padStart(2, '0') + ' / 12';
+  // Progress bar reset & animate sur 3s
+  const pg = document.getElementById('flux-progress');
+  pg.style.transition = 'none';
+  pg.style.width = '0%';
+  void pg.offsetWidth;
+  pg.style.transition = 'width 3s linear';
+  pg.style.width = '100%';
+  // Anomalie ?
+  S.fluxAnomalyHit = false;
+  S.fluxAnomalyAppeared = isAnomaly ? Date.now() : null;
+  S.fluxImageIsAnomaly = isAnomaly;
+  S.fluxImageStart = Date.now();
+  // Avancer après 3s
+  S.fluxTimer = setTimeout(() => {
+    // Si anomalie non détectée : false negative
+    if (S.fluxImageIsAnomaly && !S.fluxAnomalyHit) {
+      S.measures.ep2.falseNegatives++;
+    }
+    S.fluxIndex++;
+    showFluxImage();
+  }, 3000);
+}
+function handleFluxTap() {
+  if (S.fluxIndex >= 12 || S.fluxAnomalyHit) return;
+  const fb = document.getElementById('flux-feedback');
+  buzz(20);
+  snTick();
+  if (S.fluxImageIsAnomaly) {
+    // True positive
+    S.measures.ep2.truePositives++;
+    S.measures.ep2.reactionTimes.push(Date.now() - S.fluxImageStart);
+    S.fluxAnomalyHit = true;
+    fb.classList.remove('bad', 'on');
+    void fb.offsetWidth;
+    fb.classList.add('on');
+    snOk();
+  } else {
+    // False positive
+    S.measures.ep2.falsePositives++;
+    S.fluxAnomalyHit = true; // bloque les multi-taps sur même image
+    fb.classList.remove('on');
+    fb.classList.add('bad', 'on');
+    snBad();
+  }
+}
+function endEp2() {
+  clearTimeout(S.fluxTimer);
+  stopTimer();
+  document.getElementById('flux-wrap').onclick = null;
+  showTransition(
+    'Épreuve 02 terminée',
+    'Détections justes : ' + S.measures.ep2.truePositives + ' / 3.',
+    2 // next = ep3
+  );
+}
+
+// ============== ÉPREUVE 3 ==============
+function startEp3Before() {
+  show('v-ep3-before');
+  document.getElementById('ep3-before-img').src = IMG_BASE + 'N3AV.png';
+  startTimer('ep3-timer', 8, () => {
+    // Flash transition
+    snFlash();
+    buzz(50);
+    setTimeout(() => startEp3After(), 400);
+  });
+}
+function startEp3After() {
+  show('v-ep3-after');
+  document.getElementById('ep3-after-img').src = IMG_BASE + 'N3AP.png';
+  // Reset zones
+  EP3_ZONES.forEach(z => z.found = false);
+  S.measures.ep3.correctZones = 0;
+  S.measures.ep3.falseTaps = 0;
+  S.measures.ep3.detectionTimes = [];
+  S.ep3AfterStart = Date.now();
+  document.getElementById('ep3-counter').textContent = '0 / 3';
+  document.getElementById('ep3-overlay').innerHTML = '';
+  // Flash white
+  const fl = document.getElementById('ep3-flash');
+  fl.classList.remove('on');
+  void fl.offsetWidth;
+  fl.classList.add('on');
+  // Tap handler
+  const wrap = document.getElementById('ep3-after-wrap');
+  wrap.onclick = handleEp3Tap;
+  startTimer('ep3-after-timer', 18, () => endEp3());
+}
+function handleEp3Tap(e) {
+  const wrap = document.getElementById('ep3-after-wrap');
+  const img = document.getElementById('ep3-after-img');
+  const wrapRect = wrap.getBoundingClientRect();
+  const imgRect = img.getBoundingClientRect();
+  // Tap position relative to image (object-fit: contain)
+  const tapX = e.clientX - imgRect.left;
+  const tapY = e.clientY - imgRect.top;
+  if (tapX < 0 || tapY < 0 || tapX > imgRect.width || tapY > imgRect.height) return;
+  const xPct = (tapX / imgRect.width) * 100;
+  const yPct = (tapY / imgRect.height) * 100;
+  let hit = false;
+  for (const z of EP3_ZONES) {
+    if (z.found) continue;
+    const dx = xPct - z.x;
+    const dy = yPct - z.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist <= z.r) {
+      z.found = true;
+      S.measures.ep3.correctZones++;
+      S.measures.ep3.detectionTimes.push(Date.now() - S.ep3AfterStart);
+      drawZoneFound(z, imgRect, wrapRect);
+      hit = true;
+      snOk();
+      buzz(25);
+      document.getElementById('ep3-counter').textContent = S.measures.ep3.correctZones + ' / 3';
+      if (S.measures.ep3.correctZones === 3) {
+        setTimeout(() => endEp3(), 800);
+      }
+      break;
+    }
+  }
+  if (!hit) {
+    S.measures.ep3.falseTaps++;
+    drawBadTap(e.clientX - wrapRect.left, e.clientY - wrapRect.top);
+    snBad();
+    buzz(10);
+  }
+}
+function drawZoneFound(z, imgRect, wrapRect) {
+  // Position du marker en pixels relatifs au wrap
+  const cx = imgRect.left - wrapRect.left + (z.x / 100) * imgRect.width;
+  const cy = imgRect.top - wrapRect.top + (z.y / 100) * imgRect.height;
+  const r = (z.r / 100) * imgRect.width;
+  const wrap = document.getElementById('ep3-after-wrap');
+  const ns = 'http://www.w3.org/2000/svg';
+  // Crée un overlay div positionné
+  const m = document.createElement('div');
+  m.style.cssText = `
+    position: absolute;
+    left: ${cx}px;
+    top: ${cy}px;
+    width: ${r * 2}px;
+    height: ${r * 2}px;
+    margin-left: ${-r}px;
+    margin-top: ${-r}px;
+    border: 2.5px solid #B3F70B;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 11;
+    box-shadow: 0 0 18px rgba(179,247,11,0.6);
+    animation: foundPulse 0.5s ease-out;
+  `;
+  wrap.appendChild(m);
+  // Petit label
+  const lbl = document.createElement('div');
+  lbl.style.cssText = `
+    position: absolute;
+    left: ${cx}px;
+    top: ${cy - r - 18}px;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.85);
+    color: #B3F70B;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid #B3F70B;
+    pointer-events: none;
+    z-index: 12;
+    white-space: nowrap;
+    text-transform: uppercase;
+  `;
+  lbl.textContent = z.label;
+  wrap.appendChild(lbl);
+  // Inject keyframes once
+  if (!document.getElementById('foundPulse-style')) {
+    const st = document.createElement('style');
+    st.id = 'foundPulse-style';
+    st.textContent = '@keyframes foundPulse { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }';
+    document.head.appendChild(st);
+  }
+}
+function drawBadTap(x, y) {
+  const wrap = document.getElementById('ep3-after-wrap');
+  const m = document.createElement('div');
+  m.className = 'diff-tap-bad on';
+  m.style.left = x + 'px';
+  m.style.top = y + 'px';
+  wrap.appendChild(m);
+  setTimeout(() => m.remove(), 700);
+}
+function endEp3() {
+  stopTimer();
+  document.getElementById('ep3-after-wrap').onclick = null;
+  showTransition(
+    'Épreuve 03 terminée',
+    'Changements détectés : ' + S.measures.ep3.correctZones + ' / 3.',
+    3 // next = report
+  );
+}
+
+// ============== TRANSITION ==============
+function showTransition(title, line, nextEpisode) {
+  show('v-transition');
+  document.getElementById('trans-title').textContent = title;
+  document.getElementById('trans-line').textContent = line;
+  S.nextEpisode = nextEpisode;
+  snChime();
+}
+function onTransitionNext() {
+  const n = S.nextEpisode;
+  if (n === 1) show('v-ep2-brief');
+  else if (n === 2) show('v-ep3-brief');
+  else if (n === 3) showReport();
+}
+
+// ============== PERCENTILES ==============
+function vigP() {
+  // Dimension 1 : mémoire
+  const c = S.measures.ep1.correct;
+  if (c === 6) return { tier: 1, label: 'Top 5%', metric: `<b>6 / 6</b> réponses correctes. Mémoire visuelle exceptionnelle.` };
+  if (c === 5) return { tier: 1, label: 'Top 20%', metric: `<b>5 / 6</b> réponses correctes. Rétention solide.` };
+  if (c === 4) return { tier: 2, label: 'Top 50%', metric: `<b>4 / 6</b> réponses correctes. Observation correcte.` };
+  if (c === 3) return { tier: 3, label: 'Top 75%', metric: `<b>3 / 6</b> réponses correctes. Détails partiels.` };
+  return { tier: 4, label: '25% restants', metric: `<b>${c} / 6</b> réponses correctes. Mémorisation à travailler.` };
+}
+function fluxP() {
+  // Dimension 2 : détection
+  const tp = S.measures.ep2.truePositives;
+  const fp = S.measures.ep2.falsePositives;
+  if (tp === 3 && fp === 0) return { tier: 1, label: 'Top 10%', metric: `<b>3 / 3</b> anomalies, <b>0</b> faux signal.` };
+  if (tp === 3 && fp <= 1) return { tier: 1, label: 'Top 25%', metric: `<b>3 / 3</b> anomalies, <b>${fp}</b> faux signal.` };
+  if (tp === 2 && fp === 0) return { tier: 2, label: 'Top 40%', metric: `<b>2 / 3</b> anomalies, <b>0</b> faux signal.` };
+  if (tp === 2 && fp <= 2) return { tier: 2, label: 'Top 60%', metric: `<b>2 / 3</b> anomalies, <b>${fp}</b> faux signaux.` };
+  if (tp >= 1) return { tier: 3, label: 'Top 80%', metric: `<b>${tp} / 3</b> anomalies, <b>${fp}</b> faux signaux.` };
+  return { tier: 4, label: '20% restants', metric: `<b>0 / 3</b> anomalies, <b>${fp}</b> faux signaux.` };
+}
+function diffP() {
+  // Dimension 3 : différentiel
+  const c = S.measures.ep3.correctZones;
+  const f = S.measures.ep3.falseTaps;
+  const avgT = S.measures.ep3.detectionTimes.length
+    ? (S.measures.ep3.detectionTimes.reduce((a,b)=>a+b,0) / S.measures.ep3.detectionTimes.length / 1000).toFixed(1)
+    : '--';
+  if (c === 3 && f <= 1) return { tier: 1, label: 'Top 12%', metric: `<b>3 / 3</b> changements en ${avgT} s moyen. ${f} erreur de zone.` };
+  if (c === 3) return { tier: 1, label: 'Top 25%', metric: `<b>3 / 3</b> changements, ${f} erreurs de zone.` };
+  if (c === 2) return { tier: 2, label: 'Top 35%', metric: `<b>2 / 3</b> changements détectés.` };
+  if (c === 1) return { tier: 3, label: 'Top 65%', metric: `<b>1 / 3</b> changements détectés.` };
+  return { tier: 4, label: '35% restants', metric: `<b>0 / 3</b> changements détectés.` };
+}
+
+// ============== SCORE ==============
+function computeScore() {
+  let s = 400;
+  s += S.measures.ep1.correct * 50;       // max +300
+  s += S.measures.ep2.truePositives * 80; // max +240
+  s -= S.measures.ep2.falsePositives * 35;
+  s += S.measures.ep3.correctZones * 90;  // max +270
+  s -= S.measures.ep3.falseTaps * 25;
+  return Math.max(0, Math.min(1000, Math.round(s)));
+}
+
+// ============== REPORT ==============
+function showReport() {
+  show('v-report');
+  document.getElementById('rep-score').innerHTML = computeScore() + '<small>/1000</small>';
+
+  const d1 = vigP(), d2 = fluxP(), d3 = diffP();
+  setDim('d1', d1);
+  setDim('d2', d2);
+  setDim('d3', d3);
+
+  // Profil dominant
+  const tiers = [d1.tier, d2.tier, d3.tier];
+  const min = Math.min(...tiers);
+  const dom = tiers.indexOf(min); // 0, 1, 2
+
+  let reveal, jobs;
+  // Si très équilibré (3 dimensions tier 1 ou 2)
+  const balanced = tiers.every(t => t <= 2);
+  if (balanced && min === 1) {
+    reveal = "Profil <b>analyste tactique complet</b>. Tu mobilises les trois compétences à un haut niveau. Mémoire, flux, différentiel : aucune faiblesse identifiée. Profil rare, recherché pour les postes de synthèse au renseignement opérationnel.";
+    jobs = [
+      { n: "Officier renseignement", m: "Synthèse multi-source. Ton terrain.", pct: 93 },
+      { n: "Analyste interarmées", m: "Coordination entre flux, image, terrain.", pct: 89 },
+      { n: "Permanence renseignement", m: "Décision rapide sur sources hétérogènes.", pct: 86 }
+    ];
+  } else if (dom === 0) {
+    reveal = "Ton point fort, c'est la <b>mémoire visuelle déclarative</b>. Tu retiens des détails précis sans qu'on te dise lesquels chercher. Profil typique de l'analyste documentation et de l'analyste image qui travaille sur des dossiers longs.";
+    jobs = [
+      { n: "Analyste documentation", m: "Rétention de détails sur dossiers complexes.", pct: 92 },
+      { n: "Analyste imagerie SIGINT", m: "Lecture détaillée d'images de surveillance.", pct: 88 },
+      { n: "Officier renseignement", m: "Mémoire utile pour recouper sources.", pct: 84 }
+    ];
+  } else if (dom === 1) {
+    reveal = "Ton point fort, c'est la <b>détection sous flux</b>. Tu repères ce qui sort de l'ordinaire dans un défilement continu, sans qu'on te dise quoi chercher. Profil typique de l'opérateur drone et de l'analyste vidéo.";
+    jobs = [
+      { n: "Opérateur drone MALE", m: "Surveillance vidéo continue. Ton tempo.", pct: 93 },
+      { n: "Analyste vidéo renseignement", m: "Lecture rapide de flux long.", pct: 89 },
+      { n: "Contrôleur aérien militaire", m: "Vigilance soutenue sous flux radar.", pct: 84 }
+    ];
+  } else {
+    reveal = "Ton point fort, c'est la <b>vigilance différentielle</b>. Tu vois ce qui a changé entre deux états très proches. C'est exactement le test des analystes imagerie satellite à la CAJ. Profil rare et précieux.";
+    jobs = [
+      { n: "Analyste imagerie satellite", m: "Comparaison avant/après. Centre d'analyse géospatiale interarmées.", pct: 94 },
+      { n: "Géomatique opérationnelle", m: "Détection de changements terrain.", pct: 88 },
+      { n: "Analyste image renseignement", m: "Lecture comparative de dossiers visuels.", pct: 85 }
+    ];
+  }
+  document.getElementById('rep-reveal').innerHTML = reveal;
+  const jb = document.getElementById('rep-jobs');
+  jb.innerHTML = '';
+  jobs.forEach(j => {
+    const el = document.createElement('div');
+    el.className = 'job';
+    el.innerHTML = `<div class="n">${j.n}</div><div class="m">${j.m}</div><span class="pct">Match ${j.pct}%</span>`;
+    jb.appendChild(el);
+  });
+}
+function setDim(id, data) {
+  const p = document.getElementById(id + '-pct');
+  p.textContent = data.label;
+  p.className = 'dim-pct t' + data.tier;
+  document.getElementById(id + '-metric').innerHTML = data.metric;
+}
+
+function shareScore() {
+  const txt = `J'ai scoré ${computeScore()}/1000 sur la mission RENSEIGNEMENT · VOKA × AAE. Analyste image CAJ-4.`;
+  if (navigator.share) navigator.share({ title: 'RENSEIGNEMENT', text: txt }).catch(() => {});
+  else if (navigator.clipboard) { navigator.clipboard.writeText(txt).catch(() => {}); toast('SCORE COPIÉ', true); }
+}
+
+function restart() {
+  stopTimer();
+  clearTimeout(S.fluxTimer);
+  S.measures = {
+    ep1: { correct: 0, answers: [], responseTimes: [] },
+    ep2: { truePositives: 0, falsePositives: 0, falseNegatives: 0, reactionTimes: [] },
+    ep3: { correctZones: 0, falseTaps: 0, detectionTimes: [] }
+  };
+  EP3_ZONES.forEach(z => z.found = false);
+  S.q1Index = 0;
+  S.fluxIndex = 0;
+  show('v-intro');
+}
+</script>
+</body>
+</html>

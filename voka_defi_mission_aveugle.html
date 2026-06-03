@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VOKA · MISSION AVEUGLE</title>
+<style>
+  :root {
+    --purple: #7500B8;
+    --purple-l: #c98ff0;
+    --green: #B3F70B;
+    --orange: #FF5321;
+    --blue: #378ADD;
+    --teal: #1D9E75;
+    --amber: #EF9F27;
+    --pink: #D4537E;
+    --bg: #080810;
+    --green-l: #6ddba0;
+    --blue-l: #7ab8f0;
+    --amber-l: #f5c040;
+    --orange-l: #ff8868;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; -webkit-user-select: none; user-select: none; }
+  body {
+    background: #111;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .phone {
+    width: 390px;
+    height: 844px;
+    background: var(--bg);
+    border-radius: 48px;
+    border: 7px solid #1e1e2e;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  }
+  .sb {
+    padding: 14px 26px 0;
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    display: flex;
+    justify-content: space-between;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+    z-index: 3;
+  }
+  .scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 24px 22px;
+  }
+  .scroll-area::-webkit-scrollbar { width: 0; }
+
+  /* HEADER */
+  .badge-mission {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    color: var(--purple-l);
+    padding: 5px 10px;
+    border: 1px solid var(--purple-l);
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .title-h1 {
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: -1.3px;
+    line-height: 0.92;
+    text-transform: uppercase;
+  }
+  .title-sub {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 10px;
+    line-height: 1.4;
+  }
+
+  /* META */
+  .meta-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+    margin-top: 18px;
+  }
+  .meta-cell {
+    flex: 1;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 8px 8px;
+    text-align: center;
+  }
+  .meta-cell .k {
+    font-size: 9px;
+    letter-spacing: 1.3px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+  .meta-cell .v {
+    font-size: 13px;
+    color: #fff;
+    font-weight: 800;
+    margin-top: 3px;
+    letter-spacing: -0.2px;
+  }
+
+  /* DÉMO ANIMÉE */
+  .demo-box {
+    margin-bottom: 22px;
+    background: linear-gradient(180deg, rgba(117,0,184,0.08) 0%, rgba(0,0,0,0.3) 100%);
+    border: 1px solid rgba(201,143,240,0.25);
+    border-radius: 14px;
+    padding: 12px;
+  }
+  .demo-tag {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--purple-l);
+    text-transform: uppercase;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .demo-tag::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--purple-l);
+    animation: dotPulse 1.4s infinite;
+  }
+  @keyframes dotPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .doc-wrap {
+    background: #0a0a14;
+    border: 1px solid rgba(201,143,240,0.18);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: ui-monospace, monospace;
+    position: relative;
+    overflow: hidden;
+  }
+  .doc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed rgba(201,143,240,0.25);
+  }
+  .doc-classification {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: var(--orange-l);
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .doc-timer {
+    font-size: 14px;
+    color: var(--orange);
+    font-weight: 900;
+    font-family: ui-monospace, monospace;
+    letter-spacing: 0.5px;
+  }
+  .doc-title {
+    font-size: 10px;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .doc-line {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+    align-items: baseline;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+  .doc-key {
+    color: rgba(201,143,240,0.7);
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    min-width: 70px;
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+  .doc-val {
+    color: rgba(255,255,255,0.88);
+    font-weight: 500;
+    flex: 1;
+  }
+  .redacted {
+    display: inline-block;
+    background: #000;
+    color: #000;
+    padding: 1px 6px;
+    border-radius: 2px;
+    user-select: none;
+    border: 1px solid rgba(255,255,255,0.05);
+    letter-spacing: 0;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .redacted::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(45deg, transparent 0 3px, rgba(255,255,255,0.05) 3px 5px);
+  }
+  .redacted.flash {
+    background: var(--orange);
+    color: #000;
+    box-shadow: 0 0 8px rgba(255,83,33,0.6);
+  }
+  .redacted.flash::before { display: none; }
+  .contradiction {
+    background: rgba(245,192,64,0.15);
+    color: var(--amber-l);
+    padding: 1px 5px;
+    border-radius: 2px;
+    border: 1px dashed rgba(245,192,64,0.5);
+    transition: all 0.3s;
+  }
+  .contradiction.flash {
+    background: rgba(245,192,64,0.35);
+    color: #fff;
+    border-color: var(--amber-l);
+    box-shadow: 0 0 10px rgba(245,192,64,0.4);
+  }
+  .doc-warning {
+    margin-top: 8px;
+    padding: 6px 10px;
+    background: rgba(255,83,33,0.10);
+    border: 1px solid rgba(255,83,33,0.4);
+    border-radius: 6px;
+    font-size: 10px;
+    color: var(--orange);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .doc-warning.on { opacity: 1; }
+  .doc-warning::before {
+    content: '!';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: var(--orange);
+    color: #000;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 14px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .doc-options {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 5px;
+  }
+  .opt-mini {
+    padding: 6px 4px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    font-size: 9px;
+    color: rgba(255,255,255,0.65);
+    text-align: center;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .demo-status {
+    margin-top: 8px;
+    text-align: center;
+    font-size: 10px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    height: 14px;
+  }
+  .demo-status b { color: var(--purple-l); }
+
+  /* SECTIONS */
+  .section { margin-bottom: 18px; }
+  .section-h {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-h::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--purple-l);
+  }
+  .section p {
+    font-size: 13px;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.82);
+  }
+  .section p b { color: #fff; }
+
+  .measures-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .measure-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 9px;
+  }
+  .measure-item .ic {
+    font-size: 14px;
+    color: var(--purple-l);
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-weight: 900;
+  }
+  .measure-item .tx {
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.4;
+  }
+  .measure-item .tx b {
+    color: #fff;
+    display: block;
+    font-size: 13px;
+    margin-bottom: 2px;
+    letter-spacing: 0.2px;
+  }
+
+  .jobs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+  }
+  .job-mini {
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.85);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  /* CTA */
+  .cta-area {
+    padding: 14px 24px 22px;
+    background: linear-gradient(180deg, rgba(8,8,16,0) 0%, var(--bg) 30%);
+    flex-shrink: 0;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .status-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(245,192,64,0.08);
+    border: 1px solid rgba(245,192,64,0.3);
+    color: var(--amber-l);
+    padding: 11px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .status-pill::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--amber-l);
+    animation: dotPulse 1.4s infinite;
+  }
+  .btn-cta {
+    background: rgba(201,143,240,0.10);
+    color: var(--purple-l);
+    border: 1.5px solid var(--purple-l);
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    width: 100%;
+    transition: all 0.15s;
+  }
+  .btn-cta:active { transform: scale(0.97); background: rgba(201,143,240,0.18); }
+  .cta-note {
+    text-align: center;
+    font-size: 10px;
+    color: rgba(255,255,255,0.45);
+    margin-top: 8px;
+    letter-spacing: 0.3px;
+  }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="sb">
+    <span>9:41</span>
+    <span>●●● WiFi 🔋</span>
+  </div>
+
+  <div class="scroll-area">
+    <span class="badge-mission">Défi · à venir</span>
+    <h1 class="title-h1">MISSION AVEUGLE
+      <span class="title-sub">Briefing incomplet. Infos contradictoires. 30 secondes pour décider.</span>
+    </h1>
+
+    <div class="meta-row">
+      <div class="meta-cell"><div class="k">Durée</div><div class="v">3 min</div></div>
+      <div class="meta-cell"><div class="k">Situations</div><div class="v">5</div></div>
+      <div class="meta-cell"><div class="k">Niveau</div><div class="v">Cdt</div></div>
+      <div class="meta-cell"><div class="k">XP</div><div class="v">+40</div></div>
+    </div>
+
+    <div class="demo-box">
+      <div class="demo-tag">Aperçu dossier opérationnel</div>
+      <div class="doc-wrap">
+        <div class="doc-header">
+          <span class="doc-classification">CLASSIFIÉ · NIV 3</span>
+          <span class="doc-timer" id="doc-timer">00:18</span>
+        </div>
+        <div class="doc-title">Dossier · MIKE-4 · Décision requise</div>
+
+        <div class="doc-line">
+          <span class="doc-key">Cible</span>
+          <span class="doc-val"><span class="redacted" id="r1">XXXXXXXXX XXXX</span></span>
+        </div>
+        <div class="doc-line">
+          <span class="doc-key">Position</span>
+          <span class="doc-val">48°51'N · 002°20'E</span>
+        </div>
+        <div class="doc-line">
+          <span class="doc-key">Heure H</span>
+          <span class="doc-val">H+02:15</span>
+        </div>
+        <div class="doc-line">
+          <span class="doc-key">Force</span>
+          <span class="doc-val"><span class="redacted" id="r2">XXXX XXXXXX</span> hommes estimés</span>
+        </div>
+        <div class="doc-line">
+          <span class="doc-key">Météo</span>
+          <span class="doc-val"><span class="contradiction" id="c1">favorable</span> / <span class="contradiction" id="c2">vent 35 kt</span></span>
+        </div>
+        <div class="doc-line">
+          <span class="doc-key">ROE</span>
+          <span class="doc-val"><span class="redacted" id="r3">XXXXXXX XXX XXXX</span></span>
+        </div>
+
+        <div class="doc-warning" id="doc-warning">Info contradictoire détectée</div>
+
+        <div class="doc-options">
+          <div class="opt-mini">Engager</div>
+          <div class="opt-mini">Reporter</div>
+          <div class="opt-mini">Reconnaitre</div>
+        </div>
+      </div>
+      <div class="demo-status" id="demo-status">Briefing en cours de réception</div>
+    </div>
+
+    <div class="section">
+      <div class="section-h">Mécanique</div>
+      <p>Tu reçois un <b>briefing incomplet</b>, comme en opération réelle. Des infos manquent, d'autres se contredisent. 30 secondes pour décider avec ce que tu as. <b>5 situations enchaînées.</b> Pas de bonne réponse. La façon dont tu décides révèle ton profil de commandement.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-h">Ce qu'on mesure</div>
+      <div class="measures-list">
+        <div class="measure-item">
+          <span class="ic">◇</span>
+          <span class="tx"><b>Style de commandement</b>Direct, prudent, négociateur, créatif.</span>
+        </div>
+        <div class="measure-item">
+          <span class="ic">◇</span>
+          <span class="tx"><b>Tolérance à l'incomplet</b>Capacité à agir sans toutes les cartes.</span>
+        </div>
+        <div class="measure-item">
+          <span class="ic">◇</span>
+          <span class="tx"><b>Lecture de la contradiction</b>Façon dont tu traites une info qui ne colle pas.</span>
+        </div>
+        <div class="measure-item">
+          <span class="ic">◇</span>
+          <span class="tx"><b>Construction de décision</b>Avec quoi tu remplis les blancs.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-h">Métiers AAE en résonance</div>
+      <div class="jobs-grid">
+        <div class="job-mini">Officier ops spéciales</div>
+        <div class="job-mini">Chef de mission tactique</div>
+        <div class="job-mini">Officier renseignement</div>
+        <div class="job-mini">Commandant de bord</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-area">
+    <div class="status-pill">Bientôt disponible</div>
+    <button class="btn-cta" onclick="onInterest()">Tester sur base aérienne</button>
+    <p class="cta-note">Disponible en exclusivité sur événement Experience Alpha</p>
+  </div>
+</div>
+
+<script>
+// ============== ÉTAT ==============
+let audio = null;
+let audioOn = false;
+
+function initAudio() {
+  if (audio) return;
+  try {
+    audio = new (window.AudioContext || window.webkitAudioContext)();
+    audioOn = true;
+    if (audio.state === 'suspended') audio.resume();
+  } catch(e) {}
+}
+
+function softBlip() {
+  if (!audioOn) return;
+  const ctx = audio;
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.type = 'sine';
+  o.frequency.value = 620;
+  g.gain.setValueAtTime(0, ctx.currentTime);
+  g.gain.linearRampToValueAtTime(0.012, ctx.currentTime + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.06);
+  o.connect(g).connect(ctx.destination);
+  o.start();
+  o.stop(ctx.currentTime + 0.08);
+}
+function alertBlip() {
+  if (!audioOn) return;
+  const ctx = audio;
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.type = 'sine';
+  o.frequency.value = 380;
+  g.gain.setValueAtTime(0, ctx.currentTime);
+  g.gain.linearRampToValueAtTime(0.025, ctx.currentTime + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.18);
+  o.connect(g).connect(ctx.destination);
+  o.start();
+  o.stop(ctx.currentTime + 0.2);
+}
+
+// ============== ANIMATION ==============
+// Timer fictif qui descend de 30 à 0 puis reset
+let timerVal = 30;
+function tickTimer() {
+  timerVal--;
+  if (timerVal < 0) timerVal = 30;
+  const m = Math.floor(timerVal / 60);
+  const s = timerVal % 60;
+  document.getElementById('doc-timer').textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+}
+setInterval(tickTimer, 1000);
+
+// Séquence en boucle 6 secondes
+const SEQUENCE = [
+  { at: 0,    action: 'status', text: 'Briefing en cours de réception' },
+  { at: 800,  action: 'reveal-redact', id: 'r1' },
+  { at: 800,  action: 'status', text: 'Donnée Cible reçue' },
+  { at: 1600, action: 'flash-redact', id: 'r2' },
+  { at: 1600, action: 'status', text: 'Force ennemie · données partielles' },
+  { at: 2500, action: 'flash-contradiction' },
+  { at: 2500, action: 'warning-on' },
+  { at: 2500, action: 'status', text: 'Info contradictoire détectée' },
+  { at: 4200, action: 'flash-redact', id: 'r3' },
+  { at: 4200, action: 'status', text: 'ROE non transmis · décision requise' },
+  { at: 5800, action: 'reset' }
+];
+
+let seqTimers = [];
+function runSequence() {
+  seqTimers.forEach(t => clearTimeout(t));
+  seqTimers = [];
+  SEQUENCE.forEach(step => {
+    const t = setTimeout(() => applyStep(step), step.at);
+    seqTimers.push(t);
+  });
+  const loopT = setTimeout(runSequence, 6500);
+  seqTimers.push(loopT);
+}
+function applyStep(step) {
+  switch (step.action) {
+    case 'flash-redact':
+      const r = document.getElementById(step.id);
+      if (r) {
+        r.classList.add('flash');
+        softBlip();
+        setTimeout(() => r.classList.remove('flash'), 400);
+      }
+      break;
+    case 'reveal-redact':
+      // juste un pulse mais sans révéler le contenu
+      const rr = document.getElementById(step.id);
+      if (rr) {
+        rr.classList.add('flash');
+        softBlip();
+        setTimeout(() => rr.classList.remove('flash'), 300);
+      }
+      break;
+    case 'flash-contradiction':
+      const c1 = document.getElementById('c1');
+      const c2 = document.getElementById('c2');
+      if (c1) c1.classList.add('flash');
+      if (c2) c2.classList.add('flash');
+      alertBlip();
+      setTimeout(() => {
+        if (c1) c1.classList.remove('flash');
+        if (c2) c2.classList.remove('flash');
+      }, 1500);
+      break;
+    case 'warning-on':
+      document.getElementById('doc-warning').classList.add('on');
+      break;
+    case 'reset':
+      document.querySelectorAll('.redacted').forEach(el => el.classList.remove('flash'));
+      document.querySelectorAll('.contradiction').forEach(el => el.classList.remove('flash'));
+      document.getElementById('doc-warning').classList.remove('on');
+      break;
+    case 'status':
+      document.getElementById('demo-status').innerHTML = step.text;
+      break;
+  }
+}
+
+runSequence();
+
+document.body.addEventListener('click', () => {
+  if (!audioOn) initAudio();
+}, { once: true });
+document.body.addEventListener('touchstart', () => {
+  if (!audioOn) initAudio();
+}, { once: true });
+
+// ============== CTA ==============
+function onInterest() {
+  if (window.parent && window.parent !== window) {
+    window.parent.postMessage({ type: 'voka_defi_interest', defi: 'mission_aveugle' }, '*');
+  }
+  const btn = document.querySelector('.btn-cta');
+  btn.textContent = 'Demande enregistrée';
+  btn.style.opacity = '0.7';
+  btn.disabled = true;
+}
+</script>
+</body>
+</html>

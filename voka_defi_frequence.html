@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VOKA · FRÉQUENCE</title>
+<style>
+  :root {
+    --purple: #7500B8;
+    --green: #B3F70B;
+    --orange: #FF5321;
+    --blue: #378ADD;
+    --teal: #1D9E75;
+    --amber: #EF9F27;
+    --pink: #D4537E;
+    --bg: #080810;
+    --green-l: #6ddba0;
+    --blue-l: #7ab8f0;
+    --amber-l: #f5c040;
+    --orange-l: #ff8868;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; -webkit-user-select: none; user-select: none; }
+  body {
+    background: #111;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .phone {
+    width: 390px;
+    height: 844px;
+    background: var(--bg);
+    border-radius: 48px;
+    border: 7px solid #1e1e2e;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  }
+  .sb {
+    padding: 14px 26px 0;
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    display: flex;
+    justify-content: space-between;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+    z-index: 3;
+  }
+
+  .scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 24px 22px;
+  }
+  .scroll-area::-webkit-scrollbar { width: 0; }
+
+  /* HEADER */
+  .badge-mission {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    color: var(--blue-l);
+    padding: 5px 10px;
+    border: 1px solid var(--blue-l);
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .title-h1 {
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    line-height: 0.92;
+    text-transform: uppercase;
+  }
+  .title-sub {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 10px;
+    line-height: 1.4;
+  }
+
+  /* DÉMO ANIMÉE */
+  .demo-box {
+    margin-top: 22px;
+    margin-bottom: 22px;
+    background: linear-gradient(180deg, rgba(55,138,221,0.06) 0%, rgba(0,0,0,0.3) 100%);
+    border: 1px solid rgba(122,184,240,0.25);
+    border-radius: 14px;
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .demo-tag {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--blue-l);
+    text-transform: uppercase;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .demo-tag::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--blue-l);
+    animation: dotPulse 1.4s infinite;
+  }
+  @keyframes dotPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .scope-wrap {
+    height: 90px;
+    background: #050810;
+    border: 1px solid rgba(122,184,240,0.18);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  #scope-svg { width: 100%; height: 100%; display: block; }
+  .scope-grid-line {
+    stroke: rgba(122,184,240,0.10);
+    stroke-width: 1;
+    fill: none;
+  }
+  .scope-wave {
+    fill: none;
+    stroke: var(--blue-l);
+    stroke-width: 1.5;
+    filter: drop-shadow(0 0 4px rgba(122,184,240,0.6));
+  }
+  .scope-noise {
+    fill: none;
+    stroke: rgba(255,255,255,0.4);
+    stroke-width: 0.6;
+  }
+  .scope-hud {
+    position: absolute;
+    top: 5px;
+    left: 8px;
+    font-size: 8px;
+    color: rgba(122,184,240,0.7);
+    letter-spacing: 1px;
+    font-family: ui-monospace, monospace;
+    text-transform: uppercase;
+  }
+  .scope-hud-right {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    font-size: 8px;
+    color: rgba(122,184,240,0.7);
+    letter-spacing: 1px;
+    font-family: ui-monospace, monospace;
+  }
+  .freq-text {
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.92);
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+    min-height: 42px;
+    font-family: ui-monospace, monospace;
+  }
+  .freq-text .glitch {
+    color: rgba(255,255,255,0.35);
+  }
+  .freq-text .clear {
+    color: var(--green);
+    text-shadow: 0 0 6px rgba(179,247,11,0.3);
+  }
+
+  /* SECTIONS */
+  .section { margin-bottom: 18px; }
+  .section-h {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-h::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--blue-l);
+  }
+  .section p {
+    font-size: 13px;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.82);
+  }
+  .section p b { color: #fff; }
+
+  .measures-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .measure-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 9px;
+  }
+  .measure-item .ic {
+    font-size: 14px;
+    color: var(--blue-l);
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-weight: 900;
+  }
+  .measure-item .tx {
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.4;
+  }
+  .measure-item .tx b {
+    color: #fff;
+    display: block;
+    font-size: 13px;
+    margin-bottom: 2px;
+    letter-spacing: 0.2px;
+  }
+
+  .jobs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+  }
+  .job-mini {
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.85);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0.1px;
+  }
+
+  /* CTA */
+  .cta-area {
+    padding: 14px 24px 22px;
+    background: linear-gradient(180deg, rgba(8,8,16,0) 0%, var(--bg) 30%);
+    flex-shrink: 0;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .status-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(245,192,64,0.08);
+    border: 1px solid rgba(245,192,64,0.3);
+    color: var(--amber-l);
+    padding: 11px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .status-pill::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--amber-l);
+    animation: dotPulse 1.4s infinite;
+  }
+  .btn-cta {
+    background: rgba(122,184,240,0.10);
+    color: var(--blue-l);
+    border: 1.5px solid var(--blue-l);
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    width: 100%;
+    transition: all 0.15s;
+  }
+  .btn-cta:active { transform: scale(0.97); background: rgba(122,184,240,0.18); }
+  .cta-note {
+    text-align: center;
+    font-size: 10px;
+    color: rgba(255,255,255,0.45);
+    margin-top: 8px;
+    letter-spacing: 0.3px;
+  }
+
+  /* DURATION META */
+  .meta-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+    margin-top: 4px;
+  }
+  .meta-cell {
+    flex: 1;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 8px 10px;
+    text-align: center;
+  }
+  .meta-cell .k {
+    font-size: 9px;
+    letter-spacing: 1.3px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+  .meta-cell .v {
+    font-size: 14px;
+    color: #fff;
+    font-weight: 800;
+    margin-top: 3px;
+    letter-spacing: -0.2px;
+  }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="sb">
+    <span>9:41</span>
+    <span>●●● WiFi 🔋</span>
+  </div>
+
+  <div class="scroll-area">
+    <span class="badge-mission">Défi · à venir</span>
+    <h1 class="title-h1">FRÉQUENCE
+      <span class="title-sub">Communication radio dégradée. Identifie les mots clés et reconstitue le message.</span>
+    </h1>
+
+    <div class="meta-row">
+      <div class="meta-cell"><div class="k">Durée</div><div class="v">1 min</div></div>
+      <div class="meta-cell"><div class="k">Niveau</div><div class="v">Aviateur</div></div>
+      <div class="meta-cell"><div class="k">XP</div><div class="v">+30</div></div>
+    </div>
+
+    <div class="demo-box">
+      <div class="demo-tag">Aperçu transmission</div>
+      <div class="scope-wrap">
+        <svg id="scope-svg" viewBox="0 0 300 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <line class="scope-grid-line" x1="0" y1="50" x2="300" y2="50"/>
+          <line class="scope-grid-line" x1="0" y1="25" x2="300" y2="25" stroke-dasharray="2 3"/>
+          <line class="scope-grid-line" x1="0" y1="75" x2="300" y2="75" stroke-dasharray="2 3"/>
+          <line class="scope-grid-line" x1="75" y1="0" x2="75" y2="100" stroke-dasharray="2 3"/>
+          <line class="scope-grid-line" x1="150" y1="0" x2="150" y2="100" stroke-dasharray="2 3"/>
+          <line class="scope-grid-line" x1="225" y1="0" x2="225" y2="100" stroke-dasharray="2 3"/>
+          <path class="scope-noise" id="scope-noise" d=""/>
+          <path class="scope-wave" id="scope-wave" d=""/>
+        </svg>
+        <div class="scope-hud">UHF · 243.0</div>
+        <div class="scope-hud-right">SNR <span id="snr-val">-12</span> dB</div>
+      </div>
+      <div class="freq-text" id="freq-text"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-h">Mécanique</div>
+      <p>Tu reçois une <b>communication radio dégradée de 10 secondes</b>. Voix parasitée, bruit de fond, mots tronqués. Tu écoutes, tu lis le signal, tu reconstitues le message original.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-h">Ce qu'on mesure</div>
+      <div class="measures-list">
+        <div class="measure-item">
+          <span class="ic">◇</span>
+          <span class="tx"><b>Concentration auditive</b>Capacité à isoler la voix dans le bruit.</span>
+        </div>
+        <div class="measure-item">
+          <span class="ic">◇</span>
+          <span class="tx"><b>Décodage sous stress</b>Reconstruction du sens à partir d'un signal fragmenté.</span>
+        </div>
+        <div class="measure-item">
+          <span class="ic">◇</span>
+          <span class="tx"><b>Rigueur de transcription</b>Précision du rapport final, mot par mot.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-h">Métiers AAE en résonance</div>
+      <div class="jobs-grid">
+        <div class="job-mini">Cybersécurité défensive</div>
+        <div class="job-mini">Renseignement signal</div>
+        <div class="job-mini">Officier transmissions</div>
+        <div class="job-mini">Contrôleur aérien</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-area">
+    <div class="status-pill">Bientôt disponible</div>
+    <button class="btn-cta" onclick="onInterest()">Tester sur base aérienne</button>
+    <p class="cta-note">Disponible en exclusivité sur événement Experience Alpha</p>
+  </div>
+</div>
+
+<script>
+// ============== ANIMATION OSCILLOSCOPE ==============
+let rafId = null;
+let audio = null;
+let audioOn = false;
+let noiseEl = null;
+
+function initAudio() {
+  if (audio) return;
+  try {
+    audio = new (window.AudioContext || window.webkitAudioContext)();
+    audioOn = true;
+    if (audio.state === 'suspended') audio.resume();
+    startNoise();
+  } catch(e) {}
+}
+
+function startNoise() {
+  if (!audioOn) return;
+  // White noise filtré pour effet radio statique
+  const ctx = audio;
+  const bufSize = ctx.sampleRate * 1.5;
+  const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * 0.4;
+  const noise = ctx.createBufferSource();
+  noise.buffer = buf;
+  noise.loop = true;
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.value = 1200;
+  filter.Q.value = 0.8;
+  const g = ctx.createGain();
+  g.gain.value = 0.012;
+  noise.connect(filter).connect(g).connect(ctx.destination);
+  noise.start();
+  noiseEl = { noise, g };
+}
+
+// Sweep court périodique
+function radioBlip() {
+  if (!audioOn) return;
+  const ctx = audio;
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.type = 'sine';
+  o.frequency.value = 900 + Math.random() * 400;
+  g.gain.setValueAtTime(0, ctx.currentTime);
+  g.gain.linearRampToValueAtTime(0.025, ctx.currentTime + 0.005);
+  g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.04);
+  o.connect(g).connect(ctx.destination);
+  o.start();
+  o.stop(ctx.currentTime + 0.05);
+}
+
+// Animation waveform
+function animateScope() {
+  const t = performance.now() / 1000;
+  const wave = document.getElementById('scope-wave');
+  const noise = document.getElementById('scope-noise');
+  // Waveform principal (signal voix) avec amplitude modulée
+  const pts = [];
+  for (let x = 0; x <= 300; x += 3) {
+    const env = 0.4 + 0.6 * Math.sin(t * 0.7 + x * 0.01);
+    const y = 50 + env * 18 * Math.sin(x * 0.18 + t * 4) + env * 8 * Math.sin(x * 0.42 + t * 7);
+    pts.push((x === 0 ? 'M' : 'L') + x + ' ' + y.toFixed(1));
+  }
+  wave.setAttribute('d', pts.join(' '));
+  // Noise overlay
+  const npts = [];
+  for (let x = 0; x <= 300; x += 2) {
+    const y = 50 + (Math.random() - 0.5) * 30;
+    npts.push((x === 0 ? 'M' : 'L') + x + ' ' + y.toFixed(1));
+  }
+  noise.setAttribute('d', npts.join(' '));
+  // SNR fluctuation
+  if (Math.floor(t * 4) % 8 === 0) {
+    const snr = -8 - Math.floor(Math.random() * 8);
+    document.getElementById('snr-val').textContent = snr;
+  }
+  rafId = requestAnimationFrame(animateScope);
+}
+
+// Texte parasité défilant
+const MESSAGE_PARTS = [
+  ['ALPHA', 'KILO', 'TANGO'],
+  ['ROMEO', 'BRAVO', 'SIERRA'],
+  ['CONVOI', 'MISSION', 'CIBLE'],
+  ['CONFIRMÉ', 'EN ROUTE', 'NEUTRALISÉ'],
+  ['SECTEUR', 'POSITION', 'GRILLE'],
+  ['NORD', 'SUD', 'EST']
+];
+function glitchChar(c) {
+  const glitches = ['_', '.', '#', '*', '%', '/', ' '];
+  return glitches[Math.floor(Math.random() * glitches.length)];
+}
+function generateMessage() {
+  const parts = MESSAGE_PARTS.map(arr => arr[Math.floor(Math.random() * arr.length)]);
+  // Rendre un message partiellement glitché
+  return parts.map(w => {
+    const reveal = Math.random();
+    if (reveal > 0.7) {
+      // clear
+      return `<span class="clear">${w}</span>`;
+    } else if (reveal > 0.3) {
+      // partiel
+      const r = w.split('').map(c => Math.random() > 0.4 ? c : glitchChar(c)).join('');
+      return r;
+    } else {
+      // très dégradé
+      const r = w.split('').map(c => Math.random() > 0.7 ? c : glitchChar(c)).join('');
+      return `<span class="glitch">${r}</span>`;
+    }
+  }).join(' ');
+}
+function refreshMessage() {
+  document.getElementById('freq-text').innerHTML = generateMessage();
+  radioBlip();
+}
+
+// ============== DÉMARRAGE ==============
+function startDemo() {
+  animateScope();
+  refreshMessage();
+  setInterval(refreshMessage, 1300);
+}
+
+// Démarrer animation immédiatement (visuel)
+// Audio démarre au premier tap (politique autoplay)
+startDemo();
+
+document.body.addEventListener('click', () => {
+  if (!audioOn) initAudio();
+}, { once: true });
+document.body.addEventListener('touchstart', () => {
+  if (!audioOn) initAudio();
+}, { once: true });
+
+// ============== CTA ==============
+function onInterest() {
+  // Pour intégration Lovable : déclencher un événement custom
+  if (window.parent && window.parent !== window) {
+    window.parent.postMessage({ type: 'voka_defi_interest', defi: 'frequence' }, '*');
+  }
+  // Feedback visuel local
+  const btn = document.querySelector('.btn-cta');
+  btn.textContent = 'Demande enregistrée';
+  btn.style.opacity = '0.7';
+  btn.disabled = true;
+}
+</script>
+</body>
+</html>

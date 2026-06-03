@@ -1,0 +1,2154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VOKA · INTERCEPT · ALPHA-7</title>
+<style>
+  :root {
+    --purple: #7500B8;
+    --green: #B3F70B;
+    --orange: #FF5321;
+    --blue: #378ADD;
+    --teal: #1D9E75;
+    --amber: #EF9F27;
+    --pink: #D4537E;
+    --bg: #080810;
+    --green-l: #6ddba0;
+    --blue-l: #7ab8f0;
+    --amber-l: #f5c040;
+    --orange-l: #ff8868;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; }
+  body {
+    background: #111;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .phone {
+    width: 390px;
+    height: 844px;
+    background: var(--bg);
+    border-radius: 48px;
+    border: 7px solid #1e1e2e;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  }
+  .sb {
+    padding: 14px 26px 0;
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    display: flex;
+    justify-content: space-between;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+    z-index: 3;
+  }
+  .view { display: none; flex: 1; overflow: hidden; flex-direction: column; }
+  .view.on { display: flex; }
+
+  /* ====== INTRO ====== */
+  .intro {
+    padding: 36px 26px 28px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .intro-top { display: flex; flex-direction: column; gap: 18px; }
+  .badge-m {
+    align-self: flex-start;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    color: var(--green);
+    padding: 6px 11px;
+    border: 1px solid var(--green);
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .intro h1 {
+    font-size: 44px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    line-height: 0.92;
+    text-transform: uppercase;
+  }
+  .intro h1 .sub {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 14px;
+    text-transform: none;
+    line-height: 1.45;
+  }
+  .intro-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .mc {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .mc .k {
+    font-size: 10px;
+    letter-spacing: 1.8px;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+  }
+  .mc .v {
+    font-size: 16px;
+    color: #fff;
+    margin-top: 5px;
+    font-weight: 700;
+  }
+  .btn {
+    background: var(--green);
+    color: #000;
+    border: none;
+    border-radius: 14px;
+    padding: 17px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    width: 100%;
+    transition: transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-ghost {
+    background: transparent;
+    color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+  .audio-hint {
+    text-align: center;
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 10px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ====== RULES ====== */
+  .rules {
+    padding: 32px 26px 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .rules-title {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+  }
+  .rules-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: -10px;
+  }
+  .rule-item {
+    display: flex;
+    gap: 14px;
+    padding: 14px 14px 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .rule-item:last-of-type { border-bottom: none; }
+  .rule-num {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--green);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 32px;
+  }
+  .rule-text {
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.5;
+  }
+  .rule-text b { color: #fff; }
+  .rule-text .ll {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    margin: 0 4px -1px 1px;
+  }
+  .ll.g { background: var(--green); }
+  .ll.o { background: var(--amber); }
+  .ll.r { background: var(--orange); }
+  .rules-cta { margin-top: auto; }
+
+  /* ====== PHASE TRANSITION OVERLAY ====== */
+  .pt-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .pt-overlay.on { opacity: 1; }
+  .pt-num {
+    font-size: 14px;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+  }
+  .pt-name {
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    color: var(--green);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .pt-tag {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin-top: 8px;
+  }
+  .pt-overlay .scanline {
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    top: 30%;
+    animation: ptScan 1.4s ease-out;
+    opacity: 0.7;
+  }
+  @keyframes ptScan {
+    0% { top: 20%; opacity: 0; }
+    40% { opacity: 0.7; }
+    100% { top: 75%; opacity: 0; }
+  }
+
+  /* ====== MISSION (phases 1-4) ====== */
+  .mission {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 14px 14px;
+    gap: 10px;
+    overflow: hidden;
+  }
+  .top-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2px;
+  }
+  .phase-tag {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+  }
+  .phase-tag .num {
+    color: var(--green);
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0;
+  }
+  .timer-phase {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--green);
+    letter-spacing: -0.5px;
+    padding: 4px 11px;
+    border: 1px solid rgba(179,247,11,0.4);
+    border-radius: 7px;
+    background: rgba(179,247,11,0.08);
+    min-width: 56px;
+    text-align: center;
+    line-height: 1.1;
+    font-family: ui-monospace, monospace;
+  }
+  .timer-phase.warn { color: var(--amber-l); border-color: rgba(245,192,64,0.5); background: rgba(245,192,64,0.08); }
+  .timer-phase.crit { color: var(--orange); border-color: var(--orange); background: rgba(255,83,33,0.10); animation: critPulse 0.6s infinite; }
+  @keyframes critPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  /* RADIO BUBBLE */
+  .radio-bubble {
+    background: rgba(0,0,0,0.6);
+    border: 1px solid rgba(179,247,11,0.3);
+    border-left: 3px solid var(--green);
+    border-radius: 10px;
+    padding: 9px 11px 10px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    min-height: 60px;
+  }
+  .radio-bubble.alert {
+    border-color: rgba(255,83,33,0.5);
+    border-left-color: var(--orange);
+    background: rgba(40,10,5,0.7);
+  }
+  .radio-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(179,247,11,0.1);
+    border: 1.5px solid var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .radio-bubble.alert .radio-avatar {
+    background: rgba(255,83,33,0.1);
+    border-color: var(--orange);
+  }
+  .radio-avatar svg { width: 22px; height: 22px; }
+  .radio-avatar .pulse-dot {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    border: 2px solid var(--bg);
+    animation: avatarPulse 1.3s infinite;
+  }
+  .radio-bubble.alert .radio-avatar .pulse-dot { background: var(--orange); }
+  @keyframes avatarPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .radio-body { flex: 1; min-width: 0; }
+  .radio-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 3px;
+  }
+  .radio-from {
+    font-size: 10px;
+    color: var(--green);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .radio-bubble.alert .radio-from { color: var(--orange-l); }
+  .radio-freq {
+    font-size: 9px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.5px;
+  }
+  .radio-text {
+    font-size: 13px;
+    line-height: 1.4;
+    color: rgba(255,255,255,0.92);
+    letter-spacing: 0.2px;
+    min-height: 32px;
+  }
+  .radio-text::after {
+    content: "▌";
+    color: var(--green);
+    animation: cur 0.9s infinite;
+    margin-left: 2px;
+  }
+  .radio-bubble.alert .radio-text::after { color: var(--orange); }
+  .radio-text.done::after { display: none; }
+  @keyframes cur { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+
+  /* CONSIGNE */
+  .objective {
+    background: rgba(179,247,11,0.06);
+    border: 1px solid rgba(179,247,11,0.18);
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .objective.alert {
+    background: rgba(255,83,33,0.08);
+    border-color: rgba(255,83,33,0.3);
+  }
+  .obj-label {
+    font-size: 9px;
+    color: var(--green);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .objective.alert .obj-label { color: var(--orange); }
+  .obj-text {
+    font-size: 12px;
+    color: rgba(255,255,255,0.92);
+    line-height: 1.35;
+  }
+
+  /* RADAR */
+  .radar-wrap {
+    width: 100%;
+    aspect-ratio: 1;
+    background: radial-gradient(circle at center, #0a1a14 0%, #060810 70%);
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(179,247,11,0.15);
+    flex-shrink: 0;
+    position: relative;
+    max-height: 320px;
+  }
+  .radar-wrap.danger {
+    border-color: rgba(255,83,33,0.5);
+    animation: rDanger 0.8s infinite;
+  }
+  @keyframes rDanger {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,83,33,0); }
+    50% { box-shadow: 0 0 0 5px rgba(255,83,33,0.18); }
+  }
+  #radar-svg { width: 100%; height: 100%; display: block; }
+  .grid-line { stroke: rgba(179,247,11,0.13); stroke-width: 1; fill: none; }
+  .sweep { transform-origin: center; animation: rot 4s linear infinite; }
+  @keyframes rot { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .label-c {
+    fill: rgba(179,247,11,0.4);
+    font-size: 9px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    letter-spacing: 1px;
+  }
+  .trace circle.dot { transition: r 0.15s; }
+  .trace.civil .dot { fill: var(--green); }
+  .trace.civil .iff { fill: rgba(179,247,11,0.55); font-size: 7px; }
+  .trace.drone .dot { fill: var(--amber); }
+  .trace.drone .iff { fill: rgba(239,159,39,0.55); font-size: 7px; }
+  .trace.unknown .dot { fill: var(--orange); animation: tFlick 0.45s infinite; }
+  .trace.anomaly .dot { fill: var(--green); }
+  .trace.anomaly .ring { fill: none; stroke: var(--amber); stroke-width: 0.8; animation: aRing 1.2s infinite; }
+  .trace.anomaly .iff { fill: rgba(245,192,64,0.7); font-size: 7px; }
+  .trace.lure-w .dot { fill: rgba(255,83,33,0.55); animation: lWeather 1.5s infinite; }
+  .trace.lure-b .dot { fill: rgba(255,83,33,0.45); }
+  .trace.unknown-2 .dot { fill: var(--orange); animation: tFlick 0.45s infinite; }
+  @keyframes tFlick { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  @keyframes aRing {
+    0% { r: 6; opacity: 0.9; }
+    100% { r: 13; opacity: 0; }
+  }
+  @keyframes lWeather { 0%, 100% { opacity: 0.65; } 50% { opacity: 0.25; } }
+  .threat-ring { fill: none; stroke: var(--orange); stroke-width: 1.5; opacity: 0.6; }
+  .uncertainty {
+    fill: rgba(255,83,33,0.08);
+    stroke: rgba(255,83,33,0.5);
+    stroke-width: 1;
+    stroke-dasharray: 4 3;
+    animation: uPulse 1.5s infinite;
+  }
+  @keyframes uPulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 0.9; } }
+  .protected {
+    fill: rgba(55,138,221,0.16);
+    stroke: var(--blue-l);
+    stroke-width: 1;
+  }
+  .zone-lbl {
+    fill: var(--blue-l);
+    font-size: 7px;
+    text-anchor: middle;
+    letter-spacing: 0.5px;
+  }
+  .sec-lbl {
+    fill: var(--orange-l);
+    font-size: 7px;
+    text-anchor: middle;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .vector-arrow {
+    stroke: var(--orange);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 2;
+    fill: none;
+    opacity: 0.7;
+  }
+
+  /* TELEMETRY */
+  .telemetry {
+    display: flex;
+    gap: 6px;
+  }
+  .tel-cell {
+    flex: 1;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+  }
+  .tel-cell b {
+    display: block;
+    color: #fff;
+    font-size: 12px;
+    margin-top: 1px;
+    letter-spacing: 0;
+    text-transform: none;
+    font-weight: 700;
+  }
+  .tel-cell.alert b { color: var(--orange); }
+  .tel-cell.warn b { color: var(--amber-l); }
+
+  /* ACTIONS */
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: auto;
+  }
+  .act-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.14);
+    color: #fff;
+    border-radius: 9px;
+    padding: 9px 12px;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.12s;
+    width: 100%;
+  }
+  .act-btn:active { transform: scale(0.98); background: rgba(255,255,255,0.10); }
+  .act-btn:disabled { opacity: 0.4; }
+  .act-btn .lab {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    line-height: 1.15;
+  }
+  .act-btn .desc {
+    font-size: 10px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.62);
+    margin-top: 2px;
+    line-height: 1.3;
+    letter-spacing: 0.1px;
+  }
+  .act-btn .lf { display: flex; flex-direction: column; gap: 0; min-width: 0; }
+  .act-btn .tg {
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: var(--amber-l);
+    padding: 3px 6px;
+    border: 1px solid rgba(245,192,64,0.35);
+    border-radius: 4px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+  .act-btn .tg.lo { color: var(--green-l); border-color: rgba(109,219,160,0.4); }
+  .act-btn .tg.hi { color: var(--orange); border-color: rgba(255,83,33,0.5); }
+  .act-btn .tg.tr { color: var(--blue-l); border-color: rgba(122,184,240,0.4); }
+
+  /* PHASE 4 : double secteur display */
+  .sectors-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .sector {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,83,33,0.3);
+    border-radius: 8px;
+    padding: 7px 9px;
+  }
+  .sector .h {
+    font-size: 9px;
+    letter-spacing: 1.2px;
+    color: var(--orange-l);
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .sector .b {
+    font-size: 11px;
+    color: rgba(255,255,255,0.85);
+    margin-top: 3px;
+    line-height: 1.3;
+  }
+  .sector .b b { color: #fff; letter-spacing: 0.3px; }
+
+  /* ====== BOSS (phase 5) ====== */
+  .boss {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 14px 14px;
+    gap: 10px;
+    overflow: hidden;
+  }
+  .tactical {
+    flex: 1;
+    background: linear-gradient(180deg, #050a08 0%, #0a0e08 100%);
+    border-radius: 14px;
+    border: 1px solid rgba(255,83,33,0.35);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 14px;
+    min-height: 260px;
+  }
+  .t-hud {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 8px;
+  }
+  .t-hud b { color: var(--orange); font-size: 11px; letter-spacing: 0.5px; }
+  .t-svg-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .t-decision {
+    text-align: center;
+    padding: 8px 6px 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-top: 8px;
+  }
+  .t-step {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+  }
+  .t-prompt {
+    font-size: 14px;
+    color: #fff;
+    margin-top: 4px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .t-prompt b { color: var(--orange); }
+
+  /* ====== OUTCOME ====== */
+  .outcome {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 26px;
+    text-align: center;
+    gap: 18px;
+  }
+  .o-stamp {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+  }
+  .o-icon {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    font-weight: 900;
+  }
+  .o-icon.success { background: rgba(179,247,11,0.12); border: 2px solid var(--green); color: var(--green); }
+  .o-icon.warn { background: rgba(245,192,64,0.12); border: 2px solid var(--amber-l); color: var(--amber-l); }
+  .o-icon.fail { background: rgba(255,83,33,0.12); border: 2px solid var(--orange); color: var(--orange); }
+  .o-title {
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: -0.7px;
+    line-height: 1.05;
+    text-transform: uppercase;
+  }
+  .outcome.success .o-title { color: var(--green); }
+  .outcome.warn .o-title { color: var(--amber-l); }
+  .outcome.fail .o-title { color: var(--orange); }
+  .o-line {
+    font-size: 14px;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.5;
+    max-width: 300px;
+  }
+
+  /* ====== REPORT ====== */
+  .report {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 18px 22px;
+  }
+  .report::-webkit-scrollbar { width: 0; }
+  .rep-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .rep-head .tag {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--green);
+    text-transform: uppercase;
+  }
+  .rep-head h2 {
+    font-size: 19px;
+    font-weight: 800;
+    margin-top: 4px;
+    letter-spacing: -0.3px;
+  }
+  .score-b { text-align: right; }
+  .score-b .l {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+  }
+  .score-b .v {
+    font-size: 30px;
+    font-weight: 900;
+    color: var(--green);
+    line-height: 1;
+    margin-top: 2px;
+    letter-spacing: -1px;
+  }
+  .score-b .v small { font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 500; }
+
+  .dim {
+    margin-bottom: 12px;
+    padding: 13px 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 11px;
+  }
+  .dim-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .dim-name {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .dim-pct {
+    font-size: 10px;
+    padding: 3px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .dim-pct.t1 { background: rgba(179,247,11,0.18); color: var(--green); border: 1px solid var(--green); }
+  .dim-pct.t2 { background: rgba(245,192,64,0.15); color: var(--amber-l); border: 1px solid var(--amber-l); }
+  .dim-pct.t3 { background: rgba(122,184,240,0.15); color: var(--blue-l); border: 1px solid rgba(122,184,240,0.5); }
+  .dim-pct.t4 { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.15); }
+  .dim-text {
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.82);
+  }
+  .dim-metric {
+    font-size: 10px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.3px;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed rgba(255,255,255,0.08);
+  }
+  .dim-metric b { color: rgba(255,255,255,0.85); font-weight: 600; }
+
+  .jobs-h {
+    font-size: 11px;
+    letter-spacing: 1.8px;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    margin: 18px 0 10px;
+    font-weight: 700;
+  }
+  .job {
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 11px;
+    margin-bottom: 7px;
+  }
+  .job .n { font-size: 13px; font-weight: 700; }
+  .job .m { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 4px; line-height: 1.4; }
+  .job .pct {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--green);
+    padding: 2px 6px;
+    border: 1px solid rgba(179,247,11,0.4);
+    border-radius: 4px;
+    margin-top: 6px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .cta-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .cta-row button {
+    flex: 1;
+    padding: 13px;
+    font-family: inherit;
+    border-radius: 11px;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .cta-row .replay { background: var(--green); color: #000; border: none; }
+  .cta-row .share { background: transparent; border: 1px solid rgba(255,255,255,0.18); color: #fff; }
+
+  /* TOAST FEEDBACK */
+  .toast {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background: rgba(0,0,0,0.92);
+    border: 2px solid var(--green);
+    color: var(--green);
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    white-space: nowrap;
+  }
+  .toast.on { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .toast.bad { border-color: var(--orange); color: var(--orange); }
+
+  /* FLASH */
+  .flash {
+    position: absolute;
+    inset: 0;
+    background: var(--orange);
+    pointer-events: none;
+    opacity: 0;
+    z-index: 40;
+  }
+  .flash.on { animation: flashA 0.4s ease-out; }
+  @keyframes flashA { 0% { opacity: 0.35; } 100% { opacity: 0; } }
+
+  .siren-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 30;
+    box-shadow: inset 0 0 0 0 var(--orange);
+  }
+  .siren-overlay.on { animation: srn 0.7s infinite; }
+  @keyframes srn {
+    0%, 100% { box-shadow: inset 0 0 30px 0 rgba(255,83,33,0); }
+    50% { box-shadow: inset 0 0 30px 4px rgba(255,83,33,0.4); }
+  }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="sb">
+    <span>9:41</span>
+    <span>●●● WiFi 🔋</span>
+  </div>
+
+  <div class="flash" id="flash"></div>
+  <div class="siren-overlay" id="siren"></div>
+  <div class="toast" id="toast"></div>
+  <div class="pt-overlay" id="pt-overlay">
+    <div class="scanline"></div>
+    <div class="pt-num" id="pt-num">PHASE 01 / 05</div>
+    <div class="pt-name" id="pt-name">VEILLE</div>
+    <div class="pt-tag" id="pt-tag">Tempo lent · attention soutenue</div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="view on" id="v-intro">
+    <div class="intro">
+      <div class="intro-top">
+        <span class="badge-m">Mission · ALPHA-7</span>
+        <h1>INTERCEPT
+          <span class="sub">Test comportemental opérationnel. 2 minutes. 4 dimensions mesurées.</span>
+        </h1>
+        <div class="intro-meta">
+          <div class="mc"><div class="k">Durée</div><div class="v">2 min</div></div>
+          <div class="mc"><div class="k">Phases</div><div class="v">5</div></div>
+          <div class="mc"><div class="k">XP</div><div class="v">+45</div></div>
+          <div class="mc"><div class="k">Niveau</div><div class="v">Novice</div></div>
+        </div>
+      </div>
+      <div>
+        <button class="btn" onclick="goRules()">Lire les règles</button>
+        <p class="audio-hint">Active le son. La radio te guidera.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RULES -->
+  <div class="view" id="v-rules">
+    <div class="rules">
+      <div>
+        <div class="rules-sub">Avant de prendre le quart</div>
+        <div class="rules-title">Règles d'engagement</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">01</div>
+        <div class="rule-text">Tu es <b>contrôleur aérien</b>. 2 minutes, 5 phases enchaînées sans pause.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">02</div>
+        <div class="rule-text">Le radar affiche les traces. <span class="ll g"></span>vert = IFF confirmé. <span class="ll o"></span>orange = drones identifiés. <span class="ll r"></span>rouge = non identifié.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">03</div>
+        <div class="rule-text"><b>La radio donne les ordres.</b> Lis-la. C'est elle qui guide la mission.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">04</div>
+        <div class="rule-text">Tes décisions ne sont <b>jamais bonnes ou mauvaises</b>. Elles révèlent qui tu es sous pression.</div>
+      </div>
+      <div class="rules-cta">
+        <button class="btn" onclick="startMission()">Prendre le quart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MISSION -->
+  <div class="view" id="v-mission">
+    <div class="mission">
+      <div class="top-strip">
+        <div class="phase-tag"><span class="num" id="ph-num">01 / 05</span><span id="ph-name">VEILLE</span></div>
+        <div class="timer-phase" id="ph-timer">30</div>
+      </div>
+      <div class="radio-bubble" id="radio">
+        <div class="radio-avatar">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 7l3-2h8l3 2v10l-3 2H8l-3-2V7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.5"/><line x1="12" y1="2" x2="12" y2="5" stroke="currentColor" stroke-width="1.5"/></svg>
+          <span class="pulse-dot"></span>
+        </div>
+        <div class="radio-body">
+          <div class="radio-head">
+            <span class="radio-from" id="radio-from">Tour · ALPHA-7</span>
+            <span class="radio-freq">121.5 MHz</span>
+          </div>
+          <div class="radio-text" id="radio-text"></div>
+        </div>
+      </div>
+      <div class="objective" id="objective">
+        <span class="obj-label">Objectif</span>
+        <span class="obj-text" id="obj-text">Surveille le trafic. Tape une trace pour la qualifier.</span>
+      </div>
+      <div class="radar-wrap" id="radar-wrap">
+        <svg id="radar-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="sweepGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="rgba(179,247,11,0.32)"/>
+              <stop offset="100%" stop-color="rgba(179,247,11,0)"/>
+            </radialGradient>
+          </defs>
+          <circle class="grid-line" cx="150" cy="150" r="140"/>
+          <circle class="grid-line" cx="150" cy="150" r="100"/>
+          <circle class="grid-line" cx="150" cy="150" r="60"/>
+          <circle class="grid-line" cx="150" cy="150" r="20"/>
+          <line class="grid-line" x1="10" y1="150" x2="290" y2="150"/>
+          <line class="grid-line" x1="150" y1="10" x2="150" y2="290"/>
+          <text class="label-c" x="150" y="18">N</text>
+          <text class="label-c" x="150" y="288">S</text>
+          <text class="label-c" x="18" y="152">O</text>
+          <text class="label-c" x="282" y="152">E</text>
+          <g class="sweep">
+            <path d="M 150 150 L 150 10 A 140 140 0 0 1 248 92 Z" fill="url(#sweepGrad)"/>
+          </g>
+          <g id="zones"></g>
+          <g id="traces"></g>
+          <circle cx="150" cy="150" r="3" fill="var(--green)"/>
+        </svg>
+      </div>
+      <div class="telemetry" id="telemetry">
+        <div class="tel-cell">Traces<b id="tel-tr">0</b></div>
+        <div class="tel-cell" id="tel-vig-cell">Veille<b id="tel-vig">Passive</b></div>
+        <div class="tel-cell" id="tel-roe-cell">ROE<b id="tel-roe">1</b></div>
+      </div>
+      <div class="actions" id="actions"></div>
+    </div>
+  </div>
+
+  <!-- BOSS -->
+  <div class="view" id="v-boss">
+    <div class="boss">
+      <div class="top-strip">
+        <div class="phase-tag"><span class="num">05 / 05</span><span>INTERCEPTION</span></div>
+        <div class="timer-phase crit" id="boss-timer">04</div>
+      </div>
+      <div class="radio-bubble alert">
+        <div class="radio-avatar">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 12l4-7h10l4 7-4 7H7l-4-7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 11l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span class="pulse-dot"></span>
+        </div>
+        <div class="radio-body">
+          <div class="radio-head">
+            <span class="radio-from">Rafale · LIMA-2</span>
+            <span class="radio-freq">UHF MIL</span>
+          </div>
+          <div class="radio-text" id="boss-text"></div>
+        </div>
+      </div>
+      <div class="tactical">
+        <div class="t-hud">
+          <span>Cible · <b id="boss-target">CONTACT-X</b></span>
+          <span>Distance · <b id="boss-dist">5 NM</b></span>
+        </div>
+        <div class="t-svg-wrap">
+          <svg width="100%" height="150" viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+            <line x1="20" y1="140" x2="260" y2="140" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <line x1="20" y1="100" x2="260" y2="100" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="3 3"/>
+            <line x1="20" y1="60" x2="260" y2="60" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="3 3"/>
+            <text x="265" y="143" fill="rgba(255,255,255,0.4)" font-size="8" font-family="ui-monospace">SOL</text>
+            <g id="boss-fighter">
+              <polygon points="0,-6 -7,8 0,4 7,8" fill="#B3F70B"/>
+              <text x="0" y="22" fill="rgba(179,247,11,0.8)" font-size="8" text-anchor="middle" font-family="ui-monospace">LIMA-2</text>
+            </g>
+            <g id="boss-target-icon">
+              <polygon points="0,6 -7,-8 0,-4 7,-8" fill="#FF5321"/>
+              <text x="0" y="-12" fill="rgba(255,83,33,0.9)" font-size="8" text-anchor="middle" font-family="ui-monospace">CONTACT-X</text>
+            </g>
+          </svg>
+        </div>
+        <div class="t-decision">
+          <div class="t-step" id="t-step">ÉTAPE 1 SUR 3</div>
+          <div class="t-prompt" id="t-prompt">Préparation interception</div>
+        </div>
+      </div>
+      <div class="actions" id="boss-actions"></div>
+    </div>
+  </div>
+
+  <!-- OUTCOME -->
+  <div class="view" id="v-outcome">
+    <div class="outcome" id="outcome-content"></div>
+  </div>
+
+  <!-- REPORT -->
+  <div class="view" id="v-report">
+    <div class="report">
+      <div class="rep-head">
+        <div>
+          <div class="tag">Rapport · ALPHA-7</div>
+          <h2>Debriefing mission</h2>
+        </div>
+        <div class="score-b">
+          <div class="l">Score</div>
+          <div class="v" id="rep-score">0<small>/1000</small></div>
+        </div>
+      </div>
+
+      <div class="dim">
+        <div class="dim-head">
+          <span class="dim-name">Vigilance soutenue</span>
+          <span class="dim-pct" id="d1-pct">--</span>
+        </div>
+        <div class="dim-text" id="d1-text"></div>
+        <div class="dim-metric" id="d1-metric"></div>
+      </div>
+      <div class="dim">
+        <div class="dim-head">
+          <span class="dim-name">Tolérance à l'ambiguïté</span>
+          <span class="dim-pct" id="d2-pct">--</span>
+        </div>
+        <div class="dim-text" id="d2-text"></div>
+        <div class="dim-metric" id="d2-metric"></div>
+      </div>
+      <div class="dim">
+        <div class="dim-head">
+          <span class="dim-name">Hiérarchisation sous charge</span>
+          <span class="dim-pct" id="d3-pct">--</span>
+        </div>
+        <div class="dim-text" id="d3-text"></div>
+        <div class="dim-metric" id="d3-metric"></div>
+      </div>
+      <div class="dim">
+        <div class="dim-head">
+          <span class="dim-name">Contrôle d'impulsion</span>
+          <span class="dim-pct" id="d4-pct">--</span>
+        </div>
+        <div class="dim-text" id="d4-text"></div>
+        <div class="dim-metric" id="d4-metric"></div>
+      </div>
+
+      <div class="jobs-h">Métiers AAE en résonance</div>
+      <div id="rep-jobs"></div>
+
+      <div class="cta-row">
+        <button class="share" onclick="shareScore()">Partager</button>
+        <button class="replay" onclick="restartMission()">Rejouer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============== ÉTAT ==============
+const S = {
+  phase: 0,
+  audio: null,
+  audioOn: false,
+  raf: null,
+  phaseTimer: null,
+  phaseStart: 0,
+  phaseDuration: 0,
+  remaining: 0,
+  traces: [],
+  scanLoopGain: null,
+  measures: {
+    anomalyDetectTime: null,    // ms après apparition
+    anomalyAppearTime: null,
+    phase1FalsePositives: 0,
+    phase2Choice: null,
+    phase2DecisionTime: null,
+    phase2Lures: 0,
+    phase3Choice: null,
+    phase3DecisionTime: null,
+    phase4Choice: null,
+    phase4DecisionTime: null,
+    phase5Distance: null,
+    phase5Action: null,
+    phase5TwistChoice: null
+  }
+};
+
+// ============== AUDIO ==============
+function initAudio() {
+  if (S.audio) return;
+  try {
+    S.audio = new (window.AudioContext || window.webkitAudioContext)();
+    S.audioOn = true;
+    if (S.audio.state === 'suspended') S.audio.resume();
+    startScan();
+  } catch(e) {}
+}
+function beep(freq, dur, vol, type) {
+  if (!S.audioOn) return;
+  const o = S.audio.createOscillator();
+  const g = S.audio.createGain();
+  o.type = type || 'sine';
+  o.frequency.value = freq;
+  g.gain.setValueAtTime(0, S.audio.currentTime);
+  g.gain.linearRampToValueAtTime(vol || 0.08, S.audio.currentTime + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.001, S.audio.currentTime + dur);
+  o.connect(g).connect(S.audio.destination);
+  o.start();
+  o.stop(S.audio.currentTime + dur);
+}
+function radioBlip() { beep(1200, 0.03, 0.025, 'square'); }
+function tick() { beep(700, 0.04, 0.06, 'square'); }
+function ok() { beep(880, 0.08, 0.08, 'sine'); setTimeout(() => beep(1320, 0.12, 0.08, 'sine'), 80); }
+function bad() { beep(220, 0.18, 0.1, 'sawtooth'); }
+function alarm() {
+  if (!S.audioOn) return;
+  beep(880, 0.1, 0.1, 'square');
+  setTimeout(() => beep(660, 0.1, 0.1, 'square'), 120);
+}
+function siren() {
+  if (!S.audioOn) return;
+  let t = S.audio.currentTime;
+  for (let i = 0; i < 3; i++) {
+    const o = S.audio.createOscillator();
+    const g = S.audio.createGain();
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(400, t);
+    o.frequency.linearRampToValueAtTime(900, t + 0.22);
+    o.frequency.linearRampToValueAtTime(400, t + 0.44);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.08, t + 0.05);
+    g.gain.linearRampToValueAtTime(0, t + 0.44);
+    o.connect(g).connect(S.audio.destination);
+    o.start(t);
+    o.stop(t + 0.48);
+    t += 0.5;
+  }
+}
+function chime() {
+  if (!S.audioOn) return;
+  [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => beep(f, 0.18, 0.07, 'sine'), i * 100));
+}
+function fail() {
+  if (!S.audioOn) return;
+  beep(150, 0.4, 0.12, 'sawtooth');
+  setTimeout(() => beep(110, 0.5, 0.12, 'sawtooth'), 200);
+}
+function startScan() {
+  if (!S.audioOn || S.scanLoopGain) return;
+  const o = S.audio.createOscillator();
+  const g = S.audio.createGain();
+  o.type = 'sine';
+  o.frequency.value = 70;
+  g.gain.value = 0.008;
+  o.connect(g).connect(S.audio.destination);
+  o.start();
+  S.scanLoopGain = g;
+}
+function buzz(p) { if (navigator.vibrate) navigator.vibrate(p || 25); }
+
+// ============== TÉLÉTYPE ==============
+let typeT = null;
+function radio(text, isAlert, from, cb) {
+  clearTimeout(typeT);
+  const b = document.getElementById('radio');
+  const t = document.getElementById('radio-text');
+  const f = document.getElementById('radio-from');
+  b.classList.toggle('alert', !!isAlert);
+  if (from) f.textContent = from;
+  t.classList.remove('done');
+  t.textContent = '';
+  let i = 0;
+  function tk() {
+    if (i < text.length) {
+      t.textContent += text[i];
+      if (i % 3 === 0) radioBlip();
+      i++;
+      typeT = setTimeout(tk, 24);
+    } else {
+      t.classList.add('done');
+      if (cb) setTimeout(cb, 200);
+    }
+  }
+  tk();
+}
+function bossRadio(text, cb) {
+  clearTimeout(typeT);
+  const t = document.getElementById('boss-text');
+  t.classList.remove('done');
+  t.textContent = '';
+  let i = 0;
+  function tk() {
+    if (i < text.length) {
+      t.textContent += text[i];
+      if (i % 3 === 0) radioBlip();
+      i++;
+      typeT = setTimeout(tk, 24);
+    } else {
+      t.classList.add('done');
+      if (cb) setTimeout(cb, 200);
+    }
+  }
+  tk();
+}
+
+// ============== NAVIGATION ==============
+function show(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+function setObjective(text, alert) {
+  document.getElementById('obj-text').textContent = text;
+  document.getElementById('objective').classList.toggle('alert', !!alert);
+}
+function setPhase(num, name) {
+  document.getElementById('ph-num').textContent = num + ' / 05';
+  document.getElementById('ph-name').textContent = name;
+}
+function setTel(roe, vig, vigClass) {
+  document.getElementById('tel-roe').textContent = roe;
+  document.getElementById('tel-vig').textContent = vig;
+  const cell = document.getElementById('tel-vig-cell');
+  cell.classList.remove('warn', 'alert');
+  if (vigClass) cell.classList.add(vigClass);
+  document.getElementById('tel-tr').textContent = S.traces.length;
+}
+function toast(text, ok) {
+  const t = document.getElementById('toast');
+  t.textContent = text;
+  t.classList.toggle('bad', !ok);
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 900);
+}
+function flash() {
+  const f = document.getElementById('flash');
+  f.classList.remove('on');
+  void f.offsetWidth;
+  f.classList.add('on');
+}
+function sirenOn(on) {
+  document.getElementById('siren').classList.toggle('on', on);
+  document.getElementById('radar-wrap').classList.toggle('danger', on);
+}
+
+// ============== OVERLAY TRANSITION ==============
+function phaseOverlay(num, name, tagline, cb) {
+  const o = document.getElementById('pt-overlay');
+  document.getElementById('pt-num').textContent = 'PHASE ' + num + ' / 05';
+  document.getElementById('pt-name').textContent = name;
+  document.getElementById('pt-tag').textContent = tagline;
+  o.classList.add('on');
+  // remove + recreate scanline
+  const sl = o.querySelector('.scanline');
+  if (sl) { sl.style.animation = 'none'; void sl.offsetWidth; sl.style.animation = ''; }
+  setTimeout(() => {
+    o.classList.remove('on');
+    setTimeout(cb, 250);
+  }, 1500);
+}
+
+// ============== TIMER DE PHASE ==============
+function startPhaseTimer(seconds, onEnd) {
+  S.phaseStart = Date.now();
+  S.phaseDuration = seconds;
+  S.remaining = seconds;
+  const el = document.getElementById('ph-timer');
+  el.classList.remove('warn', 'crit');
+  el.textContent = String(seconds).padStart(2, '0');
+  clearInterval(S.phaseTimer);
+  S.phaseTimer = setInterval(() => {
+    S.remaining--;
+    if (S.remaining < 0) S.remaining = 0;
+    el.textContent = String(S.remaining).padStart(2, '0');
+    if (S.remaining <= 5) {
+      el.classList.remove('warn');
+      el.classList.add('crit');
+      tick();
+    } else if (S.remaining <= 10) {
+      el.classList.add('warn');
+    }
+    if (S.remaining === 0) {
+      clearInterval(S.phaseTimer);
+      if (onEnd) onEnd();
+    }
+  }, 1000);
+}
+function stopPhaseTimer() {
+  clearInterval(S.phaseTimer);
+}
+
+// ============== TRACES ==============
+function spawnTrace(type, opts) {
+  opts = opts || {};
+  const id = 'tr_' + Math.random().toString(36).slice(2, 8);
+  const t = {
+    id, type,
+    x: opts.x !== undefined ? opts.x : 30 + Math.random() * 240,
+    y: opts.y !== undefined ? opts.y : 30 + Math.random() * 240,
+    vx: opts.vx !== undefined ? opts.vx : (Math.random() - 0.5) * 0.4,
+    vy: opts.vy !== undefined ? opts.vy : (Math.random() - 0.5) * 0.4,
+    iff: opts.iff || '',
+    appeared: Date.now()
+  };
+  S.traces.push(t);
+  drawTrace(t);
+  document.getElementById('tel-tr').textContent = S.traces.length;
+  return t;
+}
+function drawTrace(t) {
+  const ns = 'http://www.w3.org/2000/svg';
+  const g = document.createElementNS(ns, 'g');
+  g.setAttribute('id', t.id);
+  g.setAttribute('class', 'trace ' + t.type.replace('_', '-'));
+  g.setAttribute('transform', `translate(${t.x},${t.y})`);
+  const c = document.createElementNS(ns, 'circle');
+  c.setAttribute('class', 'dot');
+  c.setAttribute('r', '4');
+  g.appendChild(c);
+  const hit = document.createElementNS(ns, 'circle');
+  hit.setAttribute('r', '15');
+  hit.setAttribute('fill', 'transparent');
+  g.appendChild(hit);
+  if (t.iff) {
+    const tx = document.createElementNS(ns, 'text');
+    tx.setAttribute('class', 'iff');
+    tx.setAttribute('x', '7');
+    tx.setAttribute('y', '2');
+    tx.textContent = t.iff;
+    g.appendChild(tx);
+  }
+  if (t.type === 'anomaly') {
+    const r = document.createElementNS(ns, 'circle');
+    r.setAttribute('class', 'ring');
+    r.setAttribute('r', '6');
+    g.appendChild(r);
+  }
+  if (t.type === 'unknown' || t.type === 'unknown_2') {
+    const r = document.createElementNS(ns, 'circle');
+    r.setAttribute('class', 'threat-ring');
+    r.setAttribute('r', '10');
+    g.appendChild(r);
+  }
+  g.addEventListener('click', (e) => {
+    e.stopPropagation();
+    tapTrace(t.id);
+  });
+  g.addEventListener('touchstart', (e) => {
+    e.stopPropagation();
+    tapTrace(t.id);
+  });
+  document.getElementById('traces').appendChild(g);
+}
+function removeTrace(id) {
+  const i = S.traces.findIndex(t => t.id === id);
+  if (i >= 0) {
+    S.traces.splice(i, 1);
+    const el = document.getElementById(id);
+    if (el) el.remove();
+    document.getElementById('tel-tr').textContent = S.traces.length;
+  }
+}
+function clearTraces() {
+  S.traces.forEach(t => { const el = document.getElementById(t.id); if (el) el.remove(); });
+  S.traces = [];
+  document.getElementById('tel-tr').textContent = '0';
+}
+
+function tapTrace(id) {
+  const t = S.traces.find(tr => tr.id === id);
+  if (!t) return;
+  tick();
+  buzz(15);
+  if (S.phase === 1) {
+    if (t.type === 'anomaly') {
+      if (S.measures.anomalyDetectTime === null) {
+        S.measures.anomalyDetectTime = Date.now() - S.measures.anomalyAppearTime;
+      }
+      toast('ANOMALIE SIGNALÉE', true);
+      ok();
+      radio('Bien vu. AF901 transpondeur instable, surveillance prolongée.', false, 'Tour · ALPHA-7');
+      removeTrace(id);
+    } else if (t.type === 'civil') {
+      S.measures.phase1FalsePositives++;
+      toast('Trafic civil', false);
+      radio(t.iff + ' IFF positif. Trafic régulier confirmé.', false, 'Tour · ALPHA-7');
+    } else if (t.type === 'drone') {
+      toast('Drone identifié', false);
+      radio('Drone D-7 sous contrôle militaire. RAS.', false, 'Tour · ALPHA-7');
+    }
+  } else if (S.phase === 2) {
+    if (t.type === 'lure_w') {
+      S.measures.phase2Lures++;
+      toast('FAUX SIGNAL', false);
+      bad();
+      buzz([10, 60, 10]);
+      radio('Écho météo, cellule orageuse. Ignorer.', false, 'Tour · ALPHA-7');
+    } else if (t.type === 'lure_b') {
+      S.measures.phase2Lures++;
+      toast('FAUX SIGNAL', false);
+      bad();
+      buzz([10, 60, 10]);
+      radio('Trace erratique. Vol d\'oiseaux confirmé.', false, 'Tour · ALPHA-7');
+    }
+  }
+}
+
+// ============== ANIMATION ==============
+function animate() {
+  S.traces.forEach(t => {
+    t.x += t.vx;
+    t.y += t.vy;
+    const dx = t.x - 150, dy = t.y - 150;
+    const d = Math.sqrt(dx*dx + dy*dy);
+    if (d > 138) {
+      const a = Math.atan2(dy, dx);
+      t.x = 150 + Math.cos(a) * 135;
+      t.y = 150 + Math.sin(a) * 135;
+      t.vx *= -0.85;
+      t.vy *= -0.85;
+    }
+    const el = document.getElementById(t.id);
+    if (el) el.setAttribute('transform', `translate(${t.x},${t.y})`);
+  });
+  S.raf = requestAnimationFrame(animate);
+}
+
+// ============== ACTIONS ==============
+function showActions(list) {
+  const c = document.getElementById('actions');
+  c.innerHTML = '';
+  list.forEach(a => {
+    const b = document.createElement('button');
+    b.className = 'act-btn';
+    b.innerHTML = `
+      <div class="lf">
+        <span class="lab">${a.label}</span>
+        <span class="desc">${a.desc}</span>
+      </div>
+      <span class="tg ${a.tag || ''}">${a.tagLabel || ''}</span>`;
+    b.onclick = () => {
+      c.querySelectorAll('button').forEach(x => x.disabled = true);
+      tick();
+      buzz(20);
+      a.onclick();
+    };
+    c.appendChild(b);
+  });
+}
+function showBossActions(list) {
+  const c = document.getElementById('boss-actions');
+  c.innerHTML = '';
+  list.forEach(a => {
+    const b = document.createElement('button');
+    b.className = 'act-btn';
+    b.innerHTML = `
+      <div class="lf">
+        <span class="lab">${a.label}</span>
+        <span class="desc">${a.desc}</span>
+      </div>`;
+    b.onclick = () => {
+      c.querySelectorAll('button').forEach(x => x.disabled = true);
+      tick();
+      buzz(20);
+      a.onclick();
+    };
+    c.appendChild(b);
+  });
+}
+function clearActions() {
+  document.getElementById('actions').innerHTML = '';
+}
+
+// ============== DÉMARRER ==============
+function goRules() {
+  initAudio();
+  show('v-rules');
+}
+function startMission() {
+  show('v-mission');
+  S.raf = requestAnimationFrame(animate);
+  // Premier overlay puis phase 1
+  phaseOverlay('01', 'VEILLE', 'Tempo lent · attention soutenue', enterPhase1);
+}
+
+// ============== PHASE 1 · VEILLE (30s) ==============
+function enterPhase1() {
+  S.phase = 1;
+  setPhase('01', 'VEILLE');
+  setTel('1', 'Passive');
+  setObjective('Surveille le trafic. Tape une trace pour la qualifier.');
+  clearActions();
+  // Trafic civil
+  spawnTrace('civil', { x: 60, y: 230, vx: 0.32, vy: -0.16, iff: 'AF123' });
+  spawnTrace('civil', { x: 260, y: 90, vx: -0.35, vy: 0.12, iff: 'KL44' });
+  spawnTrace('civil', { x: 175, y: 45, vx: 0.12, vy: 0.3, iff: 'LH88' });
+  spawnTrace('civil', { x: 55, y: 100, vx: 0.25, vy: 0.25, iff: 'BA21' });
+  spawnTrace('drone', { x: 210, y: 245, vx: -0.12, vy: -0.1, iff: 'D-7' });
+  radio('ALPHA-7, quart de nuit ouvert. Trafic civil nominal. Vigilance secteur Est.', false, 'Tour · ALPHA-7');
+  // Anomalie à 6s
+  setTimeout(() => {
+    if (S.phase !== 1) return;
+    S.measures.anomalyAppearTime = Date.now();
+    spawnTrace('anomaly', { x: 245, y: 60, vx: -0.18, vy: 0.22, iff: 'AF901' });
+  }, 6000);
+  startPhaseTimer(30, () => {
+    // Nettoyer anomalie si pas vue
+    const a = S.traces.find(t => t.type === 'anomaly');
+    if (a) removeTrace(a.id);
+    phaseOverlay('02', 'IDENTIFICATION', 'Contact non identifié · 3 leurres', enterPhase2);
+  });
+}
+
+// ============== PHASE 2 · IDENTIFICATION (25s) ==============
+function enterPhase2() {
+  S.phase = 2;
+  setPhase('02', 'IDENTIFICATION');
+  setTel('2', 'Active', 'warn');
+  setObjective('Une trace non identifiée approche. Qualifie-la.', true);
+  // Nettoyer phase 1 sauf 2 traces pour contexte
+  const keep = S.traces.filter((t, i) => i < 2);
+  S.traces.filter(t => !keep.includes(t)).forEach(t => removeTrace(t.id));
+  // Menace
+  spawnTrace('unknown', { x: 70, y: 70, vx: 0.4, vy: 0.4, iff: '???' });
+  setTimeout(() => {
+    if (S.phase !== 2) return;
+    spawnTrace('lure_w', { x: 235, y: 75, vx: -0.08, vy: 0.04 });
+  }, 1500);
+  setTimeout(() => {
+    if (S.phase !== 2) return;
+    spawnTrace('lure_b', { x: 95, y: 245, vx: 0.3, vy: -0.4 });
+  }, 3500);
+  alarm();
+  buzz(50);
+  radio('Contact azimut 315, altitude 8000, vitesse 480 nœuds. IFF négatif. Procédure ?', true, 'Tour · ALPHA-7');
+  const p2Start = Date.now();
+  showActions([
+    { label: 'Interrogation IFF', desc: 'Procédure standard. Délai 6 s.', tag: 'lo', tagLabel: 'Sûr', onclick: () => decideP2('iff', p2Start) },
+    { label: 'Demande interception', desc: 'Engage les moyens. Coût si fausse alerte.', tag: 'hi', tagLabel: 'Risqué', onclick: () => decideP2('intercept', p2Start) },
+    { label: 'Observation passive', desc: 'Gratuit. La trace progresse pendant ce temps.', tagLabel: 'Lent', onclick: () => decideP2('observe', p2Start) }
+  ]);
+  startPhaseTimer(25, () => {
+    if (!S.measures.phase2Choice) decideP2('observe', p2Start, true);
+  });
+}
+function decideP2(c, start, auto) {
+  if (S.measures.phase2Choice) return;
+  S.measures.phase2Choice = c;
+  S.measures.phase2DecisionTime = Date.now() - start;
+  stopPhaseTimer();
+  if (c === 'iff') {
+    radio('IFF négatif. Contact hostile confirmé.', true);
+    ok();
+  } else if (c === 'intercept') {
+    radio('Patrouille engagée. Interception en cours.', true);
+  } else {
+    radio('Trace progresse. Distance réduite.', true);
+  }
+  setTimeout(() => phaseOverlay('03', 'PERTE DE CONTACT', 'Aucune information · 20 s', enterPhase3), 1400);
+}
+
+// ============== PHASE 3 · PERTE DE CONTACT (20s) ==============
+function enterPhase3() {
+  S.phase = 3;
+  setPhase('03', 'PERTE DE CONTACT');
+  setTel('2', 'Critique', 'warn');
+  setObjective('Contact perdu. Pas d\'info. Décide.', true);
+  // Retirer menace + leurres
+  const threat = S.traces.find(t => t.type === 'unknown');
+  let lastX = 100, lastY = 100;
+  if (threat) { lastX = threat.x; lastY = threat.y; removeTrace(threat.id); }
+  S.traces.filter(t => t.type.startsWith('lure')).forEach(t => removeTrace(t.id));
+  // Zone d'incertitude
+  const ns = 'http://www.w3.org/2000/svg';
+  const z = document.getElementById('zones');
+  z.innerHTML = '';
+  const u = document.createElementNS(ns, 'circle');
+  u.setAttribute('cx', lastX);
+  u.setAttribute('cy', lastY);
+  u.setAttribute('r', '24');
+  u.setAttribute('class', 'uncertainty');
+  z.appendChild(u);
+  const ul = document.createElementNS(ns, 'text');
+  ul.setAttribute('x', lastX);
+  ul.setAttribute('y', lastY + 38);
+  ul.setAttribute('class', 'sec-lbl');
+  ul.textContent = 'PERTE CONTACT';
+  z.appendChild(ul);
+
+  alarm();
+  buzz([40, 40, 40]);
+  radio('Contact perdu. Dernière position secteur Bravo-4. Action requise.', true, 'Tour · ALPHA-7');
+  const p3Start = Date.now();
+  showActions([
+    { label: 'Scramble 2 Rafale', desc: 'Patrouille en l\'air immédiatement.', tag: 'hi', tagLabel: 'Coûteux', onclick: () => decideP3('scramble', p3Start) },
+    { label: 'Étendre le balayage', desc: 'Cherche l\'info qui manque.', tagLabel: 'Méthodique', onclick: () => decideP3('scan', p3Start) },
+    { label: 'Alerter bases adjacentes', desc: 'Partage la responsabilité.', tag: 'tr', tagLabel: 'Réseau', onclick: () => decideP3('share', p3Start) }
+  ]);
+  startPhaseTimer(20, () => {
+    if (!S.measures.phase3Choice) decideP3('scan', p3Start, true);
+  });
+}
+function decideP3(c, start, auto) {
+  if (S.measures.phase3Choice) return;
+  S.measures.phase3Choice = c;
+  S.measures.phase3DecisionTime = Date.now() - start;
+  stopPhaseTimer();
+  if (c === 'scramble') radio('Patrouille LIMA-2 en l\'air. Vecteur d\'interception transmis.', true);
+  else if (c === 'scan') radio('Balayage étendu en cours. Couverture étendue.', true);
+  else radio('Bases CHARLIE et DELTA en alerte. Couverture réseau active.', true);
+  setTimeout(() => phaseOverlay('04', 'DOUBLE MENACE', 'Deux secteurs · 15 s', enterPhase4), 1400);
+}
+
+// ============== PHASE 4 · DOUBLE CONTRAINTE (15s) ==============
+function enterPhase4() {
+  S.phase = 4;
+  setPhase('04', 'DOUBLE MENACE');
+  setTel('3', 'Maximale', 'alert');
+  setObjective('Deux menaces simultanées. Priorise.', true);
+  // Zone protégée ALPHA-NOVEMBER au centre
+  const ns = 'http://www.w3.org/2000/svg';
+  const z = document.getElementById('zones');
+  z.innerHTML = '';
+  const pz = document.createElementNS(ns, 'circle');
+  pz.setAttribute('cx', '150');
+  pz.setAttribute('cy', '150');
+  pz.setAttribute('r', '22');
+  pz.setAttribute('class', 'protected');
+  z.appendChild(pz);
+  const pl = document.createElementNS(ns, 'text');
+  pl.setAttribute('x', '150');
+  pl.setAttribute('y', '184');
+  pl.setAttribute('class', 'zone-lbl');
+  pl.textContent = 'ALPHA-NOVEMBER';
+  z.appendChild(pl);
+  // Threat NW (primaire) cap direct
+  spawnTrace('unknown', { x: 35, y: 35, vx: 0.7, vy: 0.7, iff: 'NW' });
+  // Vector arrow NW
+  const va = document.createElementNS(ns, 'line');
+  va.setAttribute('x1', '35'); va.setAttribute('y1', '35');
+  va.setAttribute('x2', '140'); va.setAttribute('y2', '140');
+  va.setAttribute('class', 'vector-arrow');
+  z.appendChild(va);
+
+  sirenOn(true);
+  siren();
+  buzz([80, 80, 80, 80]);
+  flash();
+  radio('Contact réacquis NW. Cap direct ALPHA-NOVEMBER. ROE 3.', true, 'Tour · ALPHA-7');
+
+  // Drone secteur sud à 3s
+  setTimeout(() => {
+    if (S.phase !== 4) return;
+    spawnTrace('unknown_2', { x: 200, y: 260, vx: -0.15, vy: -0.08, iff: 'S2' });
+    const sl = document.createElementNS(ns, 'text');
+    sl.setAttribute('x', '200');
+    sl.setAttribute('y', '285');
+    sl.setAttribute('class', 'sec-lbl');
+    sl.textContent = 'SECTEUR SUD';
+    z.appendChild(sl);
+    alarm();
+    buzz(60);
+    radio('Seconde alerte. Drone non identifié secteur sud. ALPHA-DELTA potentiellement visée.', true, 'Tour · ALPHA-7');
+  }, 3000);
+
+  const p4Start = Date.now();
+  setTimeout(() => {
+    if (S.phase !== 4) return;
+    showActions([
+      { label: 'Traiter NW · sommation', desc: 'Priorité menace principale, ROE 2.', tag: 'lo', tagLabel: 'Mesuré', onclick: () => decideP4('nw_warn', p4Start) },
+      { label: 'Traiter NW · engagement armé', desc: 'Priorité menace, ROE 3.', tag: 'hi', tagLabel: 'Max', onclick: () => decideP4('nw_armed', p4Start) },
+      { label: 'Traiter sud d\'abord', desc: 'Couvre la deuxième alerte.', tagLabel: 'Inverse', onclick: () => decideP4('south', p4Start) },
+      { label: 'Diviser les moyens', desc: 'Engage les deux en parallèle.', tag: 'tr', tagLabel: 'Risqué', onclick: () => decideP4('parallel', p4Start) }
+    ]);
+  }, 3500);
+
+  startPhaseTimer(15, () => {
+    if (!S.measures.phase4Choice) decideP4('parallel', p4Start, true);
+  });
+}
+function decideP4(c, start, auto) {
+  if (S.measures.phase4Choice) return;
+  S.measures.phase4Choice = c;
+  S.measures.phase4DecisionTime = Date.now() - start;
+  stopPhaseTimer();
+  sirenOn(false);
+  if (c === 'nw_warn') radio('Sommation fréquence d\'urgence transmise. Patrouille en approche.', true);
+  else if (c === 'nw_armed') radio('Engagement armé autorisé. LIMA-2 vecteurisé.', true);
+  else if (c === 'south') radio('Moyens redirigés sud. NW non couvert.', true);
+  else radio('Moyens divisés. Couverture partielle des deux secteurs.', true);
+  setTimeout(() => {
+    phaseOverlay('05', 'INTERCEPTION', 'Vue cockpit · 3 décisions', enterPhase5);
+  }, 1400);
+}
+
+// ============== PHASE 5 · BOSS (avec twist) ==============
+let bossTimerId = null;
+function enterPhase5() {
+  S.phase = 5;
+  cancelAnimationFrame(S.raf);
+  show('v-boss');
+  S.bossDist = 5;
+  S.bossEscalation = 0;
+  S.cooperated = false;
+  positionBoss();
+  document.getElementById('t-step').textContent = 'PRÉPARATION';
+  document.getElementById('t-prompt').textContent = 'LIMA-2 en approche';
+  document.getElementById('boss-actions').innerHTML = '';
+  bossRadio('LIMA-2 sur cible. Distance 5 nautiques. Procédure ?', () => {
+    setTimeout(bossStep1, 400);
+  });
+}
+function positionBoss() {
+  // SVG 280x160. Bottom-up : LIMA-2 monte, cible descend selon dist.
+  // dist 5 = très éloignés, dist 1 = quasi confondus
+  const baseY = 130 - (5 - S.bossDist) * 18;
+  const targetY = 30 + (5 - S.bossDist) * 18;
+  document.getElementById('boss-fighter').setAttribute('transform', `translate(140, ${baseY})`);
+  document.getElementById('boss-target-icon').setAttribute('transform', `translate(140, ${targetY})`);
+  document.getElementById('boss-dist').textContent = S.bossDist + ' NM';
+}
+function bossTimerStart(seconds, onEnd) {
+  const el = document.getElementById('boss-timer');
+  let r = seconds;
+  el.textContent = String(r).padStart(2, '0');
+  clearInterval(bossTimerId);
+  bossTimerId = setInterval(() => {
+    r--;
+    if (r <= 0) {
+      clearInterval(bossTimerId);
+      el.textContent = '00';
+      if (S.phase === 5) onEnd();
+    } else {
+      el.textContent = String(r).padStart(2, '0');
+      tick();
+    }
+  }, 1000);
+}
+function bossStep1() {
+  document.getElementById('t-step').textContent = 'ÉTAPE 1 SUR 3';
+  document.getElementById('t-prompt').innerHTML = '<b>Distance d\'approche ?</b>';
+  bossTimerStart(4, () => bossChoice1('5', true));
+  showBossActions([
+    { label: '5 NM', desc: 'Standard. Sécurité maximale.', onclick: () => bossChoice1('5') },
+    { label: '2 NM', desc: 'Pression visible sur cible.', onclick: () => bossChoice1('2') },
+    { label: '1 NM', desc: 'Approche agressive.', onclick: () => bossChoice1('1') }
+  ]);
+}
+function bossChoice1(d, auto) {
+  if (S.measures.phase5Distance) return;
+  S.measures.phase5Distance = d;
+  clearInterval(bossTimerId);
+  S.bossDist = parseInt(d);
+  if (d === '1') S.bossEscalation += 2;
+  else if (d === '2') S.bossEscalation += 1;
+  positionBoss();
+  buzz(15);
+  setTimeout(bossStep2, 700);
+}
+function bossStep2() {
+  document.getElementById('t-step').textContent = 'ÉTAPE 2 SUR 3';
+  document.getElementById('t-prompt').innerHTML = '<b>Action sur la cible ?</b>';
+  bossTimerStart(4, () => bossChoice2('warn', true));
+  showBossActions([
+    { label: 'Approche visuelle', desc: 'Identification confirmée à vue.', onclick: () => bossChoice2('visual') },
+    { label: 'Sommation radio', desc: 'Fréquence d\'urgence 121.5.', onclick: () => bossChoice2('warn') },
+    { label: 'Tir d\'avertissement', desc: 'Pression maximale, traçante.', onclick: () => bossChoice2('warn_shot') }
+  ]);
+}
+function bossChoice2(a, auto) {
+  if (S.measures.phase5Action) return;
+  S.measures.phase5Action = a;
+  clearInterval(bossTimerId);
+  if (a === 'warn_shot') {
+    S.bossEscalation += 3;
+    flash();
+    buzz([30, 60, 30]);
+  } else if (a === 'warn') {
+    S.bossEscalation += 1;
+  }
+  buzz(15);
+  setTimeout(() => {
+    // TWIST : la cible bascule en coopératif (toujours, c'est le test)
+    S.cooperated = true;
+    bossTwist();
+  }, 800);
+}
+function bossTwist() {
+  // Animation: rapprochement net
+  S.bossDist = Math.max(1, S.bossDist - 1);
+  positionBoss();
+  flash();
+  buzz([30, 50, 30, 50]);
+  bossRadio('La cible incline les ailes. Feux d\'identification allumés. Appel sur 121.5 MHz.', () => {
+    setTimeout(bossStep3, 400);
+  });
+}
+function bossStep3() {
+  document.getElementById('t-step').textContent = 'ÉTAPE 3 SUR 3 · CIBLE COOPÉRATIVE';
+  document.getElementById('t-prompt').innerHTML = '<b>Décision finale ?</b>';
+  bossTimerStart(4, () => bossChoice3('fire', true));
+  showBossActions([
+    { label: 'Escorte forcée', desc: 'Conduite à la base sous contrôle.', onclick: () => bossChoice3('escort') },
+    { label: 'Tir d\'engagement', desc: 'Maintien de l\'autorisation préalable.', onclick: () => bossChoice3('fire') },
+    { label: 'Désengagement', desc: 'Cible coopérative, laisser dégager.', onclick: () => bossChoice3('release') }
+  ]);
+}
+function bossChoice3(c, auto) {
+  if (S.measures.phase5TwistChoice) return;
+  S.measures.phase5TwistChoice = c;
+  clearInterval(bossTimerId);
+  setTimeout(() => computeOutcome(), 700);
+}
+
+// ============== OUTCOME ==============
+function computeOutcome() {
+  let outcome;
+  const twist = S.measures.phase5TwistChoice;
+  if (twist === 'escort') outcome = 'clean';
+  else if (twist === 'release') outcome = 'clean_release';
+  else outcome = 'premature'; // fire
+  // Dégrader si mauvaise priorité phase 4
+  const p4 = S.measures.phase4Choice;
+  if (p4 === 'south') {
+    outcome = (outcome === 'clean' || outcome === 'clean_release') ? 'late' : 'fail';
+  } else if (p4 === 'parallel') {
+    outcome = (outcome === 'clean' || outcome === 'clean_release') ? 'late' : 'fail';
+  }
+  showOutcome(outcome);
+}
+function showOutcome(type) {
+  stopPhaseTimer();
+  clearInterval(bossTimerId);
+  cancelAnimationFrame(S.raf);
+  S.outcome = type;
+  show('v-outcome');
+  const c = document.getElementById('outcome-content');
+  const p = c.parentElement;
+  p.classList.remove('success', 'warn', 'fail');
+  let icon, title, line, cls;
+  if (type === 'clean') {
+    p.classList.add('success'); cls = 'success';
+    icon = '✓';
+    title = 'Espace aérien sécurisé.';
+    line = 'Interception nette. Cible neutralisée sans tir, conduite à la base sous escorte.';
+    chime();
+  } else if (type === 'clean_release') {
+    p.classList.add('success'); cls = 'success';
+    icon = '✓';
+    title = 'Espace aérien sécurisé.';
+    line = 'Cible coopérative laissée dégager. Aucun tir, aucun incident.';
+    chime();
+  } else if (type === 'premature') {
+    p.classList.add('warn'); cls = 'warn';
+    icon = '!';
+    title = 'Tir prématuré.';
+    line = 'Objectif atteint mais la cible était coopérative. Coût opérationnel et politique élevé.';
+    alarm();
+  } else if (type === 'late') {
+    p.classList.add('warn'); cls = 'warn';
+    icon = '!';
+    title = 'Intrusion stoppée in extremis.';
+    line = 'Priorisation tardive. ALPHA-NOVEMBER intact, marge réduite à zéro.';
+    alarm();
+  } else {
+    p.classList.add('fail'); cls = 'fail';
+    icon = '✕';
+    title = 'Intrusion réussie.';
+    line = 'ALPHA-NOVEMBER touché. Debriefing dur attendu.';
+    fail();
+  }
+  c.innerHTML = `
+    <div class="o-stamp">RAPPORT OPÉRATIONNEL</div>
+    <div class="o-icon ${cls}">${icon}</div>
+    <div class="o-title">${title}</div>
+    <div class="o-line">${line}</div>
+    <button class="btn" style="margin-top: 16px; max-width: 220px;" onclick="showReport()">Voir le rapport</button>
+  `;
+}
+
+// ============== PERCENTILES ==============
+function vigP() {
+  if (S.measures.anomalyDetectTime === null) return { tier: 4, label: '50% restants', metric: 'Anomalie non détectée pendant la phase de veille.' };
+  const t = S.measures.anomalyDetectTime / 1000;
+  const txt = `Anomalie détectée en <b>${t.toFixed(1)} s</b> après son apparition.`;
+  if (t < 12) return { tier: 1, label: 'Top 10%', metric: txt };
+  if (t < 18) return { tier: 2, label: 'Top 25%', metric: txt };
+  if (t < 25) return { tier: 3, label: 'Top 50%', metric: txt };
+  return { tier: 4, label: '50% restants', metric: txt };
+}
+function ambP() {
+  if (S.measures.phase3DecisionTime === null) return { tier: 4, label: '25% restants', metric: 'Décision phase 3 expirée.' };
+  const t = S.measures.phase3DecisionTime / 1000;
+  const txt = `Décision en <b>${t.toFixed(1)} s</b> sans information confirmée.`;
+  if (t < 5) return { tier: 1, label: 'Top 15%', metric: txt };
+  if (t < 10) return { tier: 2, label: 'Top 40%', metric: txt };
+  if (t < 18) return { tier: 3, label: 'Top 75%', metric: txt };
+  return { tier: 4, label: '25% restants', metric: txt };
+}
+function priP() {
+  const c = S.measures.phase4Choice;
+  if (!c) return { tier: 4, label: '50% restants', metric: 'Décision phase 4 expirée.' };
+  const good = (c === 'nw_warn' || c === 'nw_armed');
+  const t = (S.measures.phase4DecisionTime || 99000) / 1000;
+  const txt = `Choix · <b>${labelP4(c)}</b> en ${t.toFixed(1)} s.`;
+  if (good && t < 8) return { tier: 1, label: 'Top 20%', metric: txt };
+  if (good && t < 12) return { tier: 2, label: 'Top 50%', metric: txt };
+  return { tier: 4, label: '50% restants', metric: txt };
+}
+function labelP4(c) {
+  return { nw_warn: 'NW sommation', nw_armed: 'NW armé', south: 'Sud d\'abord', parallel: 'Moyens divisés' }[c] || c;
+}
+function impP() {
+  const c = S.measures.phase5TwistChoice;
+  const t = { escort: 'Escorte forcée', release: 'Désengagement', fire: 'Tir d\'engagement' }[c] || '--';
+  const txt = `Après basculement coopératif · <b>${t}</b>.`;
+  if (c === 'escort') return { tier: 1, label: 'Top 12%', metric: txt };
+  if (c === 'release') return { tier: 2, label: 'Top 25%', metric: txt };
+  return { tier: 3, label: '63% restants', metric: txt };
+}
+
+// ============== SCORE ==============
+function computeScore() {
+  let s = 500;
+  const d1 = vigP(), d2 = ambP(), d3 = priP(), d4 = impP();
+  s += (5 - d1.tier) * 50;
+  s += (5 - d2.tier) * 50;
+  s += (5 - d3.tier) * 60;
+  s += (5 - d4.tier) * 80;
+  s -= S.measures.phase1FalsePositives * 20;
+  s -= S.measures.phase2Lures * 40;
+  if (S.outcome === 'fail') s -= 250;
+  else if (S.outcome === 'late') s -= 80;
+  else if (S.outcome === 'premature') s -= 50;
+  return Math.max(0, Math.min(1000, Math.round(s)));
+}
+
+// ============== RAPPORT ==============
+function showReport() {
+  show('v-report');
+  const score = computeScore();
+  document.getElementById('rep-score').innerHTML = score + '<small>/1000</small>';
+
+  const d1 = vigP();
+  const d2 = ambP();
+  const d3 = priP();
+  const d4 = impP();
+
+  // Dim 1
+  const d1Texts = {
+    1: 'Tu vois le décor autant que le sujet. Tu remarques ce qui détonne sans qu\'on te le demande. Profil rare en attention soutenue.',
+    2: 'Ton attention reste active pendant l\'ennui. Tu repères l\'anomalie sans qu\'on attire ton regard dessus.',
+    3: 'Tu repères les signaux faibles quand ils s\'installent. Vigilance correcte, à entretenir.',
+    4: 'Pendant la phase calme, ton attention a glissé. C\'est humain, mais c\'est la difficulté centrale du métier.'
+  };
+  setDim('d1', d1, d1Texts[d1.tier]);
+
+  // Dim 2
+  const d2Texts = {
+    1: 'Tu décides très vite avec ce que tu as. La majorité attend que l\'incertitude se résolve. Pas toi.',
+    2: 'Tu composes avec l\'incomplet sans paralysie. Décision rapide, mesurée.',
+    3: 'Tu prends ton temps quand l\'info manque. Sécurité avant vitesse, profil méthodique.',
+    4: 'Tu as eu du mal à décider sans info. L\'ambiguïté te pèse, c\'est noté pour la suite.'
+  };
+  setDim('d2', d2, d2Texts[d2.tier]);
+
+  // Dim 3
+  const d3Texts = {
+    1: 'Sous double contrainte, tu priorises la menace réelle et tu décides vite. Hiérarchisation propre.',
+    2: 'Tu priorises la bonne menace mais avec un temps de réflexion plus long. Solide.',
+    3: 'Tu as hésité entre les deux menaces, ou tu as choisi la mauvaise priorité. Charge cognitive à travailler.',
+    4: 'Tu as hésité entre les deux menaces, ou tu as choisi la mauvaise priorité. Charge cognitive à travailler.'
+  };
+  setDim('d3', d3, d3Texts[d3.tier]);
+
+  // Dim 4
+  const d4Texts = {
+    1: 'Quand la cible a basculé en coopération, tu as inhibé une décision déjà engagée. Contrôle d\'impulsion exceptionnel.',
+    2: 'Tu as su sortir d\'un engagement en cours quand le contexte a changé. Profil mesuré, rare.',
+    3: 'Tu as maintenu ton engagement initial malgré le changement de comportement de la cible. Test d\'inhibition à retravailler.'
+  };
+  setDim('d4', d4, d4Texts[d4.tier]);
+
+  // Métiers
+  const top = [d1, d2, d3, d4].map((d, i) => ({ dim: i, tier: d.tier })).sort((a, b) => a.tier - b.tier);
+  const lead = top[0].dim;
+  let jobs;
+  if (lead === 0) {
+    jobs = [
+      { n: 'Analyste renseignement', m: 'Lecture du signal faible, attention soutenue sur durée longue. Ton terrain.', pct: 92 },
+      { n: 'Contrôleur aérien', m: 'Vigilance permanente, détection précoce. Profil compatible.', pct: 88 },
+      { n: 'Opérateur drone MALE', m: 'Veille longue durée, déclenchement maîtrisé.', pct: 84 }
+    ];
+  } else if (lead === 1) {
+    jobs = [
+      { n: 'NOSA (Navigateur Officier Systèmes d\'Armes)', m: 'Décision sous incertitude, cabine d\'arme. Profil opérationnel.', pct: 90 },
+      { n: 'Officier renseignement', m: 'Tolérance à l\'incomplet, recoupements rapides.', pct: 87 },
+      { n: 'Pilote de chasse', m: 'Décide vite parce que tu lis vite. Signature aviateur.', pct: 84 }
+    ];
+  } else if (lead === 2) {
+    jobs = [
+      { n: 'Officier opérations', m: 'Coordination multi-secteurs sous contrainte. Tu hiérarchises sans paniquer.', pct: 91 },
+      { n: 'Contrôleur aérien militaire', m: 'Plusieurs flux d\'info simultanés. Ton tempo.', pct: 87 },
+      { n: 'Officier permanence opérationnelle', m: 'Multi-menace, multi-décision. Profil de poste de commandement.', pct: 85 }
+    ];
+  } else {
+    jobs = [
+      { n: 'Pilote de chasse', m: 'Capacité à stopper une action engagée. Discipline aviateur fondamentale.', pct: 93 },
+      { n: 'Fusilier commando parachutiste', m: 'Engagement maîtrisé, ROE respectées sous pression.', pct: 88 },
+      { n: 'NOSA (Navigateur Officier Systèmes d\'Armes)', m: 'Contrôle d\'impulsion sous engagement préalable.', pct: 86 }
+    ];
+  }
+  const jb = document.getElementById('rep-jobs');
+  jb.innerHTML = '';
+  jobs.forEach(j => {
+    const el = document.createElement('div');
+    el.className = 'job';
+    el.innerHTML = `<div class="n">${j.n}</div><div class="m">${j.m}</div><span class="pct">Match ${j.pct}%</span>`;
+    jb.appendChild(el);
+  });
+}
+function setDim(id, data, text) {
+  const pct = document.getElementById(id + '-pct');
+  pct.textContent = data.label;
+  pct.className = 'dim-pct t' + data.tier;
+  document.getElementById(id + '-text').textContent = text;
+  document.getElementById(id + '-metric').innerHTML = data.metric;
+}
+
+function shareScore() {
+  const txt = `J'ai scoré ${computeScore()}/1000 sur la mission INTERCEPT · VOKA × AAE. Quart de nuit ALPHA-7.`;
+  if (navigator.share) navigator.share({ title: 'INTERCEPT', text: txt }).catch(() => {});
+  else if (navigator.clipboard) { navigator.clipboard.writeText(txt).catch(() => {}); toast('SCORE COPIÉ', true); }
+}
+
+function restartMission() {
+  clearInterval(S.phaseTimer);
+  clearInterval(bossTimerId);
+  cancelAnimationFrame(S.raf);
+  S.phase = 0;
+  clearTraces();
+  document.getElementById('zones').innerHTML = '';
+  S.measures = {
+    anomalyDetectTime: null, anomalyAppearTime: null, phase1FalsePositives: 0,
+    phase2Choice: null, phase2DecisionTime: null, phase2Lures: 0,
+    phase3Choice: null, phase3DecisionTime: null,
+    phase4Choice: null, phase4DecisionTime: null,
+    phase5Distance: null, phase5Action: null, phase5TwistChoice: null
+  };
+  S.outcome = null;
+  document.getElementById('actions').innerHTML = '';
+  document.getElementById('boss-actions').innerHTML = '';
+  document.getElementById('ph-timer').textContent = '30';
+  document.getElementById('ph-timer').classList.remove('warn', 'crit');
+  show('v-intro');
+}
+</script>
+</body>
+</html>

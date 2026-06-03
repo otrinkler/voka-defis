@@ -1,0 +1,2302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VOKA · ALTITUDE · KILO-9</title>
+<style>
+  :root {
+    --purple: #7500B8;
+    --green: #B3F70B;
+    --orange: #FF5321;
+    --blue: #378ADD;
+    --teal: #1D9E75;
+    --amber: #EF9F27;
+    --pink: #D4537E;
+    --bg: #050508;
+    --green-l: #6ddba0;
+    --blue-l: #7ab8f0;
+    --amber-l: #f5c040;
+    --orange-l: #ff8868;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow: hidden; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  body {
+    background: #111;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .phone {
+    width: 844px;
+    height: 390px;
+    background: var(--bg);
+    border-radius: 36px;
+    border: 6px solid #1e1e2e;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  }
+  @media (max-width: 900px) {
+    body { padding: 0; }
+    .phone {
+      width: 100vw;
+      height: 100vh;
+      max-width: 100vw;
+      max-height: 100vh;
+      border-radius: 0;
+      border: none;
+    }
+  }
+
+  /* ====== ROTATE ====== */
+  .rotate-prompt {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 32px;
+    text-align: center;
+  }
+  @media (orientation: portrait) and (max-width: 900px) {
+    .rotate-prompt { display: flex; }
+    .phone { display: none; }
+  }
+  .rotate-prompt svg {
+    width: 80px;
+    height: 80px;
+    animation: rotI 2.5s ease-in-out infinite;
+  }
+  @keyframes rotI {
+    0%, 40% { transform: rotate(0deg); }
+    60%, 100% { transform: rotate(-90deg); }
+  }
+  .rotate-prompt h2 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    color: var(--green);
+  }
+  .rotate-prompt p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.5;
+    max-width: 280px;
+  }
+
+  /* ====== VIEWS ====== */
+  .view { display: none; width: 100%; height: 100%; flex-direction: column; }
+  .view.on { display: flex; }
+
+  /* ====== INTRO ====== */
+  .intro {
+    display: flex;
+    flex: 1;
+    padding: 26px 34px;
+    gap: 30px;
+  }
+  .intro-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .badge-m {
+    align-self: flex-start;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    color: var(--green);
+    padding: 5px 10px;
+    border: 1px solid var(--green);
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .intro h1 {
+    font-size: 44px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    line-height: 0.92;
+    text-transform: uppercase;
+    margin-top: 14px;
+  }
+  .intro h1 .sub {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 12px;
+    text-transform: none;
+    line-height: 1.45;
+  }
+  .intro-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+  }
+  .mc {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 9px;
+    padding: 10px 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .mc .k {
+    font-size: 10px;
+    letter-spacing: 1.8px;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+  }
+  .mc .v {
+    font-size: 13px;
+    color: #fff;
+    font-weight: 700;
+  }
+  .btn {
+    background: var(--green);
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    width: 100%;
+    transition: transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .audio-hint {
+    text-align: center;
+    font-size: 10px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 8px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ====== RULES ====== */
+  .rules {
+    padding: 24px 34px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .rules-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .rules-title {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+    margin-top: -8px;
+  }
+  .rules-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .rule-item {
+    display: flex;
+    gap: 14px;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .rule-item:last-child { border-bottom: none; }
+  .rule-num {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--green);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 28px;
+  }
+  .rule-text {
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.4;
+  }
+  .rule-text b { color: #fff; }
+
+  /* ====== LOADING ====== */
+  .loading {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    gap: 20px;
+  }
+  .load-spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid rgba(179,247,11,0.2);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .load-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  /* ====== BRIEF ====== */
+  .brief {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 50px;
+    gap: 14px;
+    text-align: center;
+  }
+  .brief-tag {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+    padding: 5px 11px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+  }
+  .brief-title {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+    color: var(--green);
+    line-height: 1.05;
+  }
+  .brief-instruction {
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.88);
+    max-width: 540px;
+  }
+  .brief-instruction b { color: #fff; }
+  .brief-meta {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+  }
+  .brief-cta {
+    margin-top: 4px;
+    width: 220px;
+  }
+
+  /* ====== COCKPIT STAGE ====== */
+  .cockpit-stage {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .cockpit-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+  .cockpit-bg-dark {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 30%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.4) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* HEADER */
+  .ck-header {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 18px;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(4px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .ph-tag {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+  }
+  .ph-tag .num {
+    color: var(--green);
+    font-weight: 800;
+    margin-right: 6px;
+  }
+  .ck-hud-cell {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .ck-hud-cell b {
+    color: var(--green);
+    font-size: 12px;
+    font-family: ui-monospace, monospace;
+    letter-spacing: 0;
+  }
+  .ph-timer {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--green);
+    padding: 3px 10px;
+    border: 1px solid rgba(179,247,11,0.4);
+    border-radius: 6px;
+    background: rgba(179,247,11,0.10);
+    min-width: 50px;
+    text-align: center;
+    line-height: 1.1;
+    font-family: ui-monospace, monospace;
+  }
+  .ph-timer.warn { color: var(--amber-l); border-color: rgba(245,192,64,0.5); background: rgba(245,192,64,0.10); }
+  .ph-timer.crit { color: var(--orange); border-color: var(--orange); background: rgba(255,83,33,0.12); animation: critP 0.5s infinite; }
+  @keyframes critP {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+  .ph-timer.hidden { visibility: hidden; }
+
+  /* SKY ZONE (pour pointeur phase 3) */
+  .sky-zone {
+    position: absolute;
+    top: 92px;
+    left: 0;
+    right: 0;
+    bottom: 130px;
+    z-index: 3;
+    touch-action: none;
+  }
+
+  /* POINTER (phase 3) */
+  .pointer {
+    position: absolute;
+    width: 56px;
+    height: 56px;
+    margin-left: -28px;
+    margin-top: -28px;
+    border-radius: 50%;
+    border: 2.5px solid var(--orange);
+    background: rgba(255,83,33,0.08);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .pointer.on { display: flex; }
+  .pointer.contact {
+    border-color: var(--green);
+    background: rgba(179,247,11,0.15);
+    box-shadow: 0 0 20px rgba(179,247,11,0.5);
+  }
+  .pointer .cross {
+    width: 20px;
+    height: 20px;
+    position: relative;
+  }
+  .pointer .cross::before, .pointer .cross::after {
+    content: '';
+    position: absolute;
+    background: var(--orange);
+  }
+  .pointer.contact .cross::before, .pointer.contact .cross::after {
+    background: var(--green);
+  }
+  .pointer .cross::before {
+    left: 50%; top: 0; bottom: 0; width: 2px; margin-left: -1px;
+  }
+  .pointer .cross::after {
+    top: 50%; left: 0; right: 0; height: 2px; margin-top: -1px;
+  }
+
+  /* MAINTAIN INDICATOR (phase 3) */
+  .maintain-bar {
+    position: absolute;
+    top: 100px;
+    right: 14px;
+    width: 6px;
+    height: 110px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 3px;
+    overflow: hidden;
+    z-index: 4;
+    display: none;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .maintain-bar.on { display: block; }
+  .maintain-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--green);
+    height: 0%;
+    transition: height 0.15s;
+  }
+  .maintain-label {
+    position: absolute;
+    top: 90px;
+    right: 26px;
+    font-size: 9px;
+    letter-spacing: 1.2px;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    z-index: 4;
+    display: none;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+  .maintain-label.on { display: block; }
+
+  /* RADIO BUBBLE (instruction) */
+  .radio-bubble {
+    position: absolute;
+    bottom: 76px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    background: rgba(0,0,0,0.75);
+    border: 1px solid rgba(179,247,11,0.4);
+    border-left: 3px solid var(--green);
+    border-radius: 10px;
+    padding: 9px 14px;
+    max-width: 520px;
+    min-width: 320px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .radio-bubble.alert {
+    border-color: rgba(255,83,33,0.5);
+    border-left-color: var(--orange);
+    background: rgba(40,10,5,0.85);
+  }
+  .radio-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(179,247,11,0.1);
+    border: 1.5px solid var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .radio-bubble.alert .radio-avatar {
+    background: rgba(255,83,33,0.1);
+    border-color: var(--orange);
+  }
+  .radio-avatar svg { width: 18px; height: 18px; }
+  .radio-avatar .pdot {
+    position: absolute;
+    bottom: -1px; right: -1px;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    border: 1.5px solid #050508;
+    animation: avP 1.3s infinite;
+  }
+  .radio-bubble.alert .radio-avatar .pdot { background: var(--orange); }
+  @keyframes avP {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .radio-body { flex: 1; min-width: 0; }
+  .radio-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .radio-from {
+    font-size: 9px;
+    color: var(--green);
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .radio-bubble.alert .radio-from { color: var(--orange-l); }
+  .radio-freq {
+    font-size: 8px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.5px;
+  }
+  .radio-text {
+    font-size: 12px;
+    line-height: 1.35;
+    color: rgba(255,255,255,0.95);
+    letter-spacing: 0.2px;
+  }
+  .radio-text::after {
+    content: "▌";
+    color: var(--green);
+    animation: cur 0.9s infinite;
+    margin-left: 2px;
+  }
+  .radio-bubble.alert .radio-text::after { color: var(--orange); }
+  .radio-text.done::after { display: none; }
+  @keyframes cur { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+
+  /* ACTIONS */
+  .ck-actions {
+    position: relative;
+    z-index: 6;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    padding: 8px 12px 10px;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(6px);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+  }
+  .act-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: #fff;
+    border-radius: 9px;
+    padding: 9px 10px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    transition: all 0.12s;
+    line-height: 1.2;
+    letter-spacing: 0.2px;
+  }
+  .act-btn:active { transform: scale(0.97); background: rgba(255,255,255,0.12); }
+  .act-btn:hover { background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.3); }
+  .act-btn.good {
+    background: rgba(179,247,11,0.18);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .act-btn.bad {
+    background: rgba(255,83,33,0.15);
+    border-color: var(--orange);
+    color: var(--orange);
+  }
+  .act-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ====== TRANSITION ====== */
+  .transition {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 30px;
+  }
+  .trans-icon {
+    font-size: 42px;
+    color: var(--green);
+    font-weight: 900;
+  }
+  .trans-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    text-transform: uppercase;
+  }
+  .trans-line {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    max-width: 480px;
+    line-height: 1.5;
+  }
+
+  /* ====== OUTCOME ====== */
+  .outcome {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 24px;
+    text-align: center;
+  }
+  .o-stamp {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+  }
+  .o-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: 900;
+  }
+  .o-icon.success { background: rgba(179,247,11,0.12); border: 2px solid var(--green); color: var(--green); }
+  .o-icon.warn { background: rgba(245,192,64,0.12); border: 2px solid var(--amber-l); color: var(--amber-l); }
+  .o-icon.fail { background: rgba(255,83,33,0.12); border: 2px solid var(--orange); color: var(--orange); }
+  .o-title {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -0.7px;
+    line-height: 1.05;
+    text-transform: uppercase;
+  }
+  .outcome.success .o-title { color: var(--green); }
+  .outcome.warn .o-title { color: var(--amber-l); }
+  .outcome.fail .o-title { color: var(--orange); }
+  .o-line {
+    font-size: 13px;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.5;
+    max-width: 480px;
+  }
+
+  /* ====== REPORT ====== */
+  .report {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 22px 18px;
+  }
+  .report::-webkit-scrollbar { width: 0; }
+  .rep-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .rep-head .tag {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--green);
+    text-transform: uppercase;
+  }
+  .rep-head h2 {
+    font-size: 18px;
+    font-weight: 800;
+    margin-top: 3px;
+    letter-spacing: -0.3px;
+  }
+  .score-b { text-align: right; }
+  .score-b .l {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+  }
+  .score-b .v {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--green);
+    line-height: 1;
+    margin-top: 2px;
+    letter-spacing: -1px;
+  }
+  .score-b .v small { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 500; }
+  .dims-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .dim {
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+  }
+  .dim-name {
+    font-size: 10px;
+    letter-spacing: 1.2px;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  .dim-pct {
+    font-size: 11px;
+    padding: 3px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    font-weight: 800;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+  .dim-pct.t1 { background: rgba(179,247,11,0.18); color: var(--green); border: 1px solid var(--green); }
+  .dim-pct.t2 { background: rgba(245,192,64,0.15); color: var(--amber-l); border: 1px solid var(--amber-l); }
+  .dim-pct.t3 { background: rgba(122,184,240,0.15); color: var(--blue-l); border: 1px solid rgba(122,184,240,0.5); }
+  .dim-pct.t4 { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.15); }
+  .dim-metric {
+    font-size: 11px;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.4;
+  }
+  .dim-metric b { color: #fff; }
+  .rep-reveal {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+  }
+  .rep-reveal .h {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--green);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+  .rep-reveal .t {
+    font-size: 12px;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.45;
+  }
+  .rep-reveal .t b { color: #fff; }
+  .jobs-h {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    margin: 4px 0 8px;
+    font-weight: 700;
+  }
+  .jobs-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .job {
+    padding: 9px 11px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+  }
+  .job .n {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .job .m {
+    font-size: 10px;
+    color: rgba(255,255,255,0.65);
+    margin-top: 4px;
+    line-height: 1.35;
+  }
+  .job .pct {
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 0.8px;
+    color: var(--green);
+    padding: 2px 5px;
+    border: 1px solid rgba(179,247,11,0.4);
+    border-radius: 3px;
+    margin-top: 4px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .cta-row {
+    display: flex;
+    gap: 8px;
+  }
+  .cta-row button {
+    flex: 1;
+    padding: 11px;
+    font-family: inherit;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .cta-row .replay { background: var(--green); color: #000; border: none; }
+  .cta-row .share { background: transparent; border: 1px solid rgba(255,255,255,0.18); color: #fff; }
+
+  /* TOAST */
+  .toast {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background: rgba(0,0,0,0.92);
+    border: 2px solid var(--green);
+    color: var(--green);
+    padding: 10px 22px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s, transform 0.18s;
+    white-space: nowrap;
+  }
+  .toast.on { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .toast.bad { border-color: var(--orange); color: var(--orange); }
+
+  /* FLASH */
+  .ck-flash {
+    position: absolute;
+    inset: 0;
+    background: var(--orange);
+    pointer-events: none;
+    opacity: 0;
+    z-index: 50;
+  }
+  .ck-flash.on { animation: flashA 0.4s ease-out; }
+  @keyframes flashA { 0% { opacity: 0.35; } 100% { opacity: 0; } }
+
+  /* ====== TUTORIEL VIDEO ====== */
+  .tuto-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+  }
+  .tuto-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+  .tuto-overlay-dark {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 25%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.75) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+  .tuto-header {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 18px;
+  }
+  .tuto-tag {
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    color: var(--green);
+    text-transform: uppercase;
+    font-weight: 800;
+    padding: 4px 10px;
+    background: rgba(0,0,0,0.75);
+    border: 1px solid var(--green);
+    border-radius: 4px;
+  }
+  .tuto-skip {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase;
+    padding: 6px 11px;
+    background: rgba(0,0,0,0.75);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    transition: opacity 0.2s;
+  }
+  .tuto-skip:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  .tuto-radio {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    background: rgba(0,0,0,0.88);
+    border: 1px solid rgba(179,247,11,0.4);
+    border-left: 3px solid var(--green);
+    border-radius: 10px;
+    padding: 10px 14px;
+    max-width: 520px;
+    min-width: 380px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .tuto-progress {
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 3px;
+    background: var(--green);
+    width: 0%;
+    z-index: 6;
+    transition: width 0.1s linear;
+  }
+  .tuto-chapter-tag {
+    position: absolute;
+    top: 52px;
+    left: 18px;
+    z-index: 5;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.9);
+    text-transform: uppercase;
+    padding: 5px 10px;
+    background: rgba(0,0,0,0.75);
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.25);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-weight: 700;
+  }
+  .tuto-chapter-tag.on { opacity: 1; }
+  .tuto-chapter-tag .n { color: var(--green); font-weight: 800; margin-right: 7px; }
+
+  /* ====== INSTRUMENTS HUD COCKPIT ====== */
+  .hud-instruments {
+    position: absolute;
+    top: 44px;
+    left: 0;
+    right: 0;
+    z-index: 4;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 12px;
+    pointer-events: none;
+  }
+  .hud-cell {
+    background: rgba(0,0,0,0.78);
+    border: 1px solid rgba(179,247,11,0.45);
+    border-radius: 6px;
+    padding: 5px 10px;
+    min-width: 76px;
+    text-align: center;
+    backdrop-filter: blur(2px);
+    box-shadow: 0 0 8px rgba(179,247,11,0.15);
+  }
+  .hud-cell .lbl {
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    color: rgba(179,247,11,0.75);
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 3px;
+    font-weight: 600;
+  }
+  .hud-cell .val {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--green);
+    font-family: ui-monospace, monospace;
+    letter-spacing: 0.5px;
+    line-height: 1.1;
+    text-shadow: 0 0 6px rgba(179,247,11,0.5);
+  }
+  .hud-cell.changing .val {
+    animation: hudChange 0.6s ease-out;
+  }
+  @keyframes hudChange {
+    0% { color: var(--amber-l); text-shadow: 0 0 14px rgba(245,192,64,0.8); transform: scale(1.1); }
+    100% { color: var(--green); transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+
+<div class="rotate-prompt">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#B3F70B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6" y="2" width="12" height="20" rx="2"/>
+    <line x1="12" y1="18" x2="12" y2="18.01"/>
+  </svg>
+  <h2>Tourne ton téléphone</h2>
+  <p>Ce défi se joue en mode paysage. Bascule ton écran pour commencer.</p>
+</div>
+
+<div class="phone">
+  <div class="toast" id="toast"></div>
+
+  <!-- INTRO -->
+  <div class="view on" id="v-intro">
+    <div class="intro">
+      <div class="intro-left">
+        <div>
+          <span class="badge-m">Mission · KILO-9</span>
+          <h1>ALTITUDE
+            <span class="sub">Test pilote. Performance sous charge croissante. Trois phases, trois compétences.</span>
+          </h1>
+        </div>
+        <div>
+          <button class="btn" onclick="goRules()">Lire les règles</button>
+          <p class="audio-hint">Active le son. Ton téléphone doit être en paysage.</p>
+        </div>
+      </div>
+      <div class="intro-right">
+        <div class="mc"><span class="k">Durée</span><span class="v">1 min 30</span></div>
+        <div class="mc"><span class="k">Phases</span><span class="v">3</span></div>
+        <div class="mc"><span class="k">Décisions</span><span class="v">9</span></div>
+        <div class="mc"><span class="k">XP</span><span class="v">+45</span></div>
+        <div class="mc"><span class="k">Niveau</span><span class="v">Novice</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RULES -->
+  <div class="view" id="v-rules">
+    <div class="rules">
+      <div>
+        <div class="rules-sub">Briefing pilote</div>
+        <div class="rules-title">Règles d'engagement</div>
+      </div>
+      <div class="rules-list">
+        <div class="rule-item">
+          <div class="rule-num">01</div>
+          <div class="rule-text">Tu pilotes un Rafale en vol de croisière. <b>3 phases, 3 décisions par phase</b>, difficulté croissante.</div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-num">02</div>
+          <div class="rule-text"><b>Phase 1</b> tutoriel sans timer. <b>Phase 2</b> chronométrée. <b>Phase 3</b> double tâche, maintien d'un point en zone ciel pendant que tu décides.</div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-num">03</div>
+          <div class="rule-text">Une seule réponse par décision. <b>Aucun retour en arrière.</b> Le système mesure ta précision, ta vitesse et ton partage attentionnel.</div>
+        </div>
+      </div>
+      <button class="btn" onclick="startLoading()">Décollage</button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="view" id="v-loading">
+    <div class="loading">
+      <div class="load-spinner"></div>
+      <div class="load-label">Mise en route systèmes</div>
+    </div>
+  </div>
+
+  <!-- TUTORIEL VIDEO -->
+  <div class="view" id="v-tuto">
+    <div class="tuto-wrap">
+      <video class="tuto-video" id="tuto-video" muted playsinline preload="auto"></video>
+      <div class="tuto-overlay-dark"></div>
+      <div class="tuto-header">
+        <span class="tuto-tag">Briefing pilote</span>
+        <button class="tuto-skip" id="tuto-skip" disabled onclick="skipTuto()">Passer</button>
+      </div>
+      <div class="tuto-chapter-tag" id="tuto-chapter"><span class="n">01</span><span id="tuto-chapter-name">Altitude</span></div>
+      <div class="tuto-radio">
+        <div class="radio-avatar">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 7l3-2h8l3 2v10l-3 2H8l-3-2V7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.5"/><line x1="12" y1="2" x2="12" y2="5" stroke="currentColor" stroke-width="1.5"/></svg>
+          <span class="pdot"></span>
+        </div>
+        <div class="radio-body">
+          <div class="radio-head">
+            <span class="radio-from">Instruction · KILO-9</span>
+            <span class="radio-freq">125.4 MHz</span>
+          </div>
+          <div class="radio-text" id="tuto-radio-text"></div>
+        </div>
+      </div>
+      <div class="tuto-progress" id="tuto-progress"></div>
+    </div>
+  </div>
+
+  <!-- BRIEF (commun aux 3 phases) -->
+  <div class="view" id="v-brief">
+    <div class="brief">
+      <span class="brief-tag" id="brief-tag">Phase 01 sur 03</span>
+      <div class="brief-title" id="brief-title">--</div>
+      <div class="brief-instruction" id="brief-instruction">--</div>
+      <div class="brief-meta" id="brief-meta">--</div>
+      <button class="btn brief-cta" id="brief-cta" onclick="startCurrentPhase()">Je suis prêt</button>
+    </div>
+  </div>
+
+  <!-- COCKPIT (vue principale gameplay) -->
+  <div class="view" id="v-cockpit">
+    <div class="cockpit-stage">
+      <img class="cockpit-bg" id="cockpit-img" alt="">
+      <div class="cockpit-bg-dark"></div>
+      <div class="ck-flash" id="ck-flash"></div>
+
+      <!-- Header -->
+      <div class="ck-header">
+        <div class="ph-tag"><span class="num" id="ck-phase-num">01</span><span id="ck-phase-name">Apprentissage</span></div>
+        <div style="display:flex; gap: 14px; align-items: center;">
+          <div class="ck-hud-cell">DÉCISION <b id="ck-dec">1/9</b></div>
+          <div class="ph-timer" id="ck-timer">--</div>
+        </div>
+      </div>
+
+      <!-- Instruments HUD -->
+      <div class="hud-instruments">
+        <div class="hud-cell" id="hud-alt">
+          <div class="lbl">Altitude</div>
+          <div class="val" id="hud-alt-val">FL120</div>
+        </div>
+        <div class="hud-cell" id="hud-spd">
+          <div class="lbl">Vitesse</div>
+          <div class="val" id="hud-spd-val">320 kts</div>
+        </div>
+        <div class="hud-cell" id="hud-hdg">
+          <div class="lbl">Cap</div>
+          <div class="val" id="hud-hdg-val">270°</div>
+        </div>
+      </div>
+
+      <!-- Sky zone avec pointeur (phase 3) -->
+      <div class="sky-zone" id="sky-zone">
+        <div class="pointer" id="pointer">
+          <div class="cross"></div>
+        </div>
+      </div>
+
+      <!-- Maintain bar (phase 3) -->
+      <div class="maintain-label" id="maintain-label">Maintien</div>
+      <div class="maintain-bar" id="maintain-bar">
+        <div class="maintain-fill" id="maintain-fill"></div>
+      </div>
+
+      <!-- Radio bubble -->
+      <div class="radio-bubble" id="radio-bubble">
+        <div class="radio-avatar">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 7l3-2h8l3 2v10l-3 2H8l-3-2V7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.5"/><line x1="12" y1="2" x2="12" y2="5" stroke="currentColor" stroke-width="1.5"/></svg>
+          <span class="pdot"></span>
+        </div>
+        <div class="radio-body">
+          <div class="radio-head">
+            <span class="radio-from" id="radio-from">Tour · KILO-9</span>
+            <span class="radio-freq">125.4 MHz</span>
+          </div>
+          <div class="radio-text" id="radio-text"></div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="ck-actions" id="ck-actions"></div>
+    </div>
+  </div>
+
+  <!-- TRANSITION -->
+  <div class="view" id="v-transition">
+    <div class="transition">
+      <div class="trans-icon">✓</div>
+      <div class="trans-title" id="trans-title">Phase terminée</div>
+      <div class="trans-line" id="trans-line">--</div>
+      <button class="btn brief-cta" id="trans-cta" onclick="onTransitionNext()">Continuer</button>
+    </div>
+  </div>
+
+  <!-- OUTCOME -->
+  <div class="view" id="v-outcome">
+    <div class="outcome" id="outcome-content"></div>
+  </div>
+
+  <!-- REPORT -->
+  <div class="view" id="v-report">
+    <div class="report">
+      <div class="rep-head">
+        <div>
+          <div class="tag">Rapport · KILO-9</div>
+          <h2>Profil pilote</h2>
+        </div>
+        <div class="score-b">
+          <div class="l">Score</div>
+          <div class="v" id="rep-score">0<small>/1000</small></div>
+        </div>
+      </div>
+      <div class="dims-row">
+        <div class="dim">
+          <div class="dim-name">Précision sous tempo</div>
+          <div class="dim-pct" id="d1-pct">--</div>
+          <div class="dim-metric" id="d1-metric"></div>
+        </div>
+        <div class="dim">
+          <div class="dim-name">Partage attentionnel</div>
+          <div class="dim-pct" id="d2-pct">--</div>
+          <div class="dim-metric" id="d2-metric"></div>
+        </div>
+        <div class="dim">
+          <div class="dim-name">Récupération après erreur</div>
+          <div class="dim-pct" id="d3-pct">--</div>
+          <div class="dim-metric" id="d3-metric"></div>
+        </div>
+      </div>
+      <div class="rep-reveal">
+        <div class="h">Ton profil</div>
+        <div class="t" id="rep-reveal"></div>
+      </div>
+      <div class="jobs-h">Métiers AAE en résonance</div>
+      <div class="jobs-row" id="rep-jobs"></div>
+      <div class="cta-row">
+        <button class="share" onclick="shareScore()">Partager</button>
+        <button class="replay" onclick="restart()">Rejouer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============== CONFIG ==============
+const COCKPIT_IMG = 'https://otrinkler.github.io/voka-defis/altitude/images/cockpit.png';
+const TUTO_VIDEO = 'https://otrinkler.github.io/voka-defis/altitude/images/Tutoriel.mp4';
+const COCKPIT_LOOP = 'https://otrinkler.github.io/voka-defis/altitude/images/cockpit_loop.mp3';
+
+// 9 décisions structurées en 3 phases
+const DECISIONS = [
+  // PHASE 1 - APPRENTISSAGE (pas de timer, feedback explicite)
+  {
+    phase: 1,
+    isAlert: false,
+    from: 'Tour · KILO-9',
+    freq: '125.4 MHz',
+    radio: 'KILO-9, descente FL060. Confirmer instruction.',
+    options: ['FL060 confirmé', 'FL080 maintenu', 'FL100 demandé'],
+    correct: 0,
+    confirm: 'FL060 enregistré. Descente en cours.',
+    bad: 'Procédure incorrecte. Bonne réponse : FL060 confirmé.'
+  },
+  {
+    phase: 1,
+    isAlert: true,
+    from: 'Alerte système',
+    freq: 'AVIONIQUE',
+    radio: 'Voyant pression huile moteur droit allumé. Action ?',
+    options: ['Régler le mélange', 'Vérifier la pression', 'Contacter la tour'],
+    correct: 1,
+    confirm: 'Pression huile vérifiée. Valeur nominale.',
+    bad: 'Procédure incorrecte. Bonne réponse : vérifier la pression.'
+  },
+  {
+    phase: 1,
+    isAlert: false,
+    from: 'Tour · KILO-9',
+    freq: '125.4 MHz',
+    radio: 'Vent de travers 15 noeuds détecté. Correction de cap ?',
+    options: ['Cap +5°', 'Cap +10°', 'Cap +20°'],
+    correct: 1,
+    confirm: 'Correction +10° appliquée. Trajectoire stable.',
+    bad: 'Procédure incorrecte. Pour 15 noeuds : +10°.'
+  },
+  // PHASE 2 - TEMPO (timer 5s)
+  {
+    phase: 2,
+    isAlert: true,
+    from: 'TCAS',
+    freq: 'ALERTE',
+    radio: 'Trafic convergent 11 heures, même niveau. Réaction immédiate.',
+    options: ['Monter immédiat', 'Descendre immédiat', 'Virer à droite'],
+    correct: 0
+  },
+  {
+    phase: 2,
+    isAlert: true,
+    from: 'Alerte système',
+    freq: 'MOTEUR',
+    radio: 'Surchauffe moteur droit. Action ?',
+    options: ['Réduire puissance droit', 'Couper moteur droit', 'Contacter la tour'],
+    correct: 0
+  },
+  {
+    phase: 2,
+    isAlert: false,
+    from: 'Tour · KILO-9',
+    freq: '125.4 MHz',
+    radio: 'Vent traversier 25 noeuds piste 27. Technique d\'approche ?',
+    options: ['Approche directe', 'Crab + decrab', 'Wing low'],
+    correct: 1
+  },
+  // PHASE 3 - MULTITÂCHE (8s, suivi pointeur + décision)
+  {
+    phase: 3,
+    isAlert: false,
+    from: 'Tour · KILO-9',
+    freq: '125.4 MHz',
+    radio: 'Confirme maintien altitude FL060 et cap.',
+    options: ['Maintien confirmé', 'En descente', 'En montée'],
+    correct: 0
+  },
+  {
+    phase: 3,
+    isAlert: true,
+    from: 'TCAS',
+    freq: 'ALERTE',
+    radio: 'Trafic proche 2 heures. Manoeuvre d\'évitement.',
+    options: ['Évitement gauche', 'Évitement droite', 'Maintien cap'],
+    correct: 1
+  },
+  {
+    phase: 3,
+    isAlert: false,
+    from: 'Tour · KILO-9',
+    freq: '125.4 MHz',
+    radio: 'Autorisé à atterrir piste 27. Vent stable.',
+    options: ['Reçu atterrissage', 'Remise de gaz', 'Demande prolongation'],
+    correct: 0
+  }
+];
+
+// ============== ÉTAT ==============
+const S = {
+  audio: null,
+  audioOn: false,
+  decisionIndex: 0,
+  currentPhase: 1,
+  measures: {
+    p1: { correct: 0, errors: [] },  // [{idx, correct, time}]
+    p2: { correct: 0, times: [], answers: [] },
+    p3: { correct: 0, contactRatios: [], reactionTimes: [], answers: [] }
+  },
+  pointer: { x: 0, y: 0, t0: 0 },
+  touchPos: { x: 0, y: 0, active: false },
+  contactState: false,
+  contactStartT: 0,
+  decisionStartT: 0,
+  decisionTimer: null,
+  pointerRaf: null,
+  contactMeasureRaf: null,
+  totalContactMs: 0,
+  totalElapsedMs: 0,
+  lastContactCheck: 0,
+  decisionAnswered: false
+};
+
+// ============== AUDIO ==============
+function initAudio() {
+  if (S.audio) return;
+  try {
+    S.audio = new (window.AudioContext || window.webkitAudioContext)();
+    S.audioOn = true;
+    if (S.audio.state === 'suspended') S.audio.resume();
+  } catch(e) {}
+}
+function beep(freq, dur, vol, type) {
+  if (!S.audioOn) return;
+  const o = S.audio.createOscillator();
+  const g = S.audio.createGain();
+  o.type = type || 'sine';
+  o.frequency.value = freq;
+  g.gain.setValueAtTime(0, S.audio.currentTime);
+  g.gain.linearRampToValueAtTime(vol || 0.06, S.audio.currentTime + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.001, S.audio.currentTime + dur);
+  o.connect(g).connect(S.audio.destination);
+  o.start();
+  o.stop(S.audio.currentTime + dur);
+}
+function snTick() { beep(700, 0.04, 0.05, 'sine'); }
+function snOk() { beep(440, 0.05, 0.06, 'sine'); }
+function snBad() { beep(180, 0.22, 0.09, 'sawtooth'); }
+function snBlip() { beep(900, 0.025, 0.018, 'sine'); }
+function snAlarm() {
+  if (!S.audioOn) return;
+  // Bip avionique réel : deux courts bips médium
+  beep(720, 0.12, 0.08, 'sine');
+  setTimeout(() => beep(720, 0.12, 0.08, 'sine'), 180);
+}
+function snChime() {
+  // Son de validation sobre, type instrument confirmé
+  if (!S.audioOn) return;
+  beep(523, 0.08, 0.06, 'sine');
+  setTimeout(() => beep(659, 0.12, 0.06, 'sine'), 90);
+}
+function snFail() {
+  if (!S.audioOn) return;
+  beep(160, 0.45, 0.11, 'sawtooth');
+}
+function buzz(p) { if (navigator.vibrate) navigator.vibrate(p || 25); }
+
+// ============== AUDIO AMBIENT (nappe + rumble) ==============
+const AMB = {
+  pad: null,        // nappe règles
+  padLfo: null,
+  rumbleNoise: null,
+  rumbleFilter: null,
+  rumbleGain: null,
+  subBass: null,
+  subBassGain: null,
+  active: false
+};
+
+// Nappe douce qui monte (règles + tutoriel)
+function startAmbientPad() {
+  if (!S.audioOn || AMB.pad) return;
+  const ctx = S.audio;
+  // Deux oscillators harmoniques + LFO
+  const o1 = ctx.createOscillator();
+  o1.type = 'sine';
+  o1.frequency.value = 110;
+  const o2 = ctx.createOscillator();
+  o2.type = 'sine';
+  o2.frequency.value = 220;
+  const o3 = ctx.createOscillator();
+  o3.type = 'sine';
+  o3.frequency.value = 165;
+  const padGain = ctx.createGain();
+  padGain.gain.value = 0;
+  // LFO pour modulation lente
+  const lfo = ctx.createOscillator();
+  lfo.frequency.value = 0.2;
+  const lfoGain = ctx.createGain();
+  lfoGain.gain.value = 0.008;
+  lfo.connect(lfoGain).connect(padGain.gain);
+  o1.connect(padGain);
+  o2.connect(padGain);
+  o3.connect(padGain);
+  padGain.connect(ctx.destination);
+  o1.start(); o2.start(); o3.start(); lfo.start();
+  // Fade in
+  padGain.gain.setValueAtTime(0, ctx.currentTime);
+  padGain.gain.linearRampToValueAtTime(0.025, ctx.currentTime + 2);
+  AMB.pad = { o1, o2, o3, padGain };
+  AMB.padLfo = { lfo, lfoGain };
+}
+function stopAmbientPad() {
+  if (!AMB.pad) return;
+  const ctx = S.audio;
+  const g = AMB.pad.padGain;
+  g.gain.cancelScheduledValues(ctx.currentTime);
+  g.gain.setValueAtTime(g.gain.value, ctx.currentTime);
+  g.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
+  setTimeout(() => {
+    try {
+      AMB.pad.o1.stop(); AMB.pad.o2.stop(); AMB.pad.o3.stop();
+      AMB.padLfo.lfo.stop();
+    } catch(e) {}
+    AMB.pad = null;
+    AMB.padLfo = null;
+  }, 600);
+}
+
+// Rumble Rafale = boucle audio mp3 réelle
+let cockpitLoopEl = null;
+function startRumble(intensity) {
+  intensity = intensity || 1; // 1 = phase 1, 1.3 = phase 2, 1.6 = phase 3
+  // Volume mapping
+  const target = Math.min(0.65, 0.30 * intensity); // base 0.30, max 0.65
+  if (cockpitLoopEl) {
+    // Déjà actif, ajuster volume
+    fadeAudio(cockpitLoopEl, target, 1200);
+    return;
+  }
+  // Créer audio element
+  cockpitLoopEl = new Audio(COCKPIT_LOOP);
+  cockpitLoopEl.loop = true;
+  cockpitLoopEl.volume = 0;
+  cockpitLoopEl.preload = 'auto';
+  cockpitLoopEl.play().catch(() => {});
+  fadeAudio(cockpitLoopEl, target, 1500);
+}
+function stopRumble() {
+  if (!cockpitLoopEl) return;
+  fadeAudio(cockpitLoopEl, 0, 600, () => {
+    try { cockpitLoopEl.pause(); } catch(e) {}
+    cockpitLoopEl = null;
+  });
+}
+function fadeAudio(el, targetVol, durationMs, cb) {
+  if (!el) return;
+  const start = el.volume;
+  const steps = 30;
+  const stepMs = durationMs / steps;
+  let i = 0;
+  const id = setInterval(() => {
+    i++;
+    el.volume = Math.max(0, Math.min(1, start + (targetVol - start) * (i / steps)));
+    if (i >= steps) {
+      clearInterval(id);
+      if (cb) cb();
+    }
+  }, stepMs);
+}
+
+// ============== NAV ==============
+function show(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+function toast(text, ok) {
+  const t = document.getElementById('toast');
+  t.textContent = text;
+  t.classList.toggle('bad', !ok);
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 900);
+}
+
+// ============== TIMER ==============
+let timerInt = null;
+function startTimer(seconds, onEnd) {
+  clearInterval(timerInt);
+  const el = document.getElementById('ck-timer');
+  el.classList.remove('warn', 'crit', 'hidden');
+  let r = seconds;
+  el.textContent = String(r).padStart(2, '0');
+  timerInt = setInterval(() => {
+    r--;
+    if (r < 0) r = 0;
+    el.textContent = String(r).padStart(2, '0');
+    if (r <= 2) { el.classList.remove('warn'); el.classList.add('crit'); snTick(); }
+    else if (r <= 3) { el.classList.add('warn'); }
+    if (r === 0) {
+      clearInterval(timerInt);
+      if (onEnd) onEnd();
+    }
+  }, 1000);
+}
+function stopTimer() { clearInterval(timerInt); }
+function hideTimer() {
+  document.getElementById('ck-timer').classList.add('hidden');
+}
+
+// ============== TÉLÉTYPE RADIO ==============
+let typeT = null;
+function radioMessage(d, cb) {
+  clearTimeout(typeT);
+  const b = document.getElementById('radio-bubble');
+  const t = document.getElementById('radio-text');
+  const f = document.getElementById('radio-from');
+  b.classList.toggle('alert', !!d.isAlert);
+  f.textContent = d.from;
+  t.classList.remove('done');
+  t.textContent = '';
+  let i = 0;
+  function tk() {
+    if (i < d.radio.length) {
+      t.textContent += d.radio[i];
+      if (i % 3 === 0) snBlip();
+      i++;
+      typeT = setTimeout(tk, 22);
+    } else {
+      t.classList.add('done');
+      if (cb) setTimeout(cb, 200);
+    }
+  }
+  tk();
+}
+
+// ============== ACTIONS ==============
+function showActions(d) {
+  const c = document.getElementById('ck-actions');
+  c.innerHTML = '';
+  d.options.forEach((opt, i) => {
+    const b = document.createElement('button');
+    b.className = 'act-btn';
+    b.textContent = opt;
+    b.onclick = () => onAnswer(i, b);
+    c.appendChild(b);
+  });
+}
+function disableActions() {
+  document.querySelectorAll('#ck-actions .act-btn').forEach(b => b.disabled = true);
+}
+
+// ============== NAVIGATION INITIALE ==============
+function goRules() {
+  initAudio();
+  startAmbientPad();
+  show('v-rules');
+}
+function startLoading() {
+  show('v-loading');
+  // Précharger l'image cockpit
+  const img = new Image();
+  img.onload = () => {
+    document.getElementById('cockpit-img').src = COCKPIT_IMG;
+    setTimeout(() => goTuto(), 500);
+  };
+  img.onerror = () => {
+    document.getElementById('cockpit-img').src = COCKPIT_IMG;
+    setTimeout(() => goTuto(), 500);
+  };
+  img.src = COCKPIT_IMG;
+}
+
+// ============== TUTORIEL VIDEO ==============
+let tutoTimers = [];
+function goTuto() {
+  show('v-tuto');
+  const v = document.getElementById('tuto-video');
+  v.src = TUTO_VIDEO;
+  v.muted = true;
+  v.playsInline = true;
+  // Reset
+  document.getElementById('tuto-radio-text').textContent = '';
+  document.getElementById('tuto-chapter').classList.remove('on');
+  document.getElementById('tuto-progress').style.width = '0%';
+  document.getElementById('tuto-skip').disabled = true;
+  // Démarrer la vidéo
+  v.play().catch(() => {});
+  // Activer skip après 5s
+  tutoTimers.push(setTimeout(() => {
+    document.getElementById('tuto-skip').disabled = false;
+  }, 5000));
+  // Télétype synchronisé sur les 3 chapitres (5s chacun)
+  scheduleTutoChapter('01', 'Altitude', "Code 01. Lis l'instruction et applique strictement. Descente FL060 signifie 6000 pieds, rien d'autre.", 0);
+  scheduleTutoChapter('02', 'Cap', "Code 02. Vent de travers, compense d'un tiers de sa vitesse. 15 noeuds de vent égale 10 degrés de correction.", 5000);
+  scheduleTutoChapter('03', 'Alarme', "Code 03. Trafic convergent même niveau, tu montes. Surchauffe moteur, tu réduis la puissance. Cible verrouillée, tu réponds.", 10000, true);
+  // Progress bar
+  tutoTimers.push(setInterval(() => {
+    if (v.duration > 0) {
+      const pct = (v.currentTime / v.duration) * 100;
+      document.getElementById('tuto-progress').style.width = pct + '%';
+    }
+  }, 100));
+  // À la fin
+  v.onended = () => endTuto();
+  // Backup si la vidéo n'a pas de duration valide (15s par défaut)
+  tutoTimers.push(setTimeout(() => {
+    if (document.getElementById('v-tuto').classList.contains('on')) endTuto();
+  }, 15500));
+}
+function scheduleTutoChapter(num, name, text, delay, isAlert) {
+  tutoTimers.push(setTimeout(() => {
+    const tag = document.getElementById('tuto-chapter');
+    tag.querySelector('.n').textContent = num;
+    document.getElementById('tuto-chapter-name').textContent = name;
+    tag.classList.add('on');
+    if (isAlert) snAlarm();
+    tutoRadioMessage(text);
+  }, delay));
+}
+function tutoRadioMessage(text) {
+  const el = document.getElementById('tuto-radio-text');
+  el.textContent = '';
+  let i = 0;
+  function tk() {
+    if (i < text.length) {
+      el.textContent += text[i];
+      if (i % 4 === 0) snBlip();
+      i++;
+      tutoTimers.push(setTimeout(tk, 22));
+    }
+  }
+  tk();
+}
+function skipTuto() {
+  endTuto();
+}
+function endTuto() {
+  // Arrêter tous les timers du tutoriel
+  tutoTimers.forEach(t => { clearTimeout(t); clearInterval(t); });
+  tutoTimers = [];
+  // Arrêter la vidéo
+  const v = document.getElementById('tuto-video');
+  try { v.pause(); v.currentTime = 0; } catch(e) {}
+  // Continuer vers brief phase 1
+  goBrief(1);
+}
+
+// ============== BRIEFINGS PAR PHASE ==============
+function goBrief(phase) {
+  S.currentPhase = phase;
+  const briefs = {
+    1: {
+      tag: 'Phase 01 sur 03',
+      title: 'Apprentissage',
+      instruction: '<b>Tutoriel à ton rythme.</b> Trois décisions sans pression. Familiarise-toi avec la radio, les alarmes et les commandes.',
+      meta: 'Pas de timer · feedback complet'
+    },
+    2: {
+      tag: 'Phase 02 sur 03',
+      title: 'Tempo',
+      instruction: 'Trois décisions <b>chronométrées 5 secondes</b>. Tu connais les codes. À toi de prouver que tu décides juste, et vite.',
+      meta: '5 s par décision · pas de feedback'
+    },
+    3: {
+      tag: 'Phase 03 sur 03',
+      title: 'Multitâche',
+      instruction: 'Un point rouge va apparaître en zone ciel. <b>Garde ton doigt dessus</b> tout en répondant aux trois prochaines décisions. Tu lâches pour cliquer, tu reprends. Le système mesure ton partage attentionnel.',
+      meta: '8 s par décision · maintien continu'
+    }
+  };
+  const b = briefs[phase];
+  document.getElementById('brief-tag').textContent = b.tag;
+  document.getElementById('brief-title').textContent = b.title;
+  document.getElementById('brief-instruction').innerHTML = b.instruction;
+  document.getElementById('brief-meta').textContent = b.meta;
+  show('v-brief');
+}
+function startCurrentPhase() {
+  // Démarrer/intensifier le rumble selon la phase
+  stopAmbientPad();
+  const intensity = { 1: 1.0, 2: 1.3, 3: 1.7 }[S.currentPhase] || 1.0;
+  startRumble(intensity);
+  show('v-cockpit');
+  S.decisionIndex = (S.currentPhase - 1) * 3;
+  loadDecision();
+}
+
+// ============== CHARGEMENT DÉCISION ==============
+function loadDecision() {
+  const d = DECISIONS[S.decisionIndex];
+  S.currentPhase = d.phase;
+  S.decisionAnswered = false;
+  S.decisionStartT = Date.now();
+  document.getElementById('ck-phase-num').textContent = '0' + d.phase;
+  document.getElementById('ck-phase-name').textContent = ['Apprentissage', 'Tempo', 'Multitâche'][d.phase - 1];
+  document.getElementById('ck-dec').textContent = (S.decisionIndex + 1) + '/9';
+
+  showActions(d);
+
+  if (d.phase === 1) {
+    // Pas de timer, pas de pointeur
+    hideTimer();
+    stopPointer();
+    radioMessage(d);
+  } else if (d.phase === 2) {
+    // Timer 5s, pas de pointeur
+    stopPointer();
+    radioMessage(d, () => {
+      startTimer(5, () => {
+        if (!S.decisionAnswered) onAnswerTimeout();
+      });
+    });
+  } else if (d.phase === 3) {
+    // Timer 8s + pointeur continu
+    startPointer();
+    radioMessage(d, () => {
+      startTimer(8, () => {
+        if (!S.decisionAnswered) onAnswerTimeout();
+      });
+    });
+  }
+}
+
+// ============== POINTEUR (PHASE 3) ==============
+function startPointer() {
+  const sky = document.getElementById('sky-zone');
+  const ptr = document.getElementById('pointer');
+  ptr.classList.add('on');
+  document.getElementById('maintain-bar').classList.add('on');
+  document.getElementById('maintain-label').classList.add('on');
+  S.pointer.t0 = performance.now();
+  S.totalContactMs = 0;
+  S.totalElapsedMs = 0;
+  S.lastContactCheck = performance.now();
+  S.contactState = false;
+  S.touchPos.active = false;
+  document.getElementById('maintain-fill').style.height = '0%';
+
+  // Position initiale au centre du sky
+  const rect = sky.getBoundingClientRect();
+  S.pointer.x = rect.width / 2;
+  S.pointer.y = rect.height / 2;
+  updatePointerVisual();
+
+  // Listeners
+  sky.addEventListener('touchstart', onSkyTouch, { passive: false });
+  sky.addEventListener('touchmove', onSkyTouch, { passive: false });
+  sky.addEventListener('touchend', onSkyTouchEnd);
+  sky.addEventListener('mousedown', onSkyMouse);
+  sky.addEventListener('mousemove', onSkyMouseMove);
+  sky.addEventListener('mouseup', onSkyMouseUp);
+  sky.addEventListener('mouseleave', onSkyMouseUp);
+
+  // Animation loop
+  cancelAnimationFrame(S.pointerRaf);
+  S.pointerRaf = requestAnimationFrame(pointerLoop);
+}
+function stopPointer() {
+  cancelAnimationFrame(S.pointerRaf);
+  document.getElementById('pointer').classList.remove('on', 'contact');
+  document.getElementById('maintain-bar').classList.remove('on');
+  document.getElementById('maintain-label').classList.remove('on');
+  const sky = document.getElementById('sky-zone');
+  sky.removeEventListener('touchstart', onSkyTouch);
+  sky.removeEventListener('touchmove', onSkyTouch);
+  sky.removeEventListener('touchend', onSkyTouchEnd);
+  sky.removeEventListener('mousedown', onSkyMouse);
+  sky.removeEventListener('mousemove', onSkyMouseMove);
+  sky.removeEventListener('mouseup', onSkyMouseUp);
+  sky.removeEventListener('mouseleave', onSkyMouseUp);
+  S.touchPos.active = false;
+  S.contactState = false;
+}
+function pointerLoop(now) {
+  const sky = document.getElementById('sky-zone');
+  const rect = sky.getBoundingClientRect();
+  const t = (now - S.pointer.t0) / 1000;
+  const cx = rect.width / 2;
+  const cy = rect.height / 2;
+  const rangeX = Math.min(rect.width * 0.30, 180);
+  const rangeY = Math.min(rect.height * 0.35, 80);
+  // Trajectoire Lissajous
+  S.pointer.x = cx + rangeX * Math.sin(t * 0.7);
+  S.pointer.y = cy + rangeY * Math.sin(t * 1.05 + Math.PI / 3);
+  updatePointerVisual();
+
+  // Mesure contact
+  measureContact(now);
+  S.pointerRaf = requestAnimationFrame(pointerLoop);
+}
+function updatePointerVisual() {
+  const ptr = document.getElementById('pointer');
+  ptr.style.left = S.pointer.x + 'px';
+  ptr.style.top = S.pointer.y + 'px';
+  ptr.classList.toggle('contact', S.contactState);
+}
+function measureContact(now) {
+  const dt = now - S.lastContactCheck;
+  S.lastContactCheck = now;
+  S.totalElapsedMs += dt;
+  // Si touch actif et dans zone : contact
+  let contact = false;
+  if (S.touchPos.active) {
+    const dx = S.touchPos.x - S.pointer.x;
+    const dy = S.touchPos.y - S.pointer.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist <= 36) contact = true; // 36px = rayon de contact
+  }
+  if (contact) S.totalContactMs += dt;
+  if (contact !== S.contactState) {
+    S.contactState = contact;
+    if (contact) snBlip();
+  }
+  // Update barre
+  const ratio = S.totalElapsedMs > 0 ? S.totalContactMs / S.totalElapsedMs : 0;
+  document.getElementById('maintain-fill').style.height = (ratio * 100) + '%';
+}
+function onSkyTouch(e) {
+  e.preventDefault();
+  if (e.touches.length === 0) return;
+  const sky = document.getElementById('sky-zone');
+  const rect = sky.getBoundingClientRect();
+  S.touchPos.x = e.touches[0].clientX - rect.left;
+  S.touchPos.y = e.touches[0].clientY - rect.top;
+  S.touchPos.active = true;
+}
+function onSkyTouchEnd() {
+  S.touchPos.active = false;
+}
+function onSkyMouse(e) {
+  const sky = document.getElementById('sky-zone');
+  const rect = sky.getBoundingClientRect();
+  S.touchPos.x = e.clientX - rect.left;
+  S.touchPos.y = e.clientY - rect.top;
+  S.touchPos.active = true;
+}
+function onSkyMouseMove(e) {
+  if (!S.touchPos.active) return;
+  const sky = document.getElementById('sky-zone');
+  const rect = sky.getBoundingClientRect();
+  S.touchPos.x = e.clientX - rect.left;
+  S.touchPos.y = e.clientY - rect.top;
+}
+function onSkyMouseUp() {
+  S.touchPos.active = false;
+}
+
+// ============== RÉPONSE ==============
+// Évolutions instruments HUD selon la décision juste validée
+function updateHudFromDecision(idx) {
+  // Mappings : altitude, cap, vitesse évoluent selon les décisions
+  // D0 : descente FL060 -> FL120 devient FL060
+  // D2 : correction cap +10° -> 270° devient 280°
+  // D3 (phase 2 trafic) : montée immédiate -> altitude +
+  // D5 (vent traversier) : cap correction
+  // D6+ phase 3 : pas de changement majeur, juste maintien
+  const updates = {
+    0: { alt: 'FL060' },
+    2: { hdg: '280°' },
+    3: { alt: 'FL080' },
+    5: { hdg: '273°' },
+    6: { alt: 'FL080' },
+    7: { hdg: '278°' },
+    8: { alt: 'FL040', spd: '180 kts' }
+  };
+  const u = updates[idx];
+  if (!u) return;
+  if (u.alt) flashHud('hud-alt', 'hud-alt-val', u.alt);
+  if (u.hdg) flashHud('hud-hdg', 'hud-hdg-val', u.hdg);
+  if (u.spd) flashHud('hud-spd', 'hud-spd-val', u.spd);
+}
+function flashHud(cellId, valId, newVal) {
+  const cell = document.getElementById(cellId);
+  const val = document.getElementById(valId);
+  if (!cell || !val) return;
+  val.textContent = newVal;
+  cell.classList.remove('changing');
+  void cell.offsetWidth;
+  cell.classList.add('changing');
+}
+function resetHud() {
+  document.getElementById('hud-alt-val').textContent = 'FL120';
+  document.getElementById('hud-spd-val').textContent = '320 kts';
+  document.getElementById('hud-hdg-val').textContent = '270°';
+}
+
+function onAnswer(i, btn) {
+  if (S.decisionAnswered) return;
+  S.decisionAnswered = true;
+  stopTimer();
+  const d = DECISIONS[S.decisionIndex];
+  const correct = (i === d.correct);
+  const dt = Date.now() - S.decisionStartT;
+
+  buzz(20);
+
+  // Enregistrement par phase
+  if (d.phase === 1) {
+    if (correct) S.measures.p1.correct++;
+    S.measures.p1.errors.push({ idx: S.decisionIndex, correct, time: dt });
+  } else if (d.phase === 2) {
+    if (correct) S.measures.p2.correct++;
+    S.measures.p2.times.push(dt);
+    S.measures.p2.answers.push({ correct, time: dt });
+  } else if (d.phase === 3) {
+    if (correct) S.measures.p3.correct++;
+    const ratio = S.totalElapsedMs > 0 ? S.totalContactMs / S.totalElapsedMs : 0;
+    S.measures.p3.contactRatios.push(ratio);
+    S.measures.p3.reactionTimes.push(dt);
+    S.measures.p3.answers.push({ correct, time: dt, ratio });
+  }
+
+  // Feedback visuel + sonore
+  const buttons = document.querySelectorAll('#ck-actions .act-btn');
+  buttons.forEach((b, k) => {
+    b.disabled = true;
+    if (k === d.correct) b.classList.add('good');
+    else if (k === i && !correct) b.classList.add('bad');
+  });
+
+  if (correct) {
+    snOk();
+    if (d.phase === 1 && d.confirm) {
+      setTimeout(() => {
+        const t = document.getElementById('radio-text');
+        t.textContent = d.confirm;
+      }, 200);
+    }
+    // Évolution HUD selon décision
+    updateHudFromDecision(S.decisionIndex);
+  } else {
+    snBad();
+    if (d.phase === 1 && d.bad) {
+      setTimeout(() => {
+        const t = document.getElementById('radio-text');
+        t.textContent = d.bad;
+      }, 200);
+    }
+  }
+
+  // Délai puis prochaine décision
+  const delay = (d.phase === 1) ? 1800 : 1000;
+  setTimeout(nextDecision, delay);
+}
+function onAnswerTimeout() {
+  if (S.decisionAnswered) return;
+  S.decisionAnswered = true;
+  const d = DECISIONS[S.decisionIndex];
+  const dt = 5000;
+  if (d.phase === 2) {
+    S.measures.p2.times.push(dt);
+    S.measures.p2.answers.push({ correct: false, time: dt });
+  } else if (d.phase === 3) {
+    const ratio = S.totalElapsedMs > 0 ? S.totalContactMs / S.totalElapsedMs : 0;
+    S.measures.p3.contactRatios.push(ratio);
+    S.measures.p3.reactionTimes.push(8000);
+    S.measures.p3.answers.push({ correct: false, time: 8000, ratio });
+  }
+  snFail();
+  buzz([30, 60, 30]);
+  document.getElementById('ck-flash').classList.remove('on');
+  void document.getElementById('ck-flash').offsetWidth;
+  document.getElementById('ck-flash').classList.add('on');
+  // marquer bonne réponse
+  const buttons = document.querySelectorAll('#ck-actions .act-btn');
+  buttons.forEach((b, k) => {
+    b.disabled = true;
+    if (k === d.correct) b.classList.add('good');
+  });
+  setTimeout(nextDecision, 1000);
+}
+function nextDecision() {
+  S.decisionIndex++;
+  if (S.decisionIndex >= 9) {
+    endMission();
+    return;
+  }
+  const nextD = DECISIONS[S.decisionIndex];
+  const prevD = DECISIONS[S.decisionIndex - 1];
+  // Transition entre phases
+  if (nextD.phase !== prevD.phase) {
+    stopPointer();
+    showTransition(prevD.phase);
+  } else {
+    loadDecision();
+  }
+}
+
+// ============== TRANSITION ENTRE PHASES ==============
+function showTransition(justEndedPhase) {
+  show('v-transition');
+  const m = S.measures;
+  let line;
+  if (justEndedPhase === 1) {
+    line = `Phase 01 terminée. Bonnes décisions : ${m.p1.correct} / 3.`;
+    document.getElementById('trans-title').textContent = 'Apprentissage terminé';
+  } else if (justEndedPhase === 2) {
+    line = `Phase 02 terminée. Bonnes décisions : ${m.p2.correct} / 3. Maintenant la double tâche.`;
+    document.getElementById('trans-title').textContent = 'Tempo validé';
+  }
+  document.getElementById('trans-line').textContent = line;
+  snChime();
+}
+function onTransitionNext() {
+  goBrief(S.currentPhase + 1);
+}
+
+// ============== FIN ==============
+function endMission() {
+  stopPointer();
+  stopTimer();
+  stopRumble();
+  // Calcul outcome
+  const m = S.measures;
+  const totalCorrect = m.p1.correct + m.p2.correct + m.p3.correct;
+  let outcome;
+  if (totalCorrect >= 8) outcome = 'clean';
+  else if (totalCorrect >= 6) outcome = 'warn';
+  else if (totalCorrect >= 3) outcome = 'partial';
+  else outcome = 'fail';
+  showOutcome(outcome);
+}
+function showOutcome(type) {
+  show('v-outcome');
+  const c = document.getElementById('outcome-content');
+  const p = c.parentElement;
+  p.classList.remove('success', 'warn', 'fail');
+  let icon, title, line, cls;
+  if (type === 'clean') {
+    p.classList.add('success'); cls = 'success';
+    icon = '✓'; title = 'Vol nominal.';
+    line = 'Toutes les phases validées. Décisions justes, tempo tenu, multitâche maîtrisé.';
+    snChime();
+  } else if (type === 'warn') {
+    p.classList.add('warn'); cls = 'warn';
+    icon = '!'; title = 'Vol acceptable.';
+    line = 'Quelques erreurs sous pression. Pattern à analyser dans le debriefing.';
+    snAlarm();
+  } else if (type === 'partial') {
+    p.classList.add('warn'); cls = 'warn';
+    icon = '!'; title = 'Vol terminé.';
+    line = 'Performance hétérogène. Le profil détaillé donne des pistes claires.';
+    snAlarm();
+  } else {
+    p.classList.add('fail'); cls = 'fail';
+    icon = '✕'; title = 'Charge dépassée.';
+    line = 'La pression a dégradé la performance. Le profil détaillé t\'oriente sur tes points forts.';
+    snFail();
+  }
+  c.innerHTML = `
+    <div class="o-stamp">RAPPORT DE VOL</div>
+    <div class="o-icon ${cls}">${icon}</div>
+    <div class="o-title">${title}</div>
+    <div class="o-line">${line}</div>
+    <button class="btn brief-cta" onclick="showReport()">Voir le profil pilote</button>
+  `;
+}
+
+// ============== PERCENTILES ==============
+function precisionP() {
+  // Dimension 1 : précision sous tempo (phase 2)
+  const c = S.measures.p2.correct;
+  const avgT = S.measures.p2.times.length
+    ? (S.measures.p2.times.reduce((a,b)=>a+b,0) / S.measures.p2.times.length / 1000).toFixed(1)
+    : '--';
+  const txt = `<b>${c} / 3</b> bonnes décisions, ${avgT} s moyen.`;
+  if (c === 3 && avgT < 2.5) return { tier: 1, label: 'Top 10%', metric: txt };
+  if (c === 3) return { tier: 1, label: 'Top 25%', metric: txt };
+  if (c === 2) return { tier: 2, label: 'Top 50%', metric: txt };
+  if (c === 1) return { tier: 3, label: 'Top 75%', metric: txt };
+  return { tier: 4, label: '25% restants', metric: txt };
+}
+function attentionP() {
+  // Dimension 2 : partage attentionnel (phase 3)
+  const c = S.measures.p3.correct;
+  const ratios = S.measures.p3.contactRatios;
+  const avgR = ratios.length ? ratios.reduce((a,b)=>a+b,0) / ratios.length : 0;
+  const pct = Math.round(avgR * 100);
+  const txt = `<b>${c} / 3</b> bonnes décisions, <b>${pct}%</b> de maintien moyen.`;
+  if (c === 3 && pct >= 70) return { tier: 1, label: 'Top 8%', metric: txt };
+  if (c >= 2 && pct >= 50) return { tier: 2, label: 'Top 25%', metric: txt };
+  if (c >= 1 && pct >= 30) return { tier: 3, label: 'Top 60%', metric: txt };
+  return { tier: 4, label: '40% restants', metric: txt };
+}
+function recoveryP() {
+  // Dimension 3 : récupération après erreur
+  // On regarde toute la séquence : après une erreur, est-ce que la suivante est bonne ?
+  const all = [];
+  S.measures.p1.errors.forEach(e => all.push(e.correct));
+  S.measures.p2.answers.forEach(a => all.push(a.correct));
+  S.measures.p3.answers.forEach(a => all.push(a.correct));
+  let errorCount = 0;
+  let recovered = 0;
+  for (let i = 0; i < all.length - 1; i++) {
+    if (!all[i]) {
+      errorCount++;
+      if (all[i + 1]) recovered++;
+    }
+  }
+  if (errorCount === 0) {
+    return { tier: 1, label: 'Top 5%', metric: `<b>0 erreur</b> sur 9 décisions. Aucune récupération nécessaire.` };
+  }
+  const ratio = recovered / errorCount;
+  const txt = `<b>${recovered}/${errorCount}</b> erreurs suivies d'une bonne décision.`;
+  if (ratio >= 1) return { tier: 1, label: 'Top 20%', metric: txt };
+  if (ratio >= 0.5) return { tier: 2, label: 'Top 50%', metric: txt };
+  return { tier: 4, label: '50% restants', metric: txt };
+}
+
+// ============== SCORE ==============
+function computeScore() {
+  let s = 200;
+  s += S.measures.p1.correct * 50;     // max +150
+  s += S.measures.p2.correct * 80;     // max +240
+  s += S.measures.p3.correct * 100;    // max +300
+  // Bonus pour maintien
+  const avgR = S.measures.p3.contactRatios.length
+    ? S.measures.p3.contactRatios.reduce((a,b)=>a+b,0) / S.measures.p3.contactRatios.length
+    : 0;
+  s += Math.round(avgR * 150); // max +150
+  return Math.max(0, Math.min(1000, Math.round(s)));
+}
+
+// ============== REPORT ==============
+function showReport() {
+  show('v-report');
+  document.getElementById('rep-score').innerHTML = computeScore() + '<small>/1000</small>';
+  const d1 = precisionP(), d2 = attentionP(), d3 = recoveryP();
+  setDim('d1', d1);
+  setDim('d2', d2);
+  setDim('d3', d3);
+
+  // Profil dominant
+  const tiers = [d1.tier, d2.tier, d3.tier];
+  const min = Math.min(...tiers);
+  const dom = tiers.indexOf(min);
+  const balanced = tiers.every(t => t <= 2);
+
+  let reveal, jobs;
+  if (balanced && min === 1) {
+    reveal = "Profil <b>pilote complet</b>. Précision, partage attentionnel, récupération : tu mobilises les trois à un haut niveau. Profil rare, ciblé pour les écoles de pilotage et postes opérationnels exigeants.";
+    jobs = [
+      { n: "Pilote de chasse", m: "Performance multi-domaines sous charge. Profil prototype.", pct: 94 },
+      { n: "NOSA", m: "Décision et partage simultanés en cabine d'arme.", pct: 90 },
+      { n: "Pilote de drone MALE", m: "Performance stable sur durée longue.", pct: 87 }
+    ];
+  } else if (dom === 0) {
+    reveal = "Ton point fort, c'est la <b>précision sous tempo</b>. Tu décides vite et juste quand le temps presse, mais le multitâche en continu te pèse. Profil mécanicien avionique, contrôleur, technicien d'intervention.";
+    jobs = [
+      { n: "Mécanicien avionique", m: "Décisions rapides et précises sur systèmes critiques.", pct: 91 },
+      { n: "Contrôleur aérien militaire", m: "Tempo soutenu, décisions séquentielles.", pct: 88 },
+      { n: "Technicien sécurité-protection", m: "Réaction rapide à incident.", pct: 84 }
+    ];
+  } else if (dom === 1) {
+    reveal = "Ton point fort, c'est le <b>partage attentionnel</b>. Tu gères plusieurs choses en même temps sans perdre le fil. Profil rare et précieux pour le pilotage et les postes de commandement opérationnel.";
+    jobs = [
+      { n: "Pilote de chasse", m: "Cockpit moderne demande exactement ce profil.", pct: 93 },
+      { n: "NOSA (Navigateur Officier Systèmes d'Armes)", m: "Multi-écrans, multi-flux. Ton terrain.", pct: 90 },
+      { n: "Officier opérations", m: "Coordination multi-secteurs en parallèle.", pct: 86 }
+    ];
+  } else {
+    reveal = "Ton point fort, c'est la <b>récupération après erreur</b>. Quand tu te trompes, tu re-stabilises immédiatement. Compétence rare et hautement valorisée en opération réelle, où aucune erreur n'est définitive.";
+    jobs = [
+      { n: "Pilote de chasse", m: "Capacité critique en cockpit moderne.", pct: 92 },
+      { n: "Fusilier commando parachutiste", m: "Récupération sous stress en zone hostile.", pct: 88 },
+      { n: "Pompier de l'air", m: "Stabilité émotionnelle après erreur.", pct: 85 }
+    ];
+  }
+  document.getElementById('rep-reveal').innerHTML = reveal;
+  const jb = document.getElementById('rep-jobs');
+  jb.innerHTML = '';
+  jobs.forEach(j => {
+    const el = document.createElement('div');
+    el.className = 'job';
+    el.innerHTML = `<div class="n">${j.n}</div><div class="m">${j.m}</div><span class="pct">Match ${j.pct}%</span>`;
+    jb.appendChild(el);
+  });
+}
+function setDim(id, data) {
+  const p = document.getElementById(id + '-pct');
+  p.textContent = data.label;
+  p.className = 'dim-pct t' + data.tier;
+  document.getElementById(id + '-metric').innerHTML = data.metric;
+}
+
+function shareScore() {
+  const txt = `J'ai scoré ${computeScore()}/1000 sur la mission ALTITUDE · VOKA × AAE. Profil pilote KILO-9.`;
+  if (navigator.share) navigator.share({ title: 'ALTITUDE', text: txt }).catch(() => {});
+  else if (navigator.clipboard) { navigator.clipboard.writeText(txt).catch(() => {}); toast('SCORE COPIÉ', true); }
+}
+
+function restart() {
+  stopTimer();
+  stopPointer();
+  stopRumble();
+  stopAmbientPad();
+  resetHud();
+  S.decisionIndex = 0;
+  S.measures = {
+    p1: { correct: 0, errors: [] },
+    p2: { correct: 0, times: [], answers: [] },
+    p3: { correct: 0, contactRatios: [], reactionTimes: [], answers: [] }
+  };
+  show('v-intro');
+}
+</script>
+</body>
+</html>
